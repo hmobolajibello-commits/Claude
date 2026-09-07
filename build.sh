@@ -2,8 +2,8 @@
 # Builds the website from the sources in src/.
 #
 # Two apps live in this repo, each a self-contained single-file wiki:
-#   src/guide.html  ->  index.html   (Lineage Piece Field Manual)
-#   src/fisch.html  ->  fisch.html   (Fisch Field Guide)
+#   src/fisch.html  ->  index.html          (Fisch Field Guide — the main site)
+#   src/guide.html  ->  lineage-piece.html  (Lineage Piece Field Manual)
 #
 # Dependencies: bash, awk, head, tail, cat, printf. No Python, no Node, no
 # package install — so it runs on any host build image without configuration.
@@ -13,10 +13,12 @@
 # wraps each one into a document, adds its site metadata, and assembles _site/.
 #
 # Outputs:
-#   index.html   fisch.html      standalone pages, committed so the repo root
-#                                can be served as-is
-#   _site/                       the deploy directory (pages + assets +
-#                                generated robots/sitemap; /fisch/ also works)
+#   index.html                     the Fisch guide, committed so the repo root can
+#   lineage-piece.html             be served as-is, with the Lineage Piece manual
+#                                  beside it
+#   _site/                         the deploy directory (pages + assets + generated
+#                                  robots/sitemap). / is the Fisch guide,
+#                                  /lineage-piece/ the manual, /fisch/ an alias
 #
 # Canonical and social-card URLs come from SITE_URL, auto-detected on the
 # common hosts. Override it for anything else:
@@ -87,16 +89,19 @@ META
 LP_DESC="An unofficial Lineage Piece wiki: 164 pages covering every island, boss, NPC, devil fruit, race, weapon, fighting style, key and system, plus reroll-odds and build-planning tools."
 FI_DESC="An unofficial Fisch wiki: locations, rods, baits, fish, enchants and mutations, a beginner's guide, an eight-phase progression roadmap, and a planner that takes your level, rod and C\$ and tells you what to do next."
 
-build_page src/guide.html index.html "$SITE_URL" \
-  "Lineage Piece Field Manual" "Lineage Piece Field Manual" "$LP_DESC" "#e7ecec" "#081215"
-build_page src/fisch.html fisch.html "${SITE_URL}fisch/" \
+build_page src/fisch.html index.html "$SITE_URL" \
   "Fisch Field Guide" "Fisch Field Guide — wiki & progression planner" "$FI_DESC" "#e8eef2" "#06121a"
+build_page src/guide.html lineage-piece.html "${SITE_URL}lineage-piece/" \
+  "Lineage Piece Field Manual" "Lineage Piece Field Manual" "$LP_DESC" "#e7ecec" "#081215"
 
 rm -rf _site
-mkdir -p _site/fisch
+mkdir -p _site/lineage-piece _site/fisch
 cp index.html _site/index.html
-cp fisch.html _site/fisch.html
-cp fisch.html _site/fisch/index.html
+cp lineage-piece.html _site/lineage-piece.html
+cp lineage-piece.html _site/lineage-piece/index.html
+# /fisch/ kept as an alias for anyone who already has the link; its canonical
+# tag points at the site root, so it is not a competing copy
+cp index.html _site/fisch/index.html
 for asset in favicon.svg og.png _headers; do
   if [ -f "$asset" ]; then cp "$asset" "_site/$asset"; fi
 done
@@ -108,8 +113,8 @@ printf 'User-agent: *\nAllow: /\nSitemap: %ssitemap.xml\n' "$SITE_URL" > _site/r
   printf '<?xml version="1.0" encoding="UTF-8"?>\n'
   printf '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
   printf '  <url>\n    <loc>%s</loc>\n    <changefreq>monthly</changefreq>\n    <priority>1.0</priority>\n  </url>\n' "$SITE_URL"
-  printf '  <url>\n    <loc>%sfisch/</loc>\n    <changefreq>monthly</changefreq>\n    <priority>1.0</priority>\n  </url>\n' "$SITE_URL"
+  printf '  <url>\n    <loc>%slineage-piece/</loc>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>\n' "$SITE_URL"
   printf '</urlset>\n'
 } > _site/sitemap.xml
 
-printf 'built index.html + fisch.html and _site/ for %s\n' "$SITE_URL"
+printf 'built index.html (Fisch) + lineage-piece.html and _site/ for %s\n' "$SITE_URL"

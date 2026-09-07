@@ -899,10 +899,10 @@ const CATNOTE = {
   mut:  "Multipliers as published by community mutation tables. Attributes (Shiny, Sparkling) are listed alongside mutations because they stack with them."
 };
 
-/* This page is deployed at both /fisch.html and /fisch/, so the path back to the
-   sibling wiki depends on which one the visitor landed on. */
+/* This app is the site root, and /fisch/ is kept as an alias for older links, so
+   the path back to the sibling wiki depends on which one the visitor landed on. */
 function siblingHref() {
-  return /\/fisch\/(index\.html)?$/.test(location.pathname) ? "../" : "index.html";
+  return /\/fisch\/(index\.html)?$/.test(location.pathname) ? "../lineage-piece.html" : "lineage-piece.html";
 }
 
 /* link resolution: entries, category indexes, guides and tools are all addressable by id */
@@ -1039,7 +1039,8 @@ function entry(id) {
 }
 
 function notfound(id) {
-  view.innerHTML = '<div class="page full"><h1 class="pt">No such page</h1><p class="lead">Nothing in the database is filed under &ldquo;' + strip(id) + '&rdquo;. Try the search bar, or <a href="#/">start from the main page</a>.</p></div>';
+  view.innerHTML = '<div class="page full"><h1 class="pt">No such page</h1><p class="lead">Nothing in the Fisch database is filed under &ldquo;' + strip(id) + '&rdquo;. Try the search bar, or <a href="#/">start from the main page</a>.</p>'
+    + '<p class="note">Followed an old link? This address used to serve the <a href="' + siblingHref() + '">Lineage Piece Field Manual</a>, which now lives there.</p></div>';
 }
 
 /* ── guides ── */

@@ -5,8 +5,10 @@ build dependencies and no network calls beyond Google Fonts:
 
 | App | Source | Deployed at | What it covers |
 | --- | --- | --- | --- |
-| **Fisch Field Guide** | `src/fisch.html` | `/fisch/` | Roblox's fishing game — 135 pages, a beginner's guide, an eight-phase roadmap and a "where am I" progression planner |
-| **Lineage Piece Field Manual** | `src/guide.html` | `/` | Prlz's Den's anime-crossover action RPG — 164 pages, odds calculator and build planner |
+| **Fisch Field Guide** | `src/fisch.html` | `/` — the main site | Roblox's fishing game — 135 pages, a beginner's guide, an eight-phase roadmap and a "where am I" progression planner |
+| **Lineage Piece Field Manual** | `src/guide.html` | `/lineage-piece/` | Prlz's Den's anime-crossover action RPG — 164 pages, odds calculator and build planner |
+
+`/fisch/` is kept as an alias of the root for anyone who already has that link.
 
 ---
 
@@ -155,8 +157,9 @@ skip the build entirely:
 - **Build command:** *(leave empty)*
 - **Output / publish directory:** `/` (the repo root)
 
-`index.html` and `fisch.html` are committed and complete, so the site works served straight
-from the root (the Fisch guide lands at `/fisch.html` rather than `/fisch/`).
+`index.html` and `lineage-piece.html` are committed and complete, so the site works served
+straight from the root (the manual lands at `/lineage-piece.html` rather than
+`/lineage-piece/`).
 The only thing lost is host-specific metadata: the canonical link and social-card URLs
 keep pointing at the GitHub Pages address, and `sitemap.xml` isn't generated.
 
@@ -179,8 +182,8 @@ site would land at `https://hmobolajibello-commits.github.io/Claude/`.
 ### Running it locally
 
 ```bash
-open fisch.html          # macOS — or index.html for the Lineage Piece manual
-xdg-open fisch.html      # Linux
+open index.html          # macOS — or lineage-piece.html for the other wiki
+xdg-open index.html      # Linux
 python3 -m http.server   # or serve the directory
 ```
 
@@ -190,16 +193,18 @@ offers no build step.
 ## Repo layout
 
 ```
-src/guide.html          Lineage Piece app: markup, CSS, data and router in one fragment
-src/fisch.html          Fisch app, same shape — data, milestone engine, router, tools
+src/fisch.html          Fisch app: markup, CSS, data, milestone engine, router and
+                        tools in one fragment
+src/guide.html          Lineage Piece app, same shape
                         (neither has <html>/<head>/<body>: each publishes directly as a
                          Claude Artifact and as a page of this site)
 build.sh                wraps each fragment into a document, adds its site metadata,
                         assembles _site/
-index.html              generated Lineage Piece page (committed)
-fisch.html              generated Fisch page (committed)
+index.html              generated Fisch page — the site root (committed)
+lineage-piece.html      generated Lineage Piece page (committed)
 _site/                  deploy directory (generated, gitignored)
-                        index.html + fisch.html + fisch/index.html
+                        index.html + lineage-piece.html + lineage-piece/index.html
+                        + fisch/index.html (alias of the root)
 favicon.svg  og.png     site icon and social card
 _headers                cache and security headers (Cloudflare Pages / Netlify)
 netlify.toml            Netlify build config
