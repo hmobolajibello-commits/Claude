@@ -1,12 +1,11 @@
-# Netlify: connect this repo and the settings below are picked up automatically.
-# SITE_URL is derived from Netlify's own $URL, so the canonical link and the
-# social-card URLs match whatever domain the site ends up on.
+# Netlify: connect this repo and these settings are picked up automatically.
+# The build needs nothing but a shell — no Python, Node or package install — so
+# there is deliberately no language version pinned here. SITE_URL is derived from
+# Netlify's own $URL, so the canonical link and social-card URLs match the domain
+# the site actually ends up on, custom domains included.
 [build]
-  command = "./build.sh"
+  command = "bash build.sh"
   publish = "_site"
-
-[build.environment]
-  PYTHON_VERSION = "3.11"
 
 [[headers]]
   for = "/*"

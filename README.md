@@ -53,7 +53,7 @@ serve the generated `_site/` directory.
 
 1. [dash.cloudflare.com](https://dash.cloudflare.com) → **Workers & Pages** → **Create** → **Pages** → **Connect to Git**
 2. Pick `hmobolajibello-commits/Claude`, branch `claude/roblox-lineage-piece-guide-c4v2nd`
-3. Build command `./build.sh` · Build output directory `_site` · Framework preset **None**
+3. Build command `bash build.sh` · Build output directory `_site` · Framework preset **None**
 4. Save and Deploy
 
 Unlimited bandwidth on the free plan, and a custom domain is one click under
@@ -64,8 +64,21 @@ Unlimited bandwidth on the free plan, and a custom domain is one click under
 1. [app.netlify.com](https://app.netlify.com) → **Add new site** → **Import an existing project** → GitHub
 2. Pick the repo and branch
 
-`netlify.toml` already sets the build command, publish directory and Python version, so
-there is nothing to type. Deploy.
+`netlify.toml` already sets the build command and publish directory, so there is nothing
+to type. Deploy.
+
+### If a build ever fails
+
+The build needs nothing but a shell — no Python, no Node, no package install — so there is
+nothing to configure and no language version to pin. If a host still refuses to build,
+skip the build entirely:
+
+- **Build command:** *(leave empty)*
+- **Output / publish directory:** `/` (the repo root)
+
+`index.html` is committed and complete, so the site works served straight from the root.
+The only thing lost is host-specific metadata: the canonical link and social-card URLs
+keep pointing at the GitHub Pages address, and `sitemap.xml` isn't generated.
 
 ### What the build does with the host
 
