@@ -1,14 +1,11 @@
 # Roblox wiki apps
 
-Two unofficial, self-contained **wiki apps**, each one HTML file with no framework, no
-build dependencies and no network calls beyond Google Fonts:
+Two unofficial wikis for Roblox games, built from one repo:
 
-| App | Source | Deployed at | What it covers |
+| Site | Source | Deployed at | Shape |
 | --- | --- | --- | --- |
-| **Fisch Field Guide** | `src/fisch.html` | `/` — the main site | Roblox's fishing game — 135 pages, a beginner's guide, an eight-phase roadmap and a "where am I" progression planner |
-| **Lineage Piece Field Manual** | `src/guide.html` | `/lineage-piece/` | Prlz's Den's anime-crossover action RPG — 164 pages, odds calculator and build planner |
-
-`/fisch/` is kept as an alias of the root for anyone who already has that link.
+| **Fisch Field Guide** | `src/data/*.js` + `tools/build-site.js` | `/` — the main site | A real multi-page site: **217 pages**, one HTML file each |
+| **Lineage Piece Field Manual** | `src/guide.html` | `/lineage-piece/` | A single-file hash-routed app (also publishable as a Claude Artifact) |
 
 ---
 
@@ -17,10 +14,14 @@ build dependencies and no network calls beyond Google Fonts:
 An unofficial wiki for **Fisch**, the Roblox fishing game — built around the question the
 other wikis do not answer: *given where I actually am, what do I do next?*
 
+Every page has its own URL and its own HTML file, like a wiki should: `/rods/trident-rod/`,
+`/locations/marianas-veil/`, `/guides/beginner/`. No client-side router, no JavaScript
+needed to read anything — the scripts only power search, the sortable tables and the tools.
+
 ## The path planner
 
-The headline tool. Put in your **level**, your **best rod**, your **C$ on hand**, what you
-have already unlocked and what you want right now, and it:
+The headline tool, at `/tools/path-planner/`. Put in your **level**, your **best rod**, your
+**C$ on hand**, what you have already unlocked and what you want right now, and it:
 
 - works out which of **19 route milestones** you have cleared and which phase you are in;
 - gives you the **next five steps in order**, each with its cost, its level gate and where
@@ -35,47 +36,79 @@ have already unlocked and what you want right now, and it:
 The planner and the roadmap read **the same milestone list**, so the two can never drift
 apart. Your answers save to `localStorage`.
 
-## 135 pages
+## 194 database pages
 
 | Category | Pages | What's on each page |
 | --- | --- | --- |
-| Locations | 24 | Stage, how you get there, what to do while you're there, what it gates |
-| Rods | 21 | Stage, price, source, passive — the progression spine, not all 230+ rods |
-| Items & gear | 20 | Boats, relics, keys, totems, potions, charms, crates |
+| Rods | **67** | Stage, price, source, passive, and what it actually does for you |
+| Locations | 31 | Stage, how you get there, what to do there, what it gates |
 | Mutations | 22 | Multipliers, and which ones you can manufacture on purpose |
-| Mechanics | 15 | The three-part minigame, both kinds of luck, XP maths, weather, appraisal |
-| NPCs | 11 | Who sells what, and who hands things over free |
+| Items & gear | 20 | Boats, relics, keys, totems, potions, charms, crates |
+| Mechanics | 17 | The three-part minigame, both kinds of luck, XP maths, crafting, Rod Mastery |
+| NPCs | 15 | Who sells what, and who hands things over free |
 | Fish | 8 | The ones that change a decision — quest fish, money fish, weather-gated holes |
 | Baits | 6 | Preferred vs. universal luck, and when each is the wrong choice |
-| Enchants | 4 | The exalted enchants the sources actually agree on |
 | Bosses & hunts | 4 | Megalodon, Kraken, Abaia, Isonade — and how each one starts |
+| Enchants | 4 | The exalted enchants the sources actually agree on |
 
 **Guides:** beginner's guide · progression roadmap (8 phases, saved checklist) · 12 beginner
 mistakes · making money · XP & levelling · enchanting · codes · accuracy & sources.
 
 **Tools:** path planner · rod budget planner · drop & catch odds · fish value calculator.
 
-## About the Fisch data
+## On the rod list
 
-Fisch patches constantly and its community documentation disagrees with itself in exactly
-the places you would expect — shop prices, drop rates, anything a recent update touched.
-This app **marks the disagreements** rather than picking one reading and sounding certain,
-and where the sources are simply thin (the regular enchant pool, several shop prices) it
-says so instead of filling the gap with a guess. Every disputed figure carries a dotted
-underline and is listed on the *Accuracy & sources* page:
+Fisch adds rods faster than anyone documents them. The counts published by community
+databases in September 2026 are **188, 227, 232, 244 and 257** — they do not agree with each
+other either.
+
+This wiki documents the **67 rods it could source a real acquisition route for**, from the
+free Flimsy Rod to the 50,000,000 C$ Olympian Godbreaker at level 981. That is not all of
+them, and the site says so on the rod index and on the sources page rather than padding the
+table. Where a price or route is not consistently published, the row says *"verify in
+game"* instead of carrying a number that might cost someone 750,000 C$.
+
+Where sources conflict — and they do, constantly — **both readings are shown** with a dotted
+underline, and every dispute is collected on the *Accuracy & sources* page:
 
 | Disputed | Readings in circulation |
 | --- | --- |
+| How many rods exist | 188 / 227 / 232 / 244 / 257 |
 | Kraken Rod price | 950,000 C$ vs. 1,333,333 C$ |
-| The "extra fish every third catch" passive | Credited to the Rod of the Depths in one source, the Great Dreamer Rod in another |
+| Ethereal Prism Rod price | 3,500,000 C$ vs. 15,000,000 C$ |
+| Leviathan's Fang price | 350,000 C$ vs. 1,850,000 C$ |
+| Tempest Rod price | 500,000 C$ vs. 1,850,000 C$ |
+| King's Rod price | 100,000 C$ vs. 120,000 C$ |
+| Fast / Lucky rod prices | 4,000 vs. 4,500 · 4,500 vs. 5,250 |
+| The "extra fish every third catch" passive | Rod of the Depths in one source, Great Dreamer Rod in another |
 | Rarity tier count | 12, 17 or 18, plus Limited / Special / Extinct |
 | 100% bestiary reward | Aurora Bobber, Aurora Glow Lantern, or the Masterline Rod |
 | Totem count | 20 vs. 26 |
 | Bait roster size | 25 vs. 62 vs. 65 |
-| Money rates per hour | All community estimates under unstated setups |
 
-Data compiled **September 2026**, right after the Skycrest update. Verify anything
-expensive at the merchant before you commit to it.
+Data compiled **September 2026**, right after the Skycrest update.
+
+## How the site is built
+
+```
+src/data/fisch.js       every entry, the rod table, the milestone engine
+src/data/guides.js      guide bodies as HTML
+src/assets/style.css    one stylesheet for every page
+src/assets/site.js      search, sortable tables, checklist and the four tools
+tools/build-site.js     the static site generator
+site/                   the generated site (committed) — one directory per page
+```
+
+`node tools/build-site.js` writes `site/`. Everything else derives from the data: sidebar
+counts, category indexes, the search index, "see also" links, prev/next, the sitemap.
+
+Links inside the data use a `#/e/<id>` shorthand and are rewritten into **relative** paths at
+build time, so the same output works from a `file://` path, a domain root, or a project
+subpath like `/Claude/` without being rebuilt.
+
+To add a page, call `E()` with a category, id, name and an object holding its table row
+(`t`), infobox rows (`info`), a `lead` paragraph, optional `sec` sections and `see` links.
+To add a rod, add a row to `RODS` in progression order — the planner reads that order.
 
 ---
 
@@ -85,11 +118,8 @@ An unofficial, self-contained **wiki app** for **Lineage Piece**, the One Piece�
 anime-crossover action RPG on Roblox by *Prlz's Den*
 ([game page](https://www.roblox.com/games/104761395312874/Lineage-Piece)).
 
-Built in the shape of a game database — like the Fisch or Sailor Piece community wikis:
-a category sidebar, sortable index tables, and a routed page for every single thing in
-the game, each with its own infobox and cross-links.
-
-One HTML file. No framework, no build dependencies, no network calls beyond Google Fonts.
+Still a single HTML file with its own hash router, 164 pages, an odds calculator and a build
+planner. Deployed at `/lineage-piece/`.
 
 ## 164 pages
 
@@ -109,26 +139,16 @@ One HTML file. No framework, no build dependencies, no network calls beyond Goog
 | Items & keys | 33 | All 9 dungeon keys, materials, collectibles, sources and uses |
 | Systems | 13 | Stats, ranks, chests, quests, currencies, Simulated Sea, skill tree, mastery, titles |
 
-**Guides:** progression roadmap (6 phases, 33 steps, persisted checklist) · the first hour ·
-tier lists (generated from the database) · codes · accuracy & sources.
+Its data also has no official source — figures the community wikis disagree on are marked in
+place and listed on its own *Accuracy & sources* page.
 
-**Tools:** reroll & drop odds calculator · build planner.
-
-## The app parts
-
-- **Hash router** — every page has its own URL (`#/e/solemn-lament`, `#/c/boss`, `#/t/odds`), so pages are linkable and the back button works.
-- **Search** — instant, ranked over names, categories and infobox contents; `/` focuses it, arrows and Enter navigate. Searching `shrine` finds the key, the NPC, the boss that needs it and the island it drops on.
-- **Sortable index tables** — click any column; numeric columns sort numerically, so you can rank drop rates or level bands directly.
-- **Rarity / tier facet filters** on category pages.
-- **Reroll & drop odds calculator** — pick a target (Light fruit 2%, mythic race bucket 0.25%, Haki Book 0.1%, Shrine Key 1%…), set attempts, get cumulative chance, the coin-toss point, 95%-confidence count, currency cost, and a plotted probability curve.
-- **Build planner** — choose a damage channel, race, artifact 4-piece and Haki; it stacks only what applies to that channel and names what you'd be wasting.
-- **Progression checklist** — saved to `localStorage`.
-- **Random page**, light/dark/auto theme, cross-linked "See also" and prev/next within each category.
+---
 
 ## Putting it online
 
 The repo is ready to deploy as-is on either host below. Both build with `./build.sh` and
-serve the generated `_site/` directory.
+serve the generated `_site/` directory. The build needs **bash and Node** — no `npm install`,
+no packages — and Node ships in the build image of both.
 
 ### Cloudflare Pages (recommended)
 
@@ -150,25 +170,25 @@ to type. Deploy.
 
 ### If a build ever fails
 
-The build needs nothing but a shell — no Python, no Node, no package install — so there is
-nothing to configure and no language version to pin. If a host still refuses to build,
-skip the build entirely:
+`site/` is committed and complete &mdash; the whole generated wiki, plus a copy of the
+Lineage Piece manual. If a host refuses to build, skip the build entirely:
 
 - **Build command:** *(leave empty)*
-- **Output / publish directory:** `/` (the repo root)
+- **Output / publish directory:** `site`
 
-`index.html` and `lineage-piece.html` are committed and complete, so the site works served
-straight from the root (the manual lands at `/lineage-piece.html` rather than
-`/lineage-piece/`).
+Everything works from there. The only things lost are host-specific: the sitemap and
+`robots.txt` keep pointing at the GitHub Pages address, and the manual lands at
+`/lineage-piece.html` rather than `/lineage-piece/`.
 The only thing lost is host-specific metadata: the canonical link and social-card URLs
 keep pointing at the GitHub Pages address, and `sitemap.xml` isn't generated.
 
 ### What the build does with the host
 
 `build.sh` picks up the deploy URL automatically — Netlify's `$URL`, Cloudflare's
-`$CF_PAGES_URL` — and writes it into the canonical link, the Open Graph / Twitter card
-URLs, `robots.txt` and `sitemap.xml`. For a custom domain, nothing needs editing; for
-anything unusual, `SITE_URL=https://example.com/ ./build.sh`.
+`$CF_PAGES_URL` — and writes it into `robots.txt`, the 217-URL `sitemap.xml` and the manual's
+canonical and social-card links. The wiki's own page links are relative, so they need no
+host at all. For a custom domain nothing needs editing; for anything unusual,
+`SITE_URL=https://example.com/ ./build.sh`.
 
 `_headers` sets caching and the usual security headers on both hosts.
 
@@ -182,29 +202,28 @@ site would land at `https://hmobolajibello-commits.github.io/Claude/`.
 ### Running it locally
 
 ```bash
-open index.html          # macOS — or lineage-piece.html for the other wiki
-xdg-open index.html      # Linux
-python3 -m http.server   # or serve the directory
+./build.sh
+cd site && python3 -m http.server     # then open http://localhost:8000
 ```
 
-Both generated pages are committed, so the repo root is also directly serveable if a host
-offers no build step.
+Serve it rather than opening the files directly: a multi-page site wants directory URLs
+(`/rods/`), which `file://` will not resolve. `site/` is committed, so the build step is
+optional if you only want to read it.
 
 ## Repo layout
 
 ```
-src/fisch.html          Fisch app: markup, CSS, data, milestone engine, router and
-                        tools in one fragment
-src/guide.html          Lineage Piece app, same shape
-                        (neither has <html>/<head>/<body>: each publishes directly as a
-                         Claude Artifact and as a page of this site)
-build.sh                wraps each fragment into a document, adds its site metadata,
-                        assembles _site/
-index.html              generated Fisch page — the site root (committed)
+src/data/fisch.js       Fisch: entries, rod table, milestone engine
+src/data/guides.js      Fisch: guide bodies
+src/assets/style.css    Fisch: one stylesheet for every page
+src/assets/site.js      Fisch: search, tables, checklist, the four tools
+tools/build-site.js     the static site generator
+site/                   generated Fisch site (committed) — one directory per page
+src/guide.html          Lineage Piece: one Artifact-shaped fragment, no
+                        <html>/<head>/<body>, so it also publishes as a Claude Artifact
 lineage-piece.html      generated Lineage Piece page (committed)
+build.sh                builds both, assembles _site/
 _site/                  deploy directory (generated, gitignored)
-                        index.html + lineage-piece.html + lineage-piece/index.html
-                        + fisch/index.html (alias of the root)
 favicon.svg  og.png     site icon and social card
 _headers                cache and security headers (Cloudflare Pages / Netlify)
 netlify.toml            Netlify build config
@@ -213,10 +232,10 @@ netlify.toml            Netlify build config
 
 Edit a file in `src/`, then run `./build.sh`.
 
-Both apps share one architecture: a `DB` of entries built by an `E()` helper, a hash
-router (`#/e/<id>`, `#/c/<category>`, `#/g/<guide>`, `#/t/<tool>`), a ranked search index
-and sortable category tables — everything else (sidebar counts, indexes, search, prev/next,
-"see also") derives from the data. In `src/fisch.html` the `MILESTONES` array is the single
+Both wikis share one data shape: a `DB` of entries built by an `E()` helper, with sidebar
+counts, category indexes, search, prev/next and "see also" all derived from it. The Fisch
+site renders that data to static HTML at build time; the Lineage Piece manual renders it in
+the browser with a hash router. In `src/data/fisch.js` the `MILESTONES` array is the single
 source of truth for both the roadmap checklist and the path planner.
 
 To add a page, call the `E()` helper with a category, id, name and an object holding its

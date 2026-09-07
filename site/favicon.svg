@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Lineage Piece Field Manual">
+  <rect width="64" height="64" rx="13" fill="#0b191c"/>
+  <path d="M32 9 L37 27 L32 55 L27 27 Z" fill="#e2ac41"/>
+  <path d="M18 27 h28 v5 H18 z" fill="#e2ac41"/>
+  <circle cx="32" cy="29.5" r="3.4" fill="#0b191c"/>
+</svg>

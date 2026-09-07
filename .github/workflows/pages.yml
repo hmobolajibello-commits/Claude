@@ -33,11 +33,11 @@ jobs:
           SITE_URL: ${{ steps.pages.outputs.base_url }}/
         run: ./build.sh
 
-      - name: Check the committed index.html is up to date
+      - name: Check the committed site/ is up to date
         run: |
-          if ! git diff --quiet -- index.html; then
-            echo "::notice::index.html differs from the committed copy (expected: the canonical URL is host-specific)."
-            git diff --stat -- index.html
+          if ! git diff --quiet -- site lineage-piece.html; then
+            echo "::notice::The generated pages differ from the committed copies (expected: canonical and sitemap URLs are host-specific)."
+            git diff --stat -- site lineage-piece.html
           fi
 
       - uses: actions/upload-pages-artifact@v3
