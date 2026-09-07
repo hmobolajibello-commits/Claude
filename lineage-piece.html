@@ -7,16 +7,14 @@
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#e7ecec" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#081215" media="(prefers-color-scheme: dark)">
-<link rel="canonical" href="https://hmobolajibello-commits.github.io/Claude/">
+<link rel="canonical" href="https://hmobolajibello-commits.github.io/Claude/lineage-piece/">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Lineage Piece Field Manual">
 <meta property="og:title" content="Lineage Piece Field Manual">
 <meta property="og:description" content="An unofficial Lineage Piece wiki: 164 pages covering every island, boss, NPC, devil fruit, race, weapon, fighting style, key and system, plus reroll-odds and build-planning tools.">
-<meta property="og:url" content="https://hmobolajibello-commits.github.io/Claude/">
+<meta property="og:url" content="https://hmobolajibello-commits.github.io/Claude/lineage-piece/">
 <meta property="og:image" content="https://hmobolajibello-commits.github.io/Claude/og.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Lineage Piece Field Manual">
 <meta name="twitter:description" content="An unofficial Lineage Piece wiki: 164 pages covering every island, boss, NPC, devil fruit, race, weapon, fighting style, key and system, plus reroll-odds and build-planning tools.">
@@ -740,6 +738,12 @@ const strip = h => String(h).replace(/<[^>]+>/g, "").replace(/&[a-z]+;/g, " ");
 const commas = n => n.toLocaleString("en-US");
 const count = t => DB.filter(e => e.type === t).length;
 
+/* This page is deployed at both /lineage-piece.html and /lineage-piece/, so the path
+   back to the site root depends on which one the visitor landed on. */
+function siblingHref() {
+  return /\/lineage-piece\/(index\.html)?$/.test(location.pathname) ? "../" : "index.html";
+}
+
 /* link resolution: entries, category indexes, guides and tools all addressable by id */
 function link(id) {
   if (BY[id]) return ['#/e/' + id, BY[id].name];
@@ -782,6 +786,7 @@ function home() {
        ["Damage channels","Strength, Weapon, Power"],["Rarest fruit roll","Light, 2%"],["Mythical race bucket","0.25%, shared by six races"],
        ["Simulated Sea","5 sea levels, 13 rooms, 39 cards"]].map(r => "<tr><td><strong>" + r[0] + "</strong></td><td>" + r[1] + "</td></tr>").join("")
     + "</tbody></table></div>"
+    + '<p class="note">Sister wiki, and the main page of this site: <a href="' + siblingHref() + '">the Fisch Field Guide</a> &mdash; a Fisch database with a beginner&#8217;s guide and a planner that reads your level, rod and C$ and tells you what to do next.</p>'
     + '<div class="warnbox"><strong>On accuracy:</strong> Lineage Piece has no official public database &mdash; the developer posts to a Trello and Discord and everything else is community-maintained. Figures the sources disagree on are marked <span class="flag" title="Like this">like this</span> and listed in full on the <a href="#/g/sources">Accuracy &amp; sources</a> page.</div></div>';
 }
 

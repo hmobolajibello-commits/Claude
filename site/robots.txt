@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://hmobolajibello-commits.github.io/Claude/sitemap.xml

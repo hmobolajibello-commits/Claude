@@ -1,20 +1,30 @@
 #!/usr/bin/env bash
-# Builds the website from src/guide.html.
+# Builds the website.
 #
-# Dependencies: bash, awk, head, tail, cat, printf. No Python, no Node, no
-# package install — so it runs on any host build image without configuration.
+# Two wikis live in this repo:
 #
-# src/guide.html is an Artifact-shaped fragment (no <html>/<head>/<body>), so the
-# same source publishes both as a Claude Artifact and as this site. This script
-# wraps it into a document, adds the site metadata, and assembles _site/.
+#   src/data/*.js + tools/build-site.js  ->  site/        the Fisch Field Guide,
+#                                                         a real multi-page site:
+#                                                         one HTML file per page
+#   src/guide.html                       ->  lineage-piece.html
+#                                                         the Lineage Piece Field
+#                                                         Manual, still a single-file
+#                                                         app (and a Claude Artifact)
 #
 # Outputs:
-#   index.html   standalone page, committed so the repo root can be served as-is
-#   _site/       the deploy directory (index.html + assets + generated robots/sitemap)
+#   site/                generated Fisch site, committed — a host can publish this
+#                        directory directly with no build command at all
+#   lineage-piece.html   generated single-file page, committed
+#   _site/               the deploy directory: site/ at the root, plus a pretty
+#                        /lineage-piece/ URL and host-specific robots + sitemap
 #
-# The canonical and social-card URLs come from SITE_URL, auto-detected on the
-# common hosts. Override it for anything else:
-#   SITE_URL=https://lineagepiece.example/ bash build.sh
+# Dependencies: bash and Node 14.14 or newer (no npm install, no packages).
+# Node ships in the build image of every static host this is aimed at. If a host
+# has none, point it at the committed site/ directory with an empty build command.
+#
+# The canonical and sitemap URLs come from SITE_URL, auto-detected on the common
+# hosts. Override it for anything else:
+#   SITE_URL=https://example.com/ bash build.sh
 set -eu
 cd "$(dirname "$0")"
 
@@ -30,38 +40,36 @@ if [ -z "${SITE_URL:-}" ]; then
   fi
 fi
 
-DESC="An unofficial Lineage Piece wiki: 164 pages covering every island, boss, NPC, devil fruit, race, weapon, fighting style, key and system, plus reroll-odds and build-planning tools."
-
-# The fragment's <title>/<link>/<style> block belongs in <head>; everything after
-# the stylesheet is the <body>.
-SPLIT=$(awk '/<\/style>/{print NR; exit}' src/guide.html)
-if [ -z "${SPLIT:-}" ]; then
+# ── the Lineage Piece manual: one fragment wrapped into a document ──────────
+# src/guide.html is Artifact-shaped (no <html>/<head>/<body>), so the same file
+# publishes both as a Claude Artifact and as this page. Its <title>/<link>/<style>
+# block belongs in <head>; everything after the stylesheet is the <body>.
+LP_DESC="An unofficial Lineage Piece wiki: 164 pages covering every island, boss, NPC, devil fruit, race, weapon, fighting style, key and system, plus reroll-odds and build-planning tools."
+split=$(awk '/<\/style>/{print NR; exit}' src/guide.html)
+if [ -z "${split:-}" ]; then
   echo "build.sh: no </style> found in src/guide.html — cannot split head from body" >&2
   exit 1
 fi
-
 {
   printf '<!doctype html>\n<html lang="en">\n<head>\n'
   cat <<META
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="$DESC">
+<meta name="description" content="$LP_DESC">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#e7ecec" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#081215" media="(prefers-color-scheme: dark)">
-<link rel="canonical" href="$SITE_URL">
+<link rel="canonical" href="${SITE_URL}lineage-piece/">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Lineage Piece Field Manual">
 <meta property="og:title" content="Lineage Piece Field Manual">
-<meta property="og:description" content="$DESC">
-<meta property="og:url" content="$SITE_URL">
+<meta property="og:description" content="$LP_DESC">
+<meta property="og:url" content="${SITE_URL}lineage-piece/">
 <meta property="og:image" content="${SITE_URL}og.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Lineage Piece Field Manual">
-<meta name="twitter:description" content="$DESC">
+<meta name="twitter:description" content="$LP_DESC">
 <meta name="twitter:image" content="${SITE_URL}og.png">
 <style>
 :root{color-scheme:light dark}
@@ -69,27 +77,28 @@ img{max-width:100%}
 [hidden]{display:none!important}
 </style>
 META
-  head -n "$SPLIT" src/guide.html
+  head -n "$split" src/guide.html
   printf '</head>\n<body>\n'
-  tail -n +"$((SPLIT + 1))" src/guide.html
+  tail -n +"$((split + 1))" src/guide.html
   printf '\n</body>\n</html>\n'
-} > index.html
+} > lineage-piece.html
 
+# ── the Fisch site: one HTML file per page, generated from src/data ─────────
+# Runs after the manual, because the generator copies lineage-piece.html into
+# site/ so the committed directory is self-sufficient.
+SITE_URL="$SITE_URL" node tools/build-site.js site
+
+# ── assemble the deploy directory ──────────────────────────────────────────
 rm -rf _site
-mkdir -p _site
-cp index.html _site/index.html
+cp -R site _site
+mkdir -p _site/lineage-piece
+cp lineage-piece.html _site/lineage-piece/index.html
+# the manual's <link rel="icon"> is relative, so the pretty URL needs its own copy
+cp favicon.svg _site/lineage-piece/favicon.svg
 for asset in favicon.svg og.png _headers; do
   if [ -f "$asset" ]; then cp "$asset" "_site/$asset"; fi
 done
 : > _site/.nojekyll
 
-# robots and sitemap carry the real host, so they are generated per deploy
-printf 'User-agent: *\nAllow: /\nSitemap: %ssitemap.xml\n' "$SITE_URL" > _site/robots.txt
-{
-  printf '<?xml version="1.0" encoding="UTF-8"?>\n'
-  printf '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-  printf '  <url>\n    <loc>%s</loc>\n    <changefreq>monthly</changefreq>\n    <priority>1.0</priority>\n  </url>\n' "$SITE_URL"
-  printf '</urlset>\n'
-} > _site/sitemap.xml
-
-printf 'built index.html and _site/ for %s\n' "$SITE_URL"
+printf 'built site/ (%s pages) + lineage-piece.html, assembled _site/ for %s\n' \
+  "$(find site -name '*.html' | wc -l | tr -d ' ')" "$SITE_URL"

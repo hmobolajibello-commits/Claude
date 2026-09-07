@@ -1,0 +1,1124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="An unofficial Lineage Piece wiki: 164 pages covering every island, boss, NPC, devil fruit, race, weapon, fighting style, key and system, plus reroll-odds and build-planning tools.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#e7ecec" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#081215" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://hmobolajibello-commits.github.io/Claude/lineage-piece/">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Lineage Piece Field Manual">
+<meta property="og:title" content="Lineage Piece Field Manual">
+<meta property="og:description" content="An unofficial Lineage Piece wiki: 164 pages covering every island, boss, NPC, devil fruit, race, weapon, fighting style, key and system, plus reroll-odds and build-planning tools.">
+<meta property="og:url" content="https://hmobolajibello-commits.github.io/Claude/lineage-piece/">
+<meta property="og:image" content="https://hmobolajibello-commits.github.io/Claude/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lineage Piece Field Manual">
+<meta name="twitter:description" content="An unofficial Lineage Piece wiki: 164 pages covering every island, boss, NPC, devil fruit, race, weapon, fighting style, key and system, plus reroll-odds and build-planning tools.">
+<meta name="twitter:image" content="https://hmobolajibello-commits.github.io/Claude/og.png">
+<style>
+:root{color-scheme:light dark}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+<title>Lineage Piece Field Manual</title>
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chivo:ital,wght@0,400;0,500;0,700;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap">
+
+<style>
+:root{
+  --ground:#e7ecec; --surface:#f9fbfa; --sunk:#dfe5e5; --raise:#ffffff; --stripe:#f2f5f4;
+  --ink:#0b191c; --ink2:#33474b; --muted:#687f84; --line:#c4cfcf; --line2:#d9e0e0;
+  --gold:#9c650a; --gold-soft:#f2e6c8; --teal:#0c6b74; --teal-soft:#dceaeb;
+  --violet:#66399c; --good:#1c7346; --warn:#8d5c0c; --bad:#9d2f28;
+  --r-common:#68797d; --r-uncommon:#2f7a4b; --r-rare:#1f66a8; --r-epic:#6b3aa0;
+  --r-legendary:#9c650a; --r-mythical:#a8206b; --r-exclusive:#a83c14;
+  --sans:"Chivo","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --disp:"Big Shoulders Display","Big Shoulders","Oswald","Arial Narrow",Impact,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#081215; --surface:#0e1c20; --sunk:#0b171a; --raise:#132328; --stripe:#101f23;
+  --ink:#e9f1f0; --ink2:#b6c7c8; --muted:#7f979c; --line:#23383e; --line2:#1a2c31;
+  --gold:#e2ac41; --gold-soft:#332809; --teal:#54c6cc; --teal-soft:#0c2c30;
+  --violet:#c197ff; --good:#4fcd91; --warn:#e9b352; --bad:#ff7d6d;
+  --r-common:#8ba1a6; --r-uncommon:#5cc98a; --r-rare:#5aa9ee; --r-epic:#bb92ff;
+  --r-legendary:#e2ac41; --r-mythical:#ff5fae; --r-exclusive:#ff8a52;
+}}
+:root[data-theme="dark"]{
+  --ground:#081215; --surface:#0e1c20; --sunk:#0b171a; --raise:#132328; --stripe:#101f23;
+  --ink:#e9f1f0; --ink2:#b6c7c8; --muted:#7f979c; --line:#23383e; --line2:#1a2c31;
+  --gold:#e2ac41; --gold-soft:#332809; --teal:#54c6cc; --teal-soft:#0c2c30;
+  --violet:#c197ff; --good:#4fcd91; --warn:#e9b352; --bad:#ff7d6d;
+  --r-common:#8ba1a6; --r-uncommon:#5cc98a; --r-rare:#5aa9ee; --r-epic:#bb92ff;
+  --r-legendary:#e2ac41; --r-mythical:#ff5fae; --r-exclusive:#ff8a52;
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.62;-webkit-font-smoothing:antialiased}
+a{color:var(--teal);text-decoration:none}
+a:hover{text-decoration:underline}
+h1,h2,h3,h4{font-family:var(--disp);font-weight:800;line-height:1.05;margin:0;text-wrap:balance}
+p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+table{border-collapse:collapse;width:100%}
+
+/* ── top bar ─────────────────────── */
+.top{position:sticky;top:0;z-index:60;background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;padding:9px clamp(12px,2vw,22px)}
+.mark{display:flex;flex-direction:column;gap:0;flex:0 0 auto}
+.mark b{font-family:var(--disp);font-size:18px;font-weight:800;letter-spacing:-.01em;line-height:1;color:var(--ink)}
+.mark span{font-family:var(--mono);font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.mark:hover{text-decoration:none}
+.searchwrap{position:relative;flex:1 1 300px;max-width:520px}
+#search{width:100%;background:var(--raise);border:1px solid var(--line);border-radius:5px;padding:8px 11px;font:inherit;font-size:13.5px;color:var(--ink)}
+#search::placeholder{color:var(--muted)}
+.results{position:absolute;top:calc(100% + 5px);left:0;right:0;background:var(--raise);border:1px solid var(--line);border-radius:6px;box-shadow:0 18px 40px -18px rgba(0,0,0,.45);max-height:56vh;overflow-y:auto;z-index:80}
+.results button{display:flex;width:100%;gap:9px;align-items:baseline;text-align:left;background:none;border:0;border-bottom:1px solid var(--line2);padding:8px 11px;font-size:13px}
+.results button:last-child{border-bottom:0}
+.results button:hover,.results button.sel{background:var(--sunk)}
+.results .rn{flex:1;color:var(--ink)}
+.results .rt{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.results .none{padding:12px;color:var(--muted);font-size:13px}
+.topright{display:flex;gap:8px;align-items:center;margin-left:auto;flex:0 0 auto}
+.stamp{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:3px 9px;white-space:nowrap}
+.ghost{background:none;border:1px solid var(--line);border-radius:5px;padding:5px 9px;font-size:12px;color:var(--ink2);white-space:nowrap}
+.ghost:hover{border-color:var(--ink2);color:var(--ink)}
+
+/* ── frame ───────────────────────── */
+.frame{display:grid;grid-template-columns:216px minmax(0,1fr);max-width:1500px;margin:0 auto}
+.side{border-right:1px solid var(--line);background:var(--surface);padding:16px 0 50px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto}
+.sgroup{font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);padding:14px 18px 5px}
+.side a{display:flex;justify-content:space-between;gap:8px;align-items:baseline;padding:5px 18px;color:var(--ink2);font-size:13px;border-left:2px solid transparent}
+.side a:hover{background:var(--sunk);color:var(--ink);text-decoration:none}
+.side a.on{background:var(--sunk);color:var(--ink);border-left-color:var(--gold);font-weight:500}
+.side a em{font-family:var(--mono);font-size:10px;font-style:normal;color:var(--muted)}
+.view{padding:20px clamp(14px,2.6vw,40px) 90px;min-width:0}
+
+/* ── article + infobox ───────────── */
+.page{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:32px;align-items:start}
+.page.full{grid-template-columns:minmax(0,1fr)}
+.crumb{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:9px;display:flex;gap:7px;flex-wrap:wrap}
+.crumb a{color:var(--muted)}
+h1.pt{font-size:clamp(30px,4.2vw,44px);letter-spacing:-.015em;padding-bottom:9px;border-bottom:2px solid var(--ink)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px}
+.chip{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border-radius:99px;border:1px solid var(--line);color:var(--muted)}
+.chip.t{border-color:currentColor;font-weight:600}
+.lead{margin-top:16px;font-size:15.5px;color:var(--ink2);max-width:66ch}
+.lead strong{color:var(--ink)}
+h2.sh{font-size:21px;margin:26px 0 9px;padding-bottom:5px;border-bottom:1px solid var(--line)}
+.prose{color:var(--ink2);max-width:70ch}
+.prose p+p{margin-top:9px}
+.prose ul{margin:8px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:5px}
+.prose li::marker{color:var(--gold)}
+.prose strong{color:var(--ink)}
+.prose ol{margin:8px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:5px}
+
+.infobox{background:var(--surface);border:1px solid var(--line);border-radius:6px;overflow:hidden;position:sticky;top:62px}
+.ibhead{background:var(--gold-soft);border-bottom:1px solid var(--line);padding:9px 13px}
+.ibhead b{font-family:var(--disp);font-size:17px;font-weight:800;display:block;line-height:1.1;color:var(--ink)}
+.ibhead span{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+.ibrow{display:grid;grid-template-columns:88px 1fr;gap:10px;padding:7px 13px;border-bottom:1px solid var(--line2);font-size:12.5px}
+.ibrow:last-child{border-bottom:0}
+.ibrow dt{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-top:2px}
+.ibrow dd{margin:0;color:var(--ink2)}
+.ibrow dd b{color:var(--ink)}
+.seealso{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.seealso a{font-size:12.5px;border:1px solid var(--line);border-radius:99px;padding:3px 10px;color:var(--ink2);background:var(--surface)}
+.seealso a:hover{border-color:var(--gold);color:var(--gold);text-decoration:none}
+.pagefoot{margin-top:30px;padding-top:12px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+
+/* ── index tables ────────────────── */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--surface);margin-top:14px}
+thead th{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap;font-weight:400;background:var(--surface);position:relative;user-select:none}
+thead th.s{cursor:pointer}
+thead th.s:hover{color:var(--ink)}
+thead th.asc::after{content:" \2191";color:var(--gold)}
+thead th.desc::after{content:" \2193";color:var(--gold)}
+tbody td{padding:8px 12px;border-bottom:1px solid var(--line2);vertical-align:top;color:var(--ink2);font-size:13px}
+tbody tr:nth-child(even) td{background:var(--stripe)}
+tbody tr:hover td{background:var(--sunk)}
+tbody tr:last-child td{border-bottom:0}
+tbody a{color:var(--ink);font-weight:700}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px;align-items:center}
+.fbtn{background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:4px 11px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.fbtn.on{background:var(--ink);border-color:var(--ink);color:var(--ground)}
+.rar{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600}
+.tier{font-family:var(--disp);font-weight:800;font-size:14px;width:23px;height:23px;display:inline-grid;place-items:center;border-radius:4px;color:#fff}
+.t-S{background:var(--r-mythical)} .t-A{background:var(--r-legendary)} .t-B{background:var(--teal)} .t-C{background:var(--r-common)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.flag{border-bottom:1px dotted var(--warn);color:var(--warn);cursor:help}
+
+/* ── home ────────────────────────── */
+.hero{border-bottom:2px solid var(--ink);padding-bottom:20px}
+.hero h1{font-size:clamp(34px,5.4vw,60px);letter-spacing:-.02em}
+.hero h1 em{font-style:normal;color:var(--gold)}
+.hero p{margin-top:11px;max-width:64ch;color:var(--ink2);font-size:15.5px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(212px,1fr));gap:12px;margin-top:18px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:13px 15px;display:flex;flex-direction:column;gap:5px}
+.tile:hover{border-color:var(--gold);text-decoration:none}
+.tile b{font-family:var(--disp);font-size:18px;font-weight:800;color:var(--ink)}
+.tile span{font-size:12.5px;color:var(--ink2)}
+.tile em{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;font-style:normal;color:var(--gold)}
+.catgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:8px;margin-top:14px}
+.cat{background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:12px 14px;display:flex;flex-direction:column;gap:1px}
+.cat:hover{background:var(--sunk);border-color:var(--gold);text-decoration:none}
+.cat b{font-family:var(--disp);font-size:17px;font-weight:700;color:var(--ink)}
+.cat span{font-family:var(--mono);font-size:10px;color:var(--muted)}
+.warnbox{border-left:2px solid var(--warn);background:color-mix(in srgb,var(--warn) 9%,transparent);padding:11px 14px;border-radius:0 4px 4px 0;font-size:13px;color:var(--ink2);margin-top:16px}
+.note{font-size:12.5px;color:var(--muted);border-left:2px solid var(--line);padding-left:11px;margin-top:12px}
+
+/* ── guides + tools ──────────────── */
+.phase{background:var(--surface);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-top:12px}
+.phasehead{display:flex;gap:12px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line2);background:var(--sunk)}
+.phasehead h3{font-size:17px;flex:1}
+.phasehead .lv{font-family:var(--mono);font-size:10.5px;color:var(--gold)}
+.tasks{list-style:none;margin:0;padding:5px 7px}
+.task{display:flex;gap:9px;align-items:flex-start;padding:6px 8px;border-radius:4px;cursor:pointer;font-size:13px;color:var(--ink2)}
+.task:hover{background:var(--sunk)}
+.task input{margin:4px 0 0;accent-color:var(--gold);width:14px;height:14px;flex:0 0 auto}
+.task.done{color:var(--muted);text-decoration:line-through}
+.progline{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:11px 14px;margin-top:14px}
+.progtrack{flex:1 1 180px;height:8px;background:var(--sunk);border:1px solid var(--line);border-radius:99px;overflow:hidden}
+.progfill{height:100%;background:var(--gold);width:0;transition:width .25s}
+.tool{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:16px;display:grid;gap:14px;margin-top:14px}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:11px}
+.field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.field label{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+select,input[type=number]{background:var(--raise);border:1px solid var(--line);border-radius:5px;padding:7px 9px;font:inherit;font-size:13px;color:var(--ink);width:100%}
+input[type=range]{width:100%;accent-color:var(--gold)}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:5px;overflow:hidden}
+.ro{background:var(--raise);padding:10px 12px}
+.ro b{display:block;font-family:var(--disp);font-size:25px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.05}
+.ro small{font-family:var(--mono);font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.chartbox{border:1px solid var(--line2);border-radius:5px;background:var(--raise);padding:11px 7px 3px}
+.stackrow{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;font-size:13px;padding:7px 10px;background:var(--raise);border:1px solid var(--line2);border-radius:4px}
+.stackrow .amt{font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink)}
+.stackrow.total{background:var(--gold-soft);border-color:var(--gold)}
+.stackrow.total span{color:var(--ink);font-weight:700}
+.stack{display:flex;flex-direction:column;gap:6px}
+.codegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(206px,1fr));gap:10px;margin-top:14px}
+.code{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:9px 12px}
+.code .c{font-family:var(--mono);font-size:13.5px;font-weight:600;color:var(--ink);word-break:break-all}
+.code small{display:block;font-family:var(--sans);font-size:11.5px;color:var(--muted);font-weight:400}
+.copy{background:none;border:1px solid var(--line);border-radius:4px;padding:3px 8px;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);flex:0 0 auto}
+.copy:hover{border-color:var(--gold);color:var(--gold)}
+.copy.ok{border-color:var(--good);color:var(--good)}
+.srclist{columns:2 230px;column-gap:24px;font-size:12.5px;color:var(--ink2);padding-left:18px}
+.srclist li{margin-bottom:4px;break-inside:avoid}
+
+@media (max-width:1080px){.page{grid-template-columns:minmax(0,1fr)}.infobox{position:static;order:-1}}
+@media (max-width:860px){
+  .frame{grid-template-columns:1fr}
+  .side{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line);padding:10px 0}
+  .side a{display:inline-flex;border:1px solid var(--line);border-radius:99px;margin:2px;padding:4px 11px;border-left-width:1px}
+  .side a.on{border-color:var(--gold)}
+  .side a em{display:none}
+  .sgroup{padding:9px 14px 3px}
+  .top{flex-wrap:wrap}.stamp{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a class="mark" href="#/"><b>Lineage Piece</b><span>Field Manual</span></a>
+  <div class="searchwrap">
+    <input id="search" type="search" autocomplete="off" placeholder="Search 140 pages &mdash; fruits, races, bosses, keys, NPCs&hellip;  (press /)" aria-label="Search the wiki">
+    <div id="results" class="results" hidden></div>
+  </div>
+  <div class="topright">
+    <span class="stamp">Data: Frieren patch</span>
+    <button class="ghost" id="randbtn" type="button">Random page</button>
+    <button class="ghost" id="themebtn" type="button">Theme</button>
+  </div>
+</header>
+
+<div class="frame">
+  <nav class="side" id="side" aria-label="Categories"></nav>
+  <main class="view" id="view" tabindex="-1"></main>
+</div>
+
+<script>
+"use strict";
+/* ════════ Lineage Piece Field Manual — a client-side wiki ════════
+   Data compiled Sept 2026 (Frieren patch) from community wikis.
+   No official public database exists; disputed figures carry .flag marks.  */
+
+const DB = [];
+const E = (type, id, name, o) => { DB.push(Object.assign({type, id, name}, o)); };
+
+const CATS = {
+  island:   {n:"Islands",         g:"The world",  cols:["Island","Level band","Role"]},
+  boss:     {n:"Bosses",          g:"The world",  cols:["Boss","Location","Access","Why you go"]},
+  npc:      {n:"NPCs",            g:"The world",  cols:["NPC","Island","What they do"]},
+  fruit:    {n:"Devil fruits",    g:"Power",      cols:["Fruit","Tier","Roll chance","Notes"]},
+  race:     {n:"Races",           g:"Power",      cols:["Race","Rarity","Buffs","Best for"]},
+  trait:    {n:"Traits",          g:"Power",      cols:["Trait","Tier","Standing"]},
+  weapon:   {n:"Weapons",         g:"Power",      cols:["Weapon","Tier","Crafted at","Headline cost"]},
+  style:    {n:"Fighting styles", g:"Power",      cols:["Style","Source","Mastery gate"]},
+  haki:     {n:"Haki",            g:"Power",      cols:["Haki","Effect","Requirement"]},
+  accessory:{n:"Accessories",     g:"Power",      cols:["Accessory","Drop rate","Best for"]},
+  artifact: {n:"Artifact sets",   g:"Power",      cols:["Set","2-piece","4-piece","Channel"]},
+  item:     {n:"Items &amp; keys",g:"Database",   cols:["Item","Kind","Source","Used for"]},
+  mechanic: {n:"Systems",         g:"Database",   cols:["System","In one line"]}
+};
+
+/* ─────────────────────────── ISLANDS ─────────────────────────── */
+E("island","dawnwind","Dawnwind Village",{t:["1&ndash;25 <span class=\"flag\" title=\"A second widely-circulated scale reads 0&ndash;250\">/ 0&ndash;250</span>","Starter hub"],
+ info:[["Level band","1&ndash;25, or 0&ndash;250 depending on the guide"],["Role","Spawn point"],["Key NPCs","Weapon merchant, quest giver, teleporter, Cid"],["Notable drop","Cid&#8217;s Key (0.5% from bandits)"]],
+ lead:"Every account starts here. The village holds the three NPCs you need in the first ten minutes &mdash; a weapon merchant, a quest giver and the teleporter that makes the rest of the map reachable.",
+ sec:[["What to do here","<ul><li>Clear <strong>every</strong> quest. Quests carry a +20% EXP bonus and beat mob grinding outright.</li><li>Redeem codes from the Settings icon once you&#8217;ve joined the Roblox group.</li><li>Decide your damage channel now &mdash; Weapon, Strength or Power.</li><li>Come back later for Cid&#8217;s quest: bandits then drop Cid&#8217;s Key at 0.5%.</li></ul>"]],
+ see:["deeproot","quests","stats","cids-key"]});
+E("island","deeproot","Deeproot Jungle",{t:["25&ndash;75 / 251&ndash;600","First upgrade + Obs. Haki"],
+ info:[["Level band","25&ndash;75, or 251&ndash;600"],["Role","First weapon upgrade"],["Key NPCs","Obs. Haki NPC"],["Collectible","Blue Spider Lily spawn"],["Torch","1 of 5 Observation torches"]],
+ lead:"The first real step up in enemy damage, and the island the whole Observation Haki questline is anchored to. Start that quest on your first visit even though you&#8217;ll finish it a thousand levels later.",
+ sec:[["What to do here","<ul><li>Buy the first weapon upgrade &mdash; the starter weapon stops scaling fast.</li><li>Talk to the <strong>Obs. Haki NPC</strong> to open the questline; torches stay inert until you do.</li><li>Pick up Blue Spider Lilies if you&#8217;re chasing the Demon race.</li></ul>"]],
+ see:["observation","frostborn","blue-spider-lily"]});
+E("island","frostborn","Frostborn Island",{t:["75&ndash;150 / 601&ndash;1000","Difficulty spike, key farm"],
+ info:[["Level band","75&ndash;150, or 601&ndash;1000"],["Role","Mid-game swords, Shrine Key"],["Key NPCs","Solemn Lament seller, Angela Shop, Yi Sang, Yoru Seller"],["Notable drop","Shrine Key &mdash; 1% from Snow Bandit"],["Torch","1 of 5"]],
+ lead:"The island where players who skipped upgrades get stopped. It is also the densest NPC cluster outside the endgame hubs, and the only source of the Shrine Key.",
+ sec:[["What to do here","<ul><li>Farm <strong>Snow Bandits</strong> for the Shrine Key &mdash; 1%, and it gates the Plane of Euthymia.</li><li>Buy from the <strong>Yoru Seller</strong> for mid-game sword progression.</li><li>Note the <strong>Solemn Lament</strong> seller for much later &mdash; the recipe is a 30M-coin project.</li><li>Angela sells the Butterfly Grave Key for 35 butterflies.</li></ul>"]],
+ see:["shrine-key","solemn-lament","snow-bandit","angela"]});
+E("island","scorched-ruins","Scorched Ruins",{t:["~800&ndash;1800","Weapon + artifact bridge"],
+ info:[["Level band","Roughly 800&ndash;1800 in later guides"],["Role","Bridges into late-game DPS"],["Key NPCs","Sung Jin Woo (dagger crafter)"],["Collectible","Orihime&#8217;s Reiatsu &mdash; 1 of 5"],["Torch","1 of 5"]],
+ lead:"Where your weapon stops being a placeholder. The Sung Jin Woo NPC here crafts the Player&#8217;s Dagger, which is both a real mid-game weapon and a required ingredient for Solemn Lament.",
+ sec:[["What to do here","<ul><li>Craft the <strong>Player&#8217;s Dagger</strong> and keep it &mdash; Solemn Lament consumes it later.</li><li>Collect an Orihime&#8217;s Reiatsu if you&#8217;re on the Ulquiorra path.</li><li>Light the Scorched Ruins torch for Observation Haki.</li></ul>"]],
+ see:["players-dagger","sung-jin-woo-npc","orihime-reiatsu"]});
+E("island","legends-arena","Legend&#8217;s Arena",{t:["~250 onward; hub from 1200","Boss farming hub"],
+ info:[["Level band","From ~250; the endgame boss hub past 1200"],["Role","Boss farm, crafting"],["Key NPCs","Saber, Boss Summoner, Gilgamesh Craft NPC"],["Bosses","Deku, Saber, Gilgamesh, Mihawk, Shank"],["Torch","1 of 5"]],
+ lead:"The hub you return to more than any other. Summonable bosses on tap, the Excalibur Morgan crafter, and the cheapest place to grind out a 40-boss quest counter.",
+ sec:[["What to do here","<ul><li>Summon <strong>Deku</strong> at the pillar with Summon Cores &mdash; the fastest 40-boss count for Observation Haki.</li><li>Farm <strong>Saber</strong> for Sword Technique Book (1%), Avalon (5%) and Goblets (15%).</li><li>Craft <strong>Excalibur Morgan</strong> at the Saber NPC.</li><li>Gilgamesh Craft NPC wants Golden Dust from mob drops.</li></ul>"]],
+ see:["excalibur-morgan","deku","saber","boss-summoner"]});
+E("island","jujutsu-high","Jujutsu High School",{t:["~400, or 1000&ndash;1500","Sukuna &amp; Curse Orbs"],
+ info:[["Level band","~400 in one guide, 1000&ndash;1500 in another"],["Role","JJK content"],["Key NPCs","Cursed Orb NPC"],["Boss","Sukuna &mdash; 4.75M HP"],["Collectible","Orihime&#8217;s Reiatsu &mdash; 1 of 5"]],
+ lead:"Jujutsu Kaisen block. Sukuna is the wall here at 4.75M HP, and the Cursed Orb quest is the gate on the island&#8217;s better rewards.",
+ sec:[["What to do here","<ul><li>Farm Sukuna for <strong>15&times; Cursed Shard</strong> and <strong>20&times; Sukuna&#8217;s Finger</strong> &mdash; the Sukuna style materials.</li><li>Yuji&#8217;s Collar drops here at a generous 20%.</li><li>Start the Cursed Orb quest at its NPC.</li></ul>"]],
+ see:["sukuna-style","sukuna","curse-orb"]});
+E("island","hueco-mundo","Hueco Mundo",{t:["1000+","Bleach block"],
+ info:[["Level band","Opens content at 1000+"],["Role","Bleach questlines"],["Key NPCs","Bleach Summoner, Tensa Zangetsu NPC, Aizen NPC, Vasto Lorde NPC, Inner Hueco Mundo NPC"],["Bosses","Aizen, Ichigo [Bankai], Ulquiorra, Vasto Lorde"],["Portal","Inner Hueco Mundo"]],
+ lead:"The longest single block of content in the game. Its main domed building holds the portal to Inner Hueco Mundo, with the Vasto Lorde and Inner Hueco Mundo NPCs flanking the entrance and Aizen&#8217;s NPC nearby.",
+ sec:[["What to do here","<ul><li>Run the <strong>Tensa Zangetsu</strong> questline: get Zangetsu, kill Ichigo [Bankai] 50&times;, loot a 0.1% Hollow Mask.</li><li>Clear <strong>50 Hollows</strong> so the Bleach Summoner will spawn Aizen.</li><li>Chase True Shinigami if Aizen mastery is the goal.</li></ul>"]],
+ see:["tensa-zangetsu","aizen","true-shinigami","bleach-summoner"]});
+E("island","fossil-island","Fossil Island",{t:["Endgame","Cartenon Keys, Demon race"],
+ info:[["Level band","Endgame"],["Role","Key farm + Demon race hand-in"],["Key NPCs","Muzan"],["Boss","Sung Jinwoo &mdash; 3M+ HP"],["Notable drop","Cartenon Key &mdash; 60%"],["Torch","1 of 5"]],
+ lead:"The most efficient key farm in the game: Sung Jinwoo drops the Cartenon Key at 60%, which is generous by this game&#8217;s standards. It is also where the Demon race is handed in.",
+ sec:[["What to do here","<ul><li>Farm Sung Jinwoo for <strong>Cartenon Keys</strong> and dagger materials.</li><li>Hand <strong>10&times; Blue Spider Lily</strong> to the <strong>Muzan NPC</strong> for the Demon race.</li><li>Light the Fossil Island torch.</li></ul>"]],
+ see:["cartenon-key","demon","muzan","sung-jinwoo"]});
+E("island","monument-isle","Monument Isle",{t:["Endgame","Skill tree + exchange"],
+ info:[["Level band","Endgame"],["Role","Skill tree terminal, trades"],["Key NPCs","Skill tree terminal, Tower Exchange"],["Currency","Bytes"],["Collectible","Orihime&#8217;s Reiatsu &mdash; 1 of 5"]],
+ lead:"Administrative island. The skill tree lives here, spending Bytes from Simulated Sea, and the Tower Exchange trades Shrine Key and Excalibur materials.",
+ see:["skill-tree","simulated-sea","tower-exchange"]});
+E("island","lineage-town","Lineage Town",{t:["Endgame","All rerolls"],
+ info:[["Level band","Endgame hub"],["Role","Reroll hub"],["Key NPCs","Coin fruit dealer, Gem fruit dealer, Trait reroller"],["Costs","25,000 coins or 250 gems per fruit roll"],["Collectible","Blue Spider Lily spawn"]],
+ lead:"Two fruit gacha vendors &mdash; one on coins, one on gems &mdash; plus the trait reroller. You will come back here every time you bank currency, which is why the odds tool exists.",
+ see:["rerolls","light","traits-index","odds"]});
+E("island","shinjuku","Shinjuku Showdown",{t:["Endgame","Mastery NPCs"],
+ info:[["Level band","Endgame"],["Role","Style mastery"],["Key NPCs","Limitless Scroll NPC, Shrine Scroll NPC"],["Race gate","Enlightened, for Gojo [Shinjuku]"],["Collectible","Orihime&#8217;s Reiatsu &mdash; 1 of 5"]],
+ lead:"Where fighting styles finish. The Limitless and Shrine scroll NPCs sell the mastery steps, and the Enlightened race is what the Shinjuku Gojo style is gated behind.",
+ see:["gojo-shinjuku","enlightened","mastery"]});
+E("island","euthymia","Plane of Euthymia",{t:["Endgame portal","Raiden Ei"],
+ info:[["Access","Shrine Key &rarr; portal"],["Boss","Raiden Ei"],["Reward","Raiden Shogun"],["Mastery","10 clears on Hard or Extreme"]],
+ lead:"A portal dungeon rather than an island. The Shrine Key opens it, Raiden Ei holds it, and the Raiden Shogun weapon plus its mastery come out of it.",
+ see:["raiden-shogun","raiden-ei","shrine-key"]});
+E("island","cartenon","Cartenon Temple",{t:["Endgame portal","Shadow Monarch"],
+ info:[["Access","Cartenon Key &rarr; portal &rarr; Wave 2"],["Boss","Shadow Monarch"],["Reward","Shadow style and weapon materials"],["Key source","Sung Jinwoo, 60%"]],
+ lead:"Wave-based portal dungeon. You push to Wave 2 to reach the Shadow Monarch, and the 60% key drop makes it one of the few repeatable endgame farms that isn&#8217;t gated behind a 1% roll.",
+ see:["shadow-monarch","cartenon-key","shadow"]});
+
+/* ─────────────────────────── NPCs ─────────────────────────── */
+const NPCS = [
+ ["quest-giver","Quest giver","dawnwind","Dawnwind Village","Hands out the starter quest chain &mdash; the +20% EXP route through the early game."],
+ ["weapon-merchant","Weapon merchant","dawnwind","Dawnwind Village","Sells the first weapons. Cheap, and outgrown by Deeproot Jungle."],
+ ["teleporter","Teleporter","dawnwind","Dawnwind Village","Unlocks fast travel between islands. Talk to it before you walk anywhere twice."],
+ ["cid","Cid","dawnwind","Dawnwind Village","His quest makes village bandits drop Cid&#8217;s Key at 0.5%."],
+ ["obs-haki-npc","Obs. Haki NPC","deeproot","Deeproot Jungle","Opens and closes the Observation Haki questline. Torches stay inert until you talk to it."],
+ ["yoru-seller","Yoru Seller","frostborn","Frostborn Island","Mid-game sword progression &mdash; the upgrade between starter gear and crafted legendaries."],
+ ["angela","Angela Shop","frostborn","Frostborn Island","Sells the Butterfly Grave Key for 35 butterflies, among other stock."],
+ ["yi-sang","Yi Sang","frostborn","Frostborn Island","Sits in the Angela Shop area; part of the island&#8217;s trade cluster."],
+ ["solemn-seller","Solemn Lament seller","frostborn","Frostborn Island","Takes the full Solemn Lament hand-in, including your Player&#8217;s Dagger."],
+ ["butterfly-shop","Butterfly Shop","frostborn","Frostborn Island","Crafts Fusion Cores, which the Solemn Lament recipe needs 5 of."],
+ ["sung-jin-woo-npc","Sung Jin Woo (crafter)","scorched-ruins","Scorched Ruins","Crafts the Player&#8217;s Dagger from System Cores, Venom Fang and Knight Killer."],
+ ["saber-npc","Saber (crafter)","legends-arena","Legend&#8217;s Arena","Crafts Excalibur Morgan from Avalon, Goblets and a Sword Technique Book."],
+ ["boss-summoner","Boss Summoner","legends-arena","Legend&#8217;s Arena","Spends Summon Cores to spawn Deku and Saber on demand &mdash; the boss-farm tap."],
+ ["gilgamesh-craft","Gilgamesh Craft NPC","legends-arena","Legend&#8217;s Arena","Wants Golden Dust from mob drops for the Gilgamesh chain."],
+ ["cursed-orb-npc","Cursed Orb NPC","jujutsu-high","Jujutsu High School","Starts the Cursed Orb quest."],
+ ["bleach-summoner","Bleach Summoner","hueco-mundo","Hueco Mundo","Spawns Aizen once you have cleared 50 Hollows."],
+ ["tensa-npc","Tensa Zangetsu NPC","hueco-mundo","Hueco Mundo","Two-stage questline: obtain Zangetsu, then 50 Ichigo [Bankai] kills."],
+ ["aizen-npc","Aizen NPC","hueco-mundo","Hueco Mundo","Sits near the main domed building; handles the Aizen style and its mastery."],
+ ["vasto-npc","Vasto Lorde NPC","hueco-mundo","Hueco Mundo","Right of the Inner Hueco Mundo portal entrance. Shun Shun Rikka&#8217;s Trace feeds this line."],
+ ["inner-hm-npc","Inner Hueco Mundo NPC","hueco-mundo","Hueco Mundo","Left of the portal entrance; gates entry to Inner Hueco Mundo."],
+ ["muzan","Muzan","fossil-island","Fossil Island","Trades the Demon race for 10&times; Blue Spider Lily."],
+ ["tower-exchange","Tower Exchange","monument-isle","Monument Isle","Trades Tower Shards and Shrine Key / Excalibur materials."],
+ ["skill-terminal","Skill tree terminal","monument-isle","Monument Isle","Spends Bytes on permanent stat nodes."],
+ ["coin-dealer","Coin fruit dealer","lineage-town","Lineage Town","Fruit gacha on coins &mdash; about 25,000 per roll."],
+ ["gem-dealer","Gem fruit dealer","lineage-town","Lineage Town","Fruit gacha on gems &mdash; about 250 per roll."],
+ ["trait-reroller","Trait reroller","lineage-town","Lineage Town","Consumes Trait Reroll items, not currency."],
+ ["limitless-npc","Limitless Scroll NPC","shinjuku","Shinjuku Showdown","Sells the Limitless Scroll steps for Gojo [Shinjuku] mastery."],
+ ["shrine-scroll-npc","Shrine Scroll NPC","shinjuku","Shinjuku Showdown","The other half of the Shinjuku mastery pair."]
+];
+NPCS.forEach(n => E("npc", n[0], n[1], {t:['<a href="#/e/'+n[2]+'">'+n[3]+"</a>", n[4]],
+  info:[["Island",n[3]],["Kind","NPC"]], lead:n[4], see:[n[2]]}));
+
+/* ─────────────────────────── DEVIL FRUITS ─────────────────────────── */
+const bar = (v, max, col) => '<span class="num" style="display:inline-flex;align-items:center;gap:7px"><i style="display:block;height:6px;border-radius:2px;width:'+Math.max(2,v/max*70).toFixed(0)+'px;background:'+col+'"></i>'+v+"%</span>";
+[["light","Light","S",2,"var(--r-mythical)","The only fruit with flight. Damage and AoE match or beat everything else, and in a 13-island game the travel speed is worth as much as the numbers.","legendary"],
+ ["quake","Quake","A",10,"var(--r-legendary)","Heavy shockwave AoE and the realistic stopping point for most players. A fine place to stop rerolling.","epic"],
+ ["flame","Flame","B",24,"var(--r-common)","Straightforward fire kit that lands easily. Clears islands without complaint; outscaled late.","rare"],
+ ["bomb","Bomb","C",61,"var(--r-common)","Where six of ten rolls land. Functional early, outclassed by everything by mid-game.","common"]]
+.forEach(f => E("fruit", f[0], f[1], {tier:f[2], rar:f[6], t:['<span class="tier t-'+f[2]+'">'+f[2]+"</span>", bar(f[3],61,f[4]), f[5]],
+  info:[["Roll chance","<b>"+f[3]+"%</b>"],["Tier",f[2]],["Reroll cost","250 gems or 25,000 coins"],["Rerolled at","Lineage Town"]],
+  lead:f[5],
+  sec:[["Rolling for it","<p>Fruit rolls are independent events, so a dry streak never improves your next roll. At "+f[3]+"%, the coin-toss point is <strong>"+Math.ceil(Math.log(0.5)/Math.log(1-f[3]/100))+" rolls</strong> &mdash; half of players have it by then, half don&#8217;t. Reaching 95% confidence takes "+Math.ceil(Math.log(0.05)/Math.log(1-f[3]/100))+".</p><p>Published rates for the four fruits total 97%, not 100%, so either the figures are rounded or there is an undocumented pool.</p>"]],
+  see:["rerolls","lineage-town","odds","power-channel"]}));
+
+/* ─────────────────────────── RACES ─────────────────────────── */
+[["human","Human","common","No stat bonuses.","Nothing &mdash; it&#8217;s the default result.",{},"Where most rerolls land. Every other race on the list is an upgrade."],
+ ["true-shinigami","True Shinigami","legendary","+25% melee dmg &middot; +35% max HP &middot; +5% crit chance &middot; &minus;5% cooldown","Melee, and required for Aizen mastery",{melee:25,hp:35},"The best race you can realistically roll rather than earn, and the gate on Aizen mastery."],
+ ["demi-god","Demi God","mythical","+25% melee dmg &middot; &minus;7.5% cooldown &middot; +5% Gilgamesh dmg","Melee styles; required for Gilgamesh mastery",{melee:25,cd:-7.5},"One of six races sharing the 0.25% Mythical bucket. The Gilgamesh mastery chain requires it outright."],
+ ["quincy","Quincy","mythical","+22.5% melee dmg &middot; &minus;5% cooldown &middot; +10% crit dmg &middot; +5% Yhwach dmg","Melee with a crit lean",{melee:22.5,cd:-5},"Melee numbers a shade under Demi God, with crit damage instead of the cooldown edge."],
+ ["archon","Archon","mythical","Weapon-leaning buffs; exact figures unpublished","Weapon builds &mdash; the tier lists&#8217; sword pick",{},"Named as the top weapon-build race, but no community source publishes its numbers. Treat the ranking as sound and the magnitude as unknown."],
+ ["mythic-others","Player &middot; Curse &middot; Eminence","mythical","Buffs vary and are inconsistently documented","Situational",{},"The rest of the Mythical bucket. They share the same 0.25% roll as Demi God, Quincy and Archon, so you are rolling for <em>any</em> mythical and then hoping it matches your channel."],
+ ["enlightened","Enlightened","exclusive","+20% total dmg &middot; &minus;5% cooldown &middot; +5% crit chance &middot; +5% Gojo [Shinjuku] dmg","Everything &mdash; total damage ignores your channel",{all:20,cd:-5},"Not rolled &mdash; an item hand-in, which is exactly why it&#8217;s worth planning around. Total damage applies whatever you build, and it gates the Shinjuku Gojo style."],
+ ["demon","Demon","exclusive","+20% total dmg &middot; +12.5% crit dmg &middot; +3.5% lifesteal","Everything, plus sustain",{all:20},"Hand in <strong>10&times; Blue Spider Lily</strong> to the Muzan NPC on Fossil Island. Total damage plus lifesteal, and the gate on Kokushibo."]]
+.forEach(r => E("race", r[0], r[1], {rar:r[2], buff:r[5], t:['<span class="rar rar-'+r[2]+'">'+r[2]+"</span>", r[3], r[4]],
+  info:[["Rarity",'<span class="rar rar-'+r[2]+'">'+r[2]+"</span>"],["Buffs",r[3]],["Best for",r[4]],["Obtained",r[2]==="exclusive"?"Item hand-in":"Race reroll"]].concat(r[2]==="mythical"?[["Roll chance","0.25% shared bucket"]]:[]),
+  lead:r[6], see:["races-index","planner","rerolls"]}));
+
+/* ─────────────────────────── TRAITS ─────────────────────────── */
+[["ruler-of-death","The Ruler of Death","S","Consistently ranked first. One guide puts it at <span class=\"flag\" title=\"Single-source figure &mdash; treat as a ceiling, not a spec\">+120% damage</span>."],
+ ["flawless-human","The Flawless Human","S","The other top-of-list pick, and the one accounts realistically land on."],
+ ["disgraced-one","The Disgraced One","A","Best of the Mythic tier."],
+ ["time-breaker","Time Breaker","A","Mythic tier, close behind The Disgraced One."],
+ ["worlds-betrayer","World&#8217;s Betrayer","A","Viable Mythic. Take it and stop rerolling."],
+ ["adaptation-genius","Adaptation Genius","B","The best trait below Mythic rarity, and the highest realistic DPS gain for most accounts."]]
+.forEach(t => E("trait", t[0], t[1], {tier:t[2], t:['<span class="tier t-'+t[2]+'">'+t[2]+"</span>", t[3]],
+  info:[["Tier",t[2]],["Rerolled with","Trait Reroll item"],["Item source","Rare+ chests; low mob and boss chance"],["Rerolled at","Lineage Town"]],
+  lead:t[3], sec:[["A note on trait numbers","<p>Community sources agree on the <em>ranking</em> of traits and disagree on the percentages. Verify a magnitude in-game before you build a rotation around it.</p>"]],
+  see:["traits-index","chests","planner"]}));
+
+/* ─────────────────────────── WEAPONS ─────────────────────────── */
+[["excalibur-morgan","Excalibur Morgan","S","Saber &mdash; Legend&#8217;s Arena","Sword Technique Book, Avalon, 5&times; Goblets, 650K coins, 3.5K gems",
+  ["1&times; Sword Technique Book <span class=\"num\">(1% from Saber)</span>","1&times; Avalon <span class=\"num\">(5% from Saber)</span>","5&times; Goblets <span class=\"num\">(15% from Saber)</span>","650,000 coins","3,500 gems"],
+  "Top of every weapon tier list. Heavy skill damage, long reach, a smooth combo flow and strong scaling &mdash; and the range is the quiet advantage, letting you keep pressure without standing inside the boss."],
+ ["solemn-lament","Solemn Lament","S","Solemn Lament seller &mdash; Frostborn Island","Grief, Lament, 5&times; Fusion Cores, 100&times; Butterflies, 250&times; Boss&#8217;s Souls, 30M coins, 45K gems, your dagger",
+  ["1&times; Grief for the Dead","1&times; Lament for the Living","5&times; Fusion Cores <span class=\"num\">(Butterfly Shop)</span>","100&times; Soulweaver Butterflies","250&times; Boss&#8217;s Souls","30,000,000 coins","45,000 gems","1&times; Player&#8217;s Dagger <b>(consumed)</b>"],
+  "The consistency pick &mdash; extremely strong across PvE. The weapon isn&#8217;t the challenge; the recipe is. It eats a five-figure gem stack, thirty million coins and the Player&#8217;s Dagger you spent the mid-game building."],
+ ["players-dagger","Player&#8217;s Dagger","A","Sung Jin Woo &mdash; Scorched Ruins","Sword Technique Book, 5&times; System Cores, Venom Fang, Knight Killer, 1M coins, 7.5K gems",
+  ["1&times; Sword Technique Book","5&times; System Cores","1&times; Venom Fang","1&times; Knight Killer","1,000,000 coins","7,500 gems"],
+  "The mid-game weapon that carries you to the endgame, and a required ingredient for Solemn Lament. Build it even if you plan to replace it &mdash; especially if you plan to replace it."],
+ ["tensa-zangetsu","Tensa Zangetsu","A","Tensa Zangetsu NPC &mdash; Hueco Mundo","Zangetsu, 50&times; Ichigo [Bankai], Hollow Mask (0.1%), 600K coins, 2K gems",
+  ["Own Zangetsu (first quest)","Defeat Ichigo [Bankai] 50&times;","1&times; Hollow Mask <span class=\"num\">(0.1%)</span>","600,000 coins","2,000 gems","Mastery wants Shinigami race"],
+  "A questline rather than a shopping list. The 50 Bankai clears are just time; the 0.1% Hollow Mask is the actual wall, and it usually outlasts the kill requirement several times over."],
+ ["raiden-shogun","Raiden Shogun","A","Plane of Euthymia portal","Shrine Key, then 750M damage + 10 Hard/Extreme clears",
+  ["Shrine Key <span class=\"num\">(1% from Snow Bandit)</span>","Mastery: 750M damage dealt with it","Mastery: 10&times; Plane of Euthymia on Hard or Extreme"],
+  "Two stances &mdash; polearm for single target, sword for AoE. The weapon drops out of the portal; the mastery is the real project."],
+ ["shadow","Shadow","A","Cartenon Temple &mdash; Wave 2","Cartenon Key (60% from Sung Jinwoo)",
+  ["Cartenon Key <span class=\"num\">(60% from Sung Jinwoo)</span>","Push the temple to Wave 2","Shadow Monarch materials"],
+  "Comes out of the most repeatable endgame dungeon in the game, thanks to that 60% key. Ranked with the top styles in most lists."],
+ ["kokushibo","Kokushibo","A","Demon race + materials","Demon race (10&times; Blue Spider Lily) + patch-dependent materials",
+  ["Demon race &mdash; 10&times; Blue Spider Lily to Muzan","Materials vary by patch"],
+  "Gated behind an item hand-in race rather than a roll, which makes it plannable. Exact material lists shift between patches."],
+ ["miyabi","Miyabi","B","Absolute Dead End dungeon","Absolute Ether Key",
+  ["Absolute Ether Key opens Absolute Dead End","Miyabi&#8217;s Outfit drops at ~2%"],
+  "A dungeon chase behind the Absolute Ether Key. Real endgame option if your keys landed there; thinner documentation than the S-tier pair."],
+ ["yoru","Yoru","C","Yoru Seller &mdash; Frostborn Island","Purchase",
+  ["Bought from the Yoru Seller on Frostborn Island"],
+  "The mid-game sword bridge: better than anything you can buy earlier, and meant to be replaced by the Player&#8217;s Dagger."],
+ ["zangetsu","Zangetsu","C","Hueco Mundo questline","First quest of the Tensa line",
+  ["Awarded by the Tensa Zangetsu NPC&#8217;s first quest"],
+  "An intermediate step, not a destination &mdash; owning it is what lets the Tensa Zangetsu questline continue."]]
+.forEach(w => E("weapon", w[0], w[1], {tier:w[2], t:['<span class="tier t-'+w[2]+'">'+w[2]+"</span>", w[3], w[4]],
+  info:[["Tier",w[2]],["Crafted at",w[3]],["Headline cost",w[4]],["Channel","Weapon"]],
+  lead:w[6], sec:[["Full cost","<ul><li>"+w[5].join("</li><li>")+"</li></ul>"]],
+  see:["weapons-index","weapon-channel","planner"]}));
+
+/* ─────────────────────────── FIGHTING STYLES ─────────────────────────── */
+[["combat","Combat","Free &mdash; you spawn with it","None","The default punches-and-kicks kit. No seller, no race gate, no material list &mdash; and the baseline every other style is measured against."],
+ ["verdant-hero","Verdant Hero (Deku)","9&times; One For All&#8217;s Cell + 250K coins + 2.5K gems &mdash; Deku (1M HP), Legend&#8217;s Arena","Short questline; unlocks the F move","The first style most accounts buy, because Deku is summonable on demand at the arena pillar and only has 1M HP."],
+ ["sukuna-style","Sukuna","15&times; Cursed Shard + 20&times; Sukuna&#8217;s Finger + 950K coins + 6.5K gems &mdash; Sukuna (4.75M HP)","Damage-dealt tally","Both materials come off the same 4.75M-HP boss at Jujutsu High School, so it&#8217;s one long farm rather than a scavenger hunt."],
+ ["gojo-shinjuku","Gojo [Shinjuku]","Enlightened race + Shinjuku Gojo drops","Limitless Scroll quests at Shinjuku Showdown","Mythical-tier style behind the Enlightened race. The race is a hand-in, not a roll, so this is a plan rather than a gamble."],
+ ["aizen-style","Aizen","Bleach Summoner, Hueco Mundo &mdash; 50 Hollows to spawn Aizen","1B damage with Aizen &middot; 15 player kills &middot; 15 Aizen clears &middot; The Betrayer title &middot; True Shinigami race","One of the two hardest masteries in the game, and the only one that asks for <strong>player</strong> kills."],
+ ["gilgamesh-style","Gilgamesh","Legend&#8217;s Arena chain &mdash; Gilgamesh Craft NPC wants Golden Dust","850M dmg as Demi God &middot; Shank 50, Mihawk 50, Ichigo [Bankai] 35, Saber 25, Sung Jinwoo 2, Rimuru 1, Aizen 2, Gilgamesh Hard/Extreme 10 &middot; King of Heroes title","The longest checklist in the game. Read it before you start: it wants a specific mythical race and roughly 175 boss kills across seven bosses."],
+ ["raiden-style","Raiden","Tied to the Raiden Shogun weapon","750M damage with Raiden Shogun &middot; 10&times; Plane of Euthymia Hard/Extreme","Polearm single-target and sword AoE modes. The style and the weapon progress together."],
+ ["shadow-style","Shadow","Cartenon Temple, Wave 2 (Cartenon Key)","Follows the temple clears","Top-tier and unusually accessible, because its key drops at 60% rather than 1%."],
+ ["ichigo-style","Ichigo","Bleach block, Hueco Mundo","Runs alongside the Tensa Zangetsu questline","Shares its progression with the Tensa Zangetsu weapon &mdash; the Bankai kills count for both."],
+ ["yhwach-style","Yhwach","Late Bleach content &mdash; Wandenreich dungeon","Not consistently documented","Behind the Scatthen Key, which drops at 1% from level-5000 Quincy mobs. His outfit is the rarest accessory in the game at 0.5%."],
+ ["kokushibo-style","Kokushibo","Demon race + materials","Not consistently documented","The Demon race is the hard gate: 10 Blue Spider Lilies to Muzan on Fossil Island."]]
+.forEach(s => E("style", s[0], s[1], {t:[s[2], s[3]],
+  info:[["Source",s[2]],["Mastery",s[3]],["Channel","Strength / Power"]],
+  lead:s[4], see:["styles-index","mastery","strength-channel"]}));
+
+/* ─────────────────────────── HAKI ─────────────────────────── */
+E("haki","armament","Armament Haki (Buso)",{t:["+25% damage, flat","1&times; Haki Book + 1,250 gems &mdash; no level requirement"],
+ info:[["Effect","<b>+25% damage</b>"],["Level","None"],["Cost","Haki Book + 1,250 gems"],["Book drop","0.1% from <em>any</em> enemy"]],
+ lead:"The single best value upgrade in the game and the one most new players skip: a flat +25% damage with no level gate at all.",
+ sec:[["How to get it","<ol><li>Kill anything. Every enemy in the game drops the Haki Book at the same 0.1%.</li><li>Pay 1,250 gems to unlock.</li></ol><p>At 0.1%, the coin-toss point is about <strong>693 kills</strong> and 95% confidence takes roughly 2,995 &mdash; but since every mob you fight anyway is a roll, it usually lands while you level rather than as a dedicated farm.</p>"]],
+ see:["haki-book","observation","odds"]});
+E("haki","observation","Observation Haki",{t:["Dodges up to 10 incoming attacks","Level 1,500 + book + 2.5M coins + 40 bosses + 5 torches"],
+ info:[["Effect","Dodges up to <b>10</b> attacks"],["Level","1,500 <span class=\"flag\" title=\"One overview says 500+; the detailed questline write-ups say 1,500\">(500 in one source)</span>"],["Cost","Obs. Haki Book + 2.5M coins"],["NPC","Obs. Haki NPC, Deeproot Jungle"],["Pays back","2,500,000 coins"]],
+ lead:"A survivability project rather than a purchase: ten dodge charges, behind a level gate, a 40-boss counter and a five-torch hunt across the map.",
+ sec:[["The questline, in order","<ol><li>Talk to the <strong>Obs. Haki NPC</strong> in Deeproot Jungle. Torches do not react until you do.</li><li>Defeat <strong>40 world bosses</strong>. Any bosses count &mdash; re-summoning Deku at the Legend&#8217;s Arena pillar is the fastest single-spot count.</li><li>Light 5 torches in any order: <strong>Deeproot Jungle, Frostborn Island, Legend&#8217;s Arena, Fossil Island, Scorched Ruins</strong>.</li><li>The fifth torch awards the Observation Haki Book automatically. It is untradeable and one-time.</li><li>Return to the NPC. You get the unlock and 2.5M coins back.</li></ol><p class=\"note\">Torch positions have moved with map updates before &mdash; verify against the in-game Trello if one won&#8217;t light.</p>"]],
+ see:["armament","deeproot","deku","obs-haki-npc"]});
+
+/* ─────────────────────────── BOSSES ─────────────────────────── */
+[["deku","Deku","legends-arena","Legend&#8217;s Arena","Summon Cores at the Boss Summoner &mdash; repeatable","1M HP. One For All&#8217;s Cells, Deku Gauntlets at 20%","The workhorse boss. Summonable on demand, only 1M HP, and the cheapest way to tick a 40-boss quest counter."],
+ ["sukuna","Sukuna","jujutsu-high","Jujutsu High School","Field boss","4.75M HP. Cursed Shards, Sukuna&#8217;s Fingers, Yuji&#8217;s Collar 20%, Sukuna&#8217;s Outfit 1%","The mid-game HP check. Nearly five times Deku&#8217;s health, and the gate on the Sukuna style."],
+ ["sung-jinwoo","Sung Jinwoo","fossil-island","Fossil Island","Field boss","3M+ HP. Cartenon Key at 60%, dagger materials, Player&#8217;s Outfit ~2%","The best-value farm in the endgame: a 60% key drop means roughly two kills per temple run."],
+ ["snow-bandit","Snow Bandit","frostborn","Frostborn Island","Field mob","Shrine Key at 1%","Not a boss and not optional. This 1% roll is the only route to the Plane of Euthymia and Raiden Shogun."],
+ ["saber","Saber","legends-arena","Legend&#8217;s Arena","Summonable with Summon Cores","Sword Technique Book 1%, Avalon 5%, Goblets 15%, Saber&#8217;s Outfit ~2%","Every Excalibur Morgan ingredient comes off this one boss, at three very different rates. The 1% book is the bottleneck."],
+ ["shadow-monarch","Shadow Monarch","cartenon","Cartenon Temple","Cartenon Key &rarr; portal &rarr; Wave 2","Shadow style and weapon materials","Wave-based rather than a straight fight; you clear to Wave 2 to reach him."],
+ ["raiden-ei","Raiden Ei","euthymia","Plane of Euthymia","Shrine Key &rarr; portal","Raiden Shogun","Mastery wants 10 clears on Hard or Extreme, so budget keys accordingly."],
+ ["aizen","Aizen","hueco-mundo","Hueco Mundo","Bleach Summoner, after 50 Hollows","Aizen style, Aizen&#8217;s Outfit ~2%","Fifteen clears for the mastery, each behind its own 50-Hollow spawn requirement."],
+ ["ichigo-bankai","Ichigo [Bankai]","hueco-mundo","Hueco Mundo","Field / summon","Hollow Mask at 0.1%","50 kills for Tensa Zangetsu, 35 more on the Gilgamesh checklist &mdash; and the mask is still a separate 0.1% prayer."],
+ ["gilgamesh","Gilgamesh","legends-arena","Legend&#8217;s Arena","Hard / Extreme difficulties","Gilgamesh style, Gilgamesh&#8217;s Outfit 1%","10 Hard or Extreme clears sit at the end of the game&#8217;s longest mastery."],
+ ["mihawk","Mihawk","legends-arena","Field","Field boss","Mastery credit","50 kills on the Gilgamesh mastery checklist."],
+ ["shank","Shank","legends-arena","Field","Field boss","Mastery credit","50 kills on the Gilgamesh mastery checklist."],
+ ["rimuru","Rimuru","legends-arena","Field / arena","Field boss","Rimuru&#8217;s Outfit ~2%","Only 1 kill for Gilgamesh mastery, which tells you how hard it hits."],
+ ["ulquiorra","Ulquiorra","hueco-mundo","Hueco Mundo","Inner Hueco Mundo content","Mastery path materials","Added with Vasto Lorde in the update that brought the world-boss count to 18. Orihime&#8217;s Reiatsu feeds this path."],
+ ["vasto-lorde","Vasto Lorde","hueco-mundo","Hueco Mundo","Vasto Lorde NPC","Questline progression","Shun Shun Rikka&#8217;s Trace unlocks the next stage of this line automatically."],
+ ["yhwach","Yhwach","hueco-mundo","Wandenreich","Scatthen Key &rarr; dungeon","Yhwach&#8217;s Outfit at 0.5%","The rarest accessory in the game, behind a 1% key from level-5000 Quincy mobs. A two-layer grind."],
+ ["miyabi-boss","Miyabi","hueco-mundo","Absolute Dead End","Absolute Ether Key &rarr; dungeon","Miyabi weapon materials, Miyabi&#8217;s Outfit ~2%","Dungeon boss behind the Absolute Ether Key."],
+ ["saber-alter","Saber Alter","legends-arena","Ryuudo Cave","Ryuudo Key &rarr; dungeon","Saber Alter set pieces","One of the newer dungeon bosses; documentation is still thin."],
+ ["firefly","Firefly","legends-arena","Glamoth Planet","Glamoth Planet Key &rarr; dungeon","Firefly&#8217;s Outfit &mdash; best melee accessory","Worth the trip for melee builds: her outfit is the top pick for combat-style damage."]]
+.forEach(b => E("boss", b[0], b[1], {t:['<a href="#/e/'+b[2]+'">'+b[3]+"</a>", b[4], b[5]],
+  info:[["Location",b[3]],["Access",b[4]],["Drops",b[5]],["Respawn","Field bosses: 30&ndash;90s"]],
+  lead:b[6], see:[b[2],"bosses-index","chests"]}));
+
+/* ─────────────────────────── ACCESSORIES ─────────────────────────── */
+[["deku-gauntlets","Deku Gauntlets",20,"Early filler","The most farmable accessory in the game, off the most farmable boss."],
+ ["yujis-collar","Yuji&#8217;s Collar",20,"Early filler","The other 20% drop. Off Sukuna, so it arrives while you farm style materials."],
+ ["solemns-outfit","Solemn&#8217;s Outfit",2,"Weapon / sword builds","Named the best weapon-build outfit by several guides. Others give that to Player&#8217;s &mdash; they&#8217;re close enough that the one you own wins."],
+ ["fireflys-outfit","Firefly&#8217;s Outfit",2,"Melee / combat builds","The top melee accessory, out of the Glamoth Planet dungeon."],
+ ["gojos-outfit","Gojo&#8217;s Outfit",2,"Fighting-style builds","The pick if your damage comes from a style rather than a sword."],
+ ["players-outfit","Player&#8217;s Outfit",2,"Weapon builds","Off Sung Jinwoo. The other half of the weapon-outfit debate."],
+ ["sukunas-outfit","Sukuna&#8217;s Outfit",1,"All-round","Strength and HP together &mdash; a well-rounded damage buff rather than a specialist."],
+ ["limitless-outfit","Limitless Outfit",1,"All-round","Same profile as Sukuna&#8217;s: the other best-in-slot generalist."],
+ ["gilgameshs-outfit","Gilgamesh&#8217;s Outfit",1,"Gilgamesh builds","Pairs with the mastery chain of the same name."],
+ ["other-outfits","Rimuru&#8217;s &middot; Saber&#8217;s &middot; Sung&#8217;s &middot; Miyabi&#8217;s &middot; Aizen&#8217;s",2,"Situational","Each about 2% from its own boss. Filler until a 1% lands."],
+ ["yhwachs-outfit","Yhwach&#8217;s Outfit",0.5,"Collection","The rarest accessory drop in the pool, behind a 1% dungeon key."]]
+.forEach(a => E("accessory", a[0], a[1], {t:[bar(a[1],20,a[1]>=20?"var(--good)":a[1]>=2?"var(--r-legendary)":"var(--r-mythical)"), a[2]],
+  info:[["Drop chance","<b>"+a[1]+"%</b>"],["Best for",a[2]],["Stats","Strength, HP, Weapon, Power"]],
+  lead:a[3], sec:[["Reading accessory stats","<p>Outfits carry <strong>Strength</strong>, <strong>HP</strong>, <strong>Weapon</strong> and <strong>Power</strong> bonuses. Strength and Weapon are the two that decide most builds &mdash; which is why the &ldquo;best&rdquo; accessory depends on your channel rather than a global ranking.</p>"]],
+  see:["accessories-index","stats","planner"]}));
+
+/* ─────────────────────────── ARTIFACT SETS ─────────────────────────── */
+[["azure-edge","Azure Edge","+10% crit dmg","+30% weapon dmg &middot; +7.5% damage reduction","weapon","The weapon-build set, and the only one that hands you damage reduction alongside the damage."],
+ ["abyssal-striker","Abyssal Striker","+5% crit rate &middot; +10% crit dmg","+30% melee dmg &middot; +15% HP","melee","The melee mirror of Azure Edge, trading damage reduction for a flat HP bump."],
+ ["mythical-awakening","Mythical Awakening","+5% crit rate &middot; +10% crit dmg","+30% power dmg &middot; +1% lifesteal","power","The fruit and spec-skill set. The 1% lifesteal is small but it is always on."],
+ ["pure-lineage","Pure Lineage","+5% crit rate &middot; +10% crit dmg","+15% weapon / power / melee dmg","any","Half the damage of a specialist set, applied to all three channels. The set for a build still deciding what it is."],
+ ["titan-executioner","Titan Executioner","+5% dmg &middot; +10% crit dmg","+32.5% damage to bosses","boss","Beats a flat 30% only when you are actually fighting bosses &mdash; which, in the endgame, you mostly are."],
+ ["supreme-mastery","Supreme Mastery","&minus;5% cooldown &middot; +5% crit chance","+47.5% mastery skill damage","mastery","The biggest number on the list and the narrowest condition: mastery skills only. Worth it once a mastery is finished, not before."]]
+.forEach(a => E("artifact", a[0], a[1], {t:[a[2], a[3], '<span class="chip">'+a[4]+"</span>"],
+  info:[["2-piece",a[2]],["4-piece",a[3]],["Channel",a[4]],["Source","Artifact trials"]],
+  lead:a[5], sec:[["Where artifacts come from","<p>Artifact trials, by difficulty: <strong>Easy</strong> pays only Rare, <strong>Medium</strong> is the first real Epic farm, <strong>Hard</strong> is mostly Epic with a small Legendary chance, and <strong>Extreme</strong> is the Legendary chase &mdash; where you still walk out with an Epic about half the time. Sub-stats are rerolled with Fragments from Simulated Sea.</p>"]],
+  see:["artifacts-index","simulated-sea","planner"]}));
+
+/* ─────────────────────────── ITEMS & KEYS ─────────────────────────── */
+[["cids-key","Cid&#8217;s Key","Key","0.5% from Dawnwind bandits after Cid&#8217;s quest, or 8 Tower Shards at the Tower Shop","Opens Cid&#8217;s Castle"],
+ ["shrine-key","Shrine Key","Key","1% from Snow Bandit, Frostborn Island","Opens the Plane of Euthymia &mdash; Raiden Ei"],
+ ["cartenon-key","Cartenon Key","Key","60% from Sung Jinwoo, Fossil Island","Opens Cartenon Temple &mdash; Shadow Monarch"],
+ ["scatthen-key","Scatthen Key","Key","1% from level-5000 Quincy mobs","Opens Wandenreich &mdash; Yhwach&#8217;s dungeon"],
+ ["absolute-ether-key","Absolute Ether Key","Key","Dungeon / shop route","Opens Absolute Dead End &mdash; Miyabi&#8217;s dungeon"],
+ ["ryuudo-key","Ryuudo Key","Key","Dungeon / shop route","Opens Ryuudo Cave &mdash; Saber Alter&#8217;s dungeon"],
+ ["glamoth-key","Glamoth Planet Key","Key","Shop buy","Opens Glamoth Planet &mdash; Firefly&#8217;s dungeon"],
+ ["butterfly-grave-key","Butterfly Grave Key","Key","35 butterflies from Angela, Frostborn Island","Opens Butterfly Grave"],
+ ["trials-key","Trial&#8217;s Key","Key","Shop buy","Opens the trial dungeon"],
+ ["summon-core","Summon Core","Material","4% from any mob or boss; guaranteed in Rare+ chests","Spent at the Boss Summoner for Deku and Saber"],
+ ["sword-technique-book","Sword Technique Book","Material","1% from Saber","Excalibur Morgan and Player&#8217;s Dagger"],
+ ["avalon","Avalon","Material","5% from Saber","Excalibur Morgan"],
+ ["goblet","Goblet","Material","15% from Saber","Excalibur Morgan &mdash; 5 needed"],
+ ["fusion-core","Fusion Core","Material","Crafted at the Butterfly Shop, Frostborn Island","Solemn Lament &mdash; 5 needed"],
+ ["boss-soul","Boss&#8217;s Soul","Material","Boss kills","Solemn Lament &mdash; 250 needed"],
+ ["soulweaver-butterfly","Soulweaver Butterfly","Material","Butterfly content, Frostborn Island","Solemn Lament &mdash; 100 needed"],
+ ["system-core","System Core","Material","Scorched Ruins farm","Player&#8217;s Dagger &mdash; 5 needed"],
+ ["venom-fang","Venom Fang","Material","Scorched Ruins farm","Player&#8217;s Dagger"],
+ ["knight-killer","Knight Killer","Material","Scorched Ruins farm","Player&#8217;s Dagger"],
+ ["hollow-mask","Hollow Mask","Material","0.1% from Ichigo [Bankai]","Tensa Zangetsu"],
+ ["haki-book","Haki Book","Quest item","0.1% from any enemy in the game","Armament Haki, with 1,250 gems"],
+ ["obs-haki-book","Observation Haki Book","Quest item","Awarded by lighting the fifth torch","Observation Haki. Untradeable, one-time"],
+ ["one-for-all-cell","One For All&#8217;s Cell","Material","Deku, Legend&#8217;s Arena","Verdant Hero style &mdash; 9 needed"],
+ ["cursed-shard","Cursed Shard","Material","Sukuna, Jujutsu High School","Sukuna style &mdash; 15 needed"],
+ ["sukunas-finger","Sukuna&#8217;s Finger","Material","Sukuna, Jujutsu High School","Sukuna style &mdash; 20 needed"],
+ ["golden-dust","Golden Dust","Material","Mob drops","The Gilgamesh Craft NPC at Legend&#8217;s Arena"],
+ ["tower-shard","Tower Shard","Currency","Tower content","Tower Shop buys, including Cid&#8217;s Key at 8"],
+ ["blue-spider-lily","Blue Spider Lily","Collectible","World pickups on Deeproot Jungle, Legend&#8217;s Arena, Fossil Island, Lineage Town and Shinjuku Showdown","10 to the Muzan NPC for the <b>Demon race</b>"],
+ ["orihime-reiatsu","Orihime&#8217;s Reiatsu","Collectible","Five fixed green pickups: Monument Isle, Jujutsu High School, Scorched Ruins, Shinjuku Showdown, Fossil Island","The Orihime / Ulquiorra mastery path. Once per account"],
+ ["shun-shun-rikka","Shun Shun Rikka&#8217;s Trace","Collectible","World pickups","Auto-advances the Vasto Lorde questline once complete"],
+ ["talisman","Talisman","Collectible","Five fixed world pickups","A collect-5 quest"],
+ ["curse-orb","Curse Orb","Quest item","Jujutsu High School","The Cursed Orb quest"],
+ ["trait-reroll","Trait Reroll item","Reroll","Rare+ chests; low mob and boss chance","One trait reroll at Lineage Town"]]
+.forEach(i => E("item", i[0], i[1], {t:['<span class="chip">'+i[2]+"</span>", i[3], i[4]],
+  info:[["Kind",i[2]],["Source",i[3]],["Used for",i[4]]],
+  lead:i[4].replace(/^[A-Z]/, c=>c) + ". Source: " + i[3].charAt(0).toLowerCase() + i[3].slice(1) + ".",
+  see:["items-index"]}));
+
+/* ─────────────────────────── SYSTEMS ─────────────────────────── */
+E("mechanic","stats","Stats",{t:["Four stats, three damage channels &mdash; commit to one"],
+ info:[["Strength","Combat and Weapon M1 damage"],["Weapon","Weapon skill damage"],["Power","Combat, melee and spec skill damage"],["Health","Max HP"]],
+ lead:"Four stats, but only three damage channels &mdash; and the single most common new-player mistake is splitting points between them.",
+ sec:[["Which channel","<ul><li>Your best weapon is a sword &rarr; <strong>Weapon</strong>.</li><li>Your route is a melee style or Shadow &rarr; <strong>Strength</strong>.</li><li>You&#8217;re building around a fruit or spec skills &rarr; <strong>Power</strong>.</li><li>Health only up to surviving one boss rotation. Past that it&#8217;s dead weight.</li></ul><p>Splitting evenly feels flexible and farms badly: every race, trait, artifact set and outfit in the game is written for one channel, so a split build gets partial value from all of them.</p>"]],
+ see:["planner","weapon-channel","strength-channel","power-channel"]});
+E("mechanic","ranks","Rank buffs",{t:["Coal &rarr; Lapis, about +10% economy per rank"],
+ info:[["Ladder","Coal, Copper, Iron, Gold, RedStone, Lapis"],["Per rank","~+10% EXP, coins, gems, luck"],["Type","Permanent, stacking"]],
+ lead:"Material-tier ranks are a permanent, stacking economy upgrade &mdash; roughly +10% EXP, coins, gems and luck each. Climb them deliberately rather than by accident.",
+ sec:[["Note","<p>Sources agree on Coal through Gold. RedStone and Lapis appear in later patch notes and their exact buffs are <span class=\"flag\" title=\"Reported inconsistently across community wikis\">not consistently documented</span>.</p>"]],
+ see:["quests","chests"]});
+E("mechanic","chests","Chests &amp; mimics",{t:["7.5% Epic / 5% Legendary / 1% Mythical from boss farming"],
+ info:[["From bosses","7.5% Epic, 5% Legendary, 1% Mythical"],["Mythical pays","200K&ndash;350K coins, 900&ndash;1,100 gems"],["Mimic chance","25% on opening"],["Mimic reward","2&times; drop chance"],["Rare+","Always a reroll item or Summon Core"]],
+ lead:"Chests, not mobs, are the gem farm. A single Mythical chest pays about a thousand gems &mdash; four fruit rerolls &mdash; which is why boss rotations beat grinding.",
+ sec:[["Mimics","<p>Opening a chest has a <strong>25% chance to spawn a Mimic</strong>, and killing it doubles the drop chance. So don&#8217;t crack Rare-or-better chests while you&#8217;re already fighting something &mdash; you want to be able to kill the mimic.</p>"]],
+ see:["bosses-index","rerolls","simulated-sea"]});
+E("mechanic","quests","Quests",{t:["+20% EXP since the Kokushibo patch"],
+ info:[["Bonus","+20% EXP"],["Since","Kokushibo update"],["Rule","Clear an island&#8217;s quests, then leave"]],
+ lead:"Quests carry a flat +20% EXP bonus, which makes a quest-led route faster than pure mob grinding at every stage of the game.",
+ sec:[["The routing rule","<p>Move to the next island as soon as your level fits it. Mobs well below your level pay almost nothing, so &ldquo;staying somewhere safe&rdquo; is the slowest possible way to play.</p>"]],
+ see:["islands-index","progression","ranks"]});
+E("mechanic","currencies","Currencies",{t:["Coins, gems, Bytes, Fragments &mdash; gems are the bottleneck"],
+ info:[["Coins","Mobs, quests, chests. Recipes eat millions"],["Gems","Rerolls, recipes, artifact rolls"],["Bytes","Simulated Sea &rarr; skill tree only"],["Fragments","Sea milestones, artifact sub-stat rerolls"]],
+ lead:"Four currencies, and only one of them is ever short. Gems gate rerolls, recipes and artifact rolls at the same time, so every gem spent on a reroll is a gem not spent on Solemn Lament.",
+ see:["rerolls","simulated-sea","skill-tree","chests"]});
+E("mechanic","rerolls","Rerolls",{t:["Fruit: 250 gems / 25K coins. Race and trait: items"],
+ info:[["Fruit","250 gems or 25,000 coins per roll"],["Race","Race reroll items"],["Trait","Trait Reroll items"],["Where","Lineage Town"]],
+ lead:"Three separate roll systems stack on your character: fruit, race and trait. Fruit takes currency; race and trait take items, which is why you cannot simply buy your way to a mythical.",
+ sec:[["Bank first, roll later","<p>Light is a 2% roll and the Mythical race bucket is 0.25%. Rolling with 300 gems in the bank is how accounts end up on Bomb at level 900. Size the stack with the <a href=\"#/t/odds\">odds tool</a> before your first roll.</p>"]],
+ see:["odds","light","races-index","lineage-town"]});
+E("mechanic","simulated-sea","Simulated Sea",{t:["Roguelike: 13 rooms, 39 cards, 5 sea levels"],
+ info:[["Rooms","13 per run"],["Cards","1 pick per room, 39 in the pool"],["Sea levels","5, each a hard step up"],["Death Match","Better rewards, stronger card odds"],["Pays","Bytes, artifact rolls, Fragments"]],
+ lead:"The roguelike mode, and the engine of endgame progression. Because Bytes only come from here and only go into permanent skill-tree nodes, every run makes the next island and the next boss cheaper.",
+ sec:[["How a run is won","<p>By finding a card combination that scales, not by clearing rooms carefully. Death Match rooms are harder and pay better, including better card odds.</p>"],["What it pays","<ul><li><strong>Bytes</strong> &mdash; the only skill-tree currency.</li><li><strong>Artifact rolls</strong> &mdash; spent with gems after a run.</li><li><strong>Fragments</strong> &mdash; milestone track, including artifact sub-stat rerolls.</li></ul>"]],
+ see:["skill-tree","artifacts-index","currencies"]});
+E("mechanic","skill-tree","Skill tree",{t:["Monument Isle, paid in Bytes; damage first, then Tier IV crit"],
+ info:[["Where","Monument Isle"],["Currency","Bytes"],["Tier I&ndash;III","EXP, HP, damage"],["Tier IV","Crit / HP / economy branches"]],
+ lead:"A point-buy tree with prerequisites, so you cannot skip to the good nodes. Buy damage first, then push Tier IV crit; the economy branch is what shortens every farm after it.",
+ sec:[["Order of purchase","<ol><li><strong>Damage</strong> nodes &mdash; they pay immediately.</li><li><strong>Tier IV crit</strong> &mdash; crit chance and crit damage, the real DPS branch.</li><li><strong>Economy</strong> &mdash; coins, gems, luck.</li><li><strong>EXP</strong> only while you&#8217;re still levelling. Near the cap it&#8217;s close to worthless.</li></ol>"]],
+ see:["simulated-sea","monument-isle","stats"]});
+E("mechanic","mastery","Mastery",{t:["Unlocks a style&#8217;s final move; often race- and title-gated"],
+ info:[["What it unlocks","The style&#8217;s final move"],["Typical gates","Damage-dealt milestone, kill tallies, a race, a title"],["NPCs","Shinjuku Showdown, plus per-style NPCs"]],
+ lead:"Owning a style is a shopping trip; mastering it is a project. Masteries ask for a damage-dealt milestone in the hundreds of millions, a tally of specific boss kills, and often a specific race and equipped title on top.",
+ sec:[["Read the requirement before you commit","<p>Aizen wants True Shinigami and 15 player kills. Gilgamesh wants Demi God and roughly 175 boss kills across seven bosses. Both are rerollable races &mdash; so check the mastery <em>before</em> you spend a reroll you liked.</p>"]],
+ see:["styles-index","races-index","gilgamesh-style","aizen-style"]});
+E("mechanic","weapon-channel","Weapon channel",{t:["Swords: Azure Edge, Archon, Solemn&#8217;s or Player&#8217;s Outfit"],
+ info:[["Stat","Weapon"],["Artifact","Azure Edge (4pc +30%)"],["Race","Archon; Enlightened or Demon for total damage"],["Outfit","Solemn&#8217;s or Player&#8217;s"],["Weapons","Excalibur Morgan, Solemn Lament"]],
+ lead:"The sword build. Everything on this channel is well supported &mdash; the two best weapons in the game, a dedicated artifact set, and a total-damage race that doesn&#8217;t care what you picked.",
+ see:["planner","excalibur-morgan","azure-edge","archon"]});
+E("mechanic","strength-channel","Strength channel",{t:["Melee styles: Abyssal Striker, Demi God, Firefly&#8217;s Outfit"],
+ info:[["Stat","Strength"],["Artifact","Abyssal Striker (4pc +30% melee)"],["Race","Demi God, Quincy, True Shinigami"],["Outfit","Firefly&#8217;s; Sukuna&#8217;s or Limitless as all-rounders"],["Styles","Shadow, Sukuna, Gojo [Shinjuku]"]],
+ lead:"The melee build, and the one the race pool favours &mdash; most documented race buffs are written as melee damage.",
+ see:["planner","abyssal-striker","demi-god","styles-index"]});
+E("mechanic","power-channel","Power channel",{t:["Fruits and spec skills: Mythical Awakening, Light"],
+ info:[["Stat","Power"],["Artifact","Mythical Awakening (4pc +30% power)"],["Race","Enlightened or Demon for total damage"],["Fruit","Light, then Quake"],["Note","Thinnest race support of the three"]],
+ lead:"The fruit and spec-skill build. It has a dedicated artifact set and the best fruit in the game, but the fewest race buffs written for it &mdash; which is why total-damage exclusives matter most here.",
+ see:["planner","mythical-awakening","light","enlightened"]});
+E("mechanic","titles","Titles",{t:["Equippable, and some masteries require a specific one"],
+ info:[["Known requirements","The Betrayer (Aizen), King of Heroes (Gilgamesh)"],["Source","Bosses and questlines"]],
+ lead:"Cosmetic until they aren&#8217;t: two of the game&#8217;s hardest masteries require a specific title equipped, so a title you never wear can block a style you already own.",
+ see:["mastery","aizen-style","gilgamesh-style"]});
+
+/* ─────────────────────────── GUIDES ─────────────────────────── */
+const PHASES = [
+ {lv:"Lv 1 &rarr; first upgrade", t:"Leave the beach", tasks:[
+  "Like the game and join the Roblox group","Redeem every code your level qualifies for",
+  "Clear all Dawnwind Village quests","Pick a damage channel: Weapon, Strength or Power",
+  "Move to Deeproot Jungle and buy the first weapon upgrade","Start the Observation Haki questline at the Obs. Haki NPC"]},
+ {lv:"Frostborn Island", t:"Get the flat multipliers", tasks:[
+  "Farm any enemy until a Haki Book drops (0.1%)","Unlock Armament Haki: book + 1,250 gems &rarr; +25% damage",
+  "Bank 250-gem or 25K-coin fruit rerolls before rolling","Farm Snow Bandits for a Shrine Key (1%)",
+  "Buy from the Yoru Seller for mid-game sword progression","Rank up your material tier for the +10% economy buff"]},
+ {lv:"Scorched Ruins", t:"First real weapon", tasks:[
+  "Collect a Sword Technique Book (1% from Saber)","Farm 5&times; System Cores, 1&times; Venom Fang, 1&times; Knight Killer",
+  "Bank 1M coins and 7.5K gems","Craft the Player&#8217;s Dagger at the Sung Jin Woo NPC",
+  "Do not reroll or sell it away &mdash; Solemn Lament consumes it"]},
+ {lv:"Legend&#8217;s Arena &amp; Jujutsu High", t:"Styles and Excalibur", tasks:[
+  "Summon Deku with Summon Cores &mdash; also the fastest 40-boss count",
+  "Buy Verdant Hero: 9&times; One For All&#8217;s Cell, 250K coins, 2.5K gems",
+  "Farm Saber for Avalon (5%) and 5&times; Goblets (15%)",
+  "Craft Excalibur Morgan at the Saber NPC","Farm Sukuna for 15&times; Cursed Shard and 20&times; Sukuna&#8217;s Finger",
+  "Light the 5 torches and finish Observation Haki (Lv 1,500)"]},
+ {lv:"Hueco Mundo", t:"Bleach block", tasks:[
+  "Obtain Zangetsu from the Tensa Zangetsu NPC","Defeat Ichigo [Bankai] 50 times",
+  "Loot a Hollow Mask (0.1%) and craft Tensa Zangetsu","Clear 50 Hollows so the Bleach Summoner spawns Aizen",
+  "Collect 5&times; Orihime&#8217;s Reiatsu for the Ulquiorra path"]},
+ {lv:"Endgame loops", t:"Compound your power", tasks:[
+  "Run Simulated Sea for Bytes; damage nodes first, then Tier IV crit",
+  "Farm artifact trials on Hard, then Extreme, for a 4-piece on your channel",
+  "Rotate bosses for Epic/Legendary/Mythical chests &mdash; the real gem farm",
+  "Collect 10&times; Blue Spider Lily &rarr; Muzan for the Demon race",
+  "Grind Solemn Lament: 100&times; Butterflies, 250&times; Boss&#8217;s Souls, 30M coins, 45K gems",
+  "Finish one style mastery end to end","Push Sea 5 and Extreme trials once your 4-piece is online"]}
+];
+
+const FIRST = [
+ ["Group, then codes","5 min","Like the game and join the Roblox group first &mdash; several codes check for it. Redeem through the <strong>Settings</strong> icon: paste, press the enter arrow. Most codes have a minimum level, so re-run the list as you climb."],
+ ["Pick one channel","Permanent-ish","Damage splits into <strong>Strength</strong> (M1s), <strong>Weapon</strong> (sword skills) and <strong>Power</strong> (fruit and spec skills). Every point, race, trait and outfit you pick later should feed the same one."],
+ ["Quests over grinding","+20% EXP","Island quests carry a 20% EXP bonus since the Kokushibo patch. Clear every quest on an island, then leave &mdash; mobs below your level pay almost nothing."],
+ ["Armament Haki early","No level req","A flat <strong>+25% damage</strong> for a Haki Book and 1,250 gems, with no level gate. The book is a 0.1% drop from any enemy, so it lands while you level."],
+ ["Bank rerolls, don&#8217;t spend","Math","Light is a 2% roll and the mythic race bucket is 0.25%. Rolling with 300 gems banked is how accounts end up on Bomb at level 900."],
+ ["Chests, and their mimics","25%","Opening a chest has a 25% chance to spawn a Mimic; killing it doubles the drop chance. Rare is the first tier that always holds a reroll or Summon Core."]
+];
+
+const CODES = [
+ ["FRIERENOMG","Lv 100 &middot; Frieren patch"],["120KLIKES","Lv 300"],["130KLIKES","Lv 450"],
+ ["140KLIKES","Lv 650"],["WAITWEHAVEYUJI","Level requirement unconfirmed"],
+ ["SOLEMNLAMENTOMG","Lv 100"],["SHUTDOWNPIECE_WOW","Lv 150"]
+];
+
+const DISPUTED = [
+ ["Max level","6,000 in most guides, 7,000 in newer ones. A patch likely raised it &mdash; Scatthen Key drops from level-5000 mobs, so the cap is certainly above 5,000."],
+ ["Island level bands","Two incompatible scales circulate: 1&ndash;25&ndash;75&ndash;150 and 250&ndash;600&ndash;1000. Both are listed on every island page."],
+ ["Observation Haki level","1,500 in the detailed questline write-ups, 500+ in one overview."],
+ ["Devil fruit rates","Published figures total 97%, not 100%."],
+ ["Trait magnitudes","Rankings agree everywhere; percentages don&#8217;t. One source puts The Ruler of Death at +120%."],
+ ["Best weapon outfit","Solemn&#8217;s vs Player&#8217;s, depending on the guide. They&#8217;re close."],
+ ["RedStone / Lapis ranks","Appear in later patch notes; exact buffs undocumented."]
+];
+
+const SOURCES = [
+ ["Lineage Piece on Roblox &mdash; Prlz&#8217;s Den","https://www.roblox.com/games/104761395312874/Lineage-Piece"],
+ ["Lineage Piece Wiki (Fandom)","https://lineage-piecez.fandom.com/wiki/Lineage_Piece_Wiki"],
+ ["Rolimon&#8217;s game data","https://www.rolimons.com/game/104761395312874"],
+ ["Bloxodes &mdash; races, styles, items, haki","https://bloxodes.com/wiki/lineage-piece/races"],
+ ["Gamezebo &mdash; weapons, fruits, artifacts, mastery","https://www.gamezebo.com/walkthroughs/lineage-piece-weapons-tier-list/"],
+ ["Gamepur &mdash; weapon, race and trait tier lists","https://www.gamepur.com/guides/lineage-piece-weapon-tier-list"],
+ ["Pro Game Guides &mdash; boss drops, haki, codes","https://progameguides.com/roblox/all-lineage-piece-boss-drops-locations-and-respawn-times/"],
+ ["Allthings.how &mdash; world bosses, torches, haki","https://allthings.how/lineage-piece-world-bosses-all-locations-drops-and-respawn-times/"],
+ ["Kongbakpao &mdash; accessories and Sea cards index","https://www.kongbakpao.com/lineage-piece-accessories-index/"],
+ ["Roonby &mdash; Simulated Sea and skill tree","https://roonby.com/2026/06/19/lineage-piece-simulated-sea-guide-skill-tree-artifacts-cards-and-sea-levels/"],
+ ["Lineage Piece Site &mdash; keys guide","https://lineagepiece.site/guides/keys/"],
+ ["Nerdschalk &mdash; True Shinigami, quest collectibles","https://nerdschalk.com/lineage-piece-true-shinigami-requirements-unlock-steps-and-buffs/"],
+ ["Deltia&#8217;s Gaming &mdash; races, traits, items","https://deltiasgaming.com/all-races-in-lineage-piece-roblox/"],
+ ["Destructoid &mdash; tier list","https://www.destructoid.com/lineage-piece-tier-list/"],
+ ["PCGamesN &middot; Pocket Tactics &middot; Beebom &mdash; codes","https://www.pcgamesn.com/lineage-piece/codes"]
+];
+
+const TARGETS = [
+ {n:"Light fruit (reroll)",p:0.02,unit:"rolls",cost:250,cur:"gems",alt:"The coin reroller charges 25,000 per roll instead &mdash; usually the cheaper currency to farm."},
+ {n:"Quake fruit (reroll)",p:0.10,unit:"rolls",cost:250,cur:"gems",alt:"The realistic fruit target, and a fine place to stop."},
+ {n:"Any Mythical race (0.25% bucket)",p:0.0025,unit:"rerolls",cost:0,cur:"",alt:"Six mythicals share this bucket, so which one you get is a second coin flip."},
+ {n:"Haki Book &mdash; any enemy",p:0.001,unit:"kills",cost:0,cur:"",alt:"Then 1,250 gems to unlock Armament Haki (+25% damage). Every mob you already fight is a roll."},
+ {n:"Hollow Mask &mdash; Ichigo [Bankai]",p:0.001,unit:"kills",cost:0,cur:"",alt:"The questline only needs 50 Bankai kills &mdash; the mask usually takes far longer than the requirement."},
+ {n:"Shrine Key &mdash; Snow Bandit",p:0.01,unit:"kills",cost:0,cur:"",alt:"Gates the Plane of Euthymia portal and Raiden Shogun. Plan it as a session, not a stop."},
+ {n:"Cartenon Key &mdash; Sung Jinwoo",p:0.60,unit:"kills",cost:0,cur:"",alt:"The generous one. Stock a few &mdash; Cartenon Temple is a repeat farm."},
+ {n:"Scatthen Key &mdash; Quincy mob (Lv 5000)",p:0.01,unit:"kills",cost:0,cur:"",alt:"Opens Wandenreich, where Yhwach&#8217;s 0.5% outfit lives. Two grinds stacked."},
+ {n:"Sword Technique Book &mdash; Saber",p:0.01,unit:"kills",cost:0,cur:"",alt:"The Excalibur Morgan bottleneck. Avalon (5%) and Goblets (15%) arrive far sooner."},
+ {n:"Yhwach&#8217;s Outfit",p:0.005,unit:"kills",cost:0,cur:"",alt:"Rarest accessory in the pool."},
+ {n:"A ~2% boss outfit",p:0.02,unit:"kills",cost:0,cur:"",alt:"Most named outfits sit here: Solemn&#8217;s, Gojo&#8217;s, Player&#8217;s, Saber&#8217;s, Aizen&#8217;s."},
+ {n:"Mythical chest &mdash; boss farm",p:0.01,unit:"boss kills",cost:0,cur:"",alt:"Pays 200K&ndash;350K coins and 900&ndash;1,100 gems when it lands."},
+ {n:"Legendary chest &mdash; boss farm",p:0.05,unit:"boss kills",cost:0,cur:"",alt:"The realistic chest target for a farming session."},
+ {n:"Summon Core &mdash; any mob or boss",p:0.04,unit:"kills",cost:0,cur:"",alt:"Also guaranteed in Rare or better chests, which is the faster route."}
+];
+
+const GUIDES = {
+ "progression":{n:"Progression roadmap", g:"Guides"},
+ "first-hour":{n:"The first hour", g:"Guides"},
+ "tiers":{n:"Tier lists", g:"Guides"},
+ "codes":{n:"Codes", g:"Guides"},
+ "sources":{n:"Accuracy &amp; sources", g:"Guides"}
+};
+const TOOLS = {
+ "odds":{n:"Reroll &amp; drop odds", g:"Tools"},
+ "planner":{n:"Build planner", g:"Tools"}
+};
+const INDEXES = {"islands-index":"island","bosses-index":"boss","npcs-index":"npc","fruits-index":"fruit",
+ "races-index":"race","traits-index":"trait","weapons-index":"weapon","styles-index":"style",
+ "accessories-index":"accessory","artifacts-index":"artifact","items-index":"item","systems-index":"mechanic"};
+
+/* ═══════════════════════ APP ═══════════════════════ */
+const $ = (s, r) => (r || document).querySelector(s);
+const view = $("#view");
+const BY = {}; DB.forEach(e => BY[e.id] = e);
+const strip = h => String(h).replace(/<[^>]+>/g, "").replace(/&[a-z]+;/g, " ");
+const commas = n => n.toLocaleString("en-US");
+const count = t => DB.filter(e => e.type === t).length;
+
+/* This page is deployed at both /lineage-piece.html and /lineage-piece/, so the path
+   back to the site root depends on which one the visitor landed on. */
+function siblingHref() {
+  return /\/lineage-piece\/(index\.html)?$/.test(location.pathname) ? "../" : "index.html";
+}
+
+/* link resolution: entries, category indexes, guides and tools all addressable by id */
+function link(id) {
+  if (BY[id]) return ['#/e/' + id, BY[id].name];
+  if (INDEXES[id]) return ['#/c/' + INDEXES[id], CATS[INDEXES[id]].n];
+  if (GUIDES[id]) return ['#/g/' + id, GUIDES[id].n];
+  if (TOOLS[id]) return ['#/t/' + id, TOOLS[id].n];
+  return null;
+}
+
+/* ── sidebar ── */
+(function sidebar() {
+  const groups = {};
+  Object.keys(CATS).forEach(t => { (groups[CATS[t].g] = groups[CATS[t].g] || []).push(['#/c/' + t, CATS[t].n, count(t)]); });
+  Object.keys(GUIDES).forEach(k => { (groups.Guides = groups.Guides || []).push(['#/g/' + k, GUIDES[k].n, ""]); });
+  Object.keys(TOOLS).forEach(k => { (groups.Tools = groups.Tools || []).push(['#/t/' + k, TOOLS[k].n, ""]); });
+  let h = '<a href="#/" data-nav="#/" style="font-weight:600">Main page</a>';
+  Object.keys(groups).forEach(g => {
+    h += '<div class="sgroup">' + g + "</div>";
+    groups[g].forEach(r => { h += '<a href="' + r[0] + '" data-nav="' + r[0] + '">' + r[1] + (r[2] ? "<em>" + r[2] + "</em>" : "") + "</a>"; });
+  });
+  $("#side").innerHTML = h;
+})();
+
+/* ── home ── */
+function home() {
+  const tiles = [["#/g/progression","Progression roadmap","Level 1 to endgame in six phases, with a checklist that saves","Start here"],
+    ["#/g/first-hour","The first hour","The six decisions that decide how fast the next 5,000 levels go","Guide"],
+    ["#/t/odds","Reroll &amp; drop odds","What 100 rolls at 2% actually buys, and what it costs","Tool"],
+    ["#/t/planner","Build planner","Stack only the bonuses that land on your damage channel","Tool"]];
+  view.innerHTML = '<div class="page full"><div class="hero"><h1>The Lineage Piece <em>database</em>.</h1>'
+    + '<p>' + DB.length + ' pages on Prlz&#8217;s Den&#8217;s anime-crossover action RPG &mdash; every island, boss, fruit, race, weapon, style, key and system, cross-checked across community wikis with the disputed figures marked rather than smoothed over.</p></div>'
+    + '<div class="tiles">' + tiles.map(t => '<a class="tile" href="' + t[0] + '"><em>' + t[3] + '</em><b>' + t[1] + "</b><span>" + t[2] + "</span></a>").join("") + "</div>"
+    + '<h2 class="sh">Browse the database</h2><div class="catgrid">'
+    + Object.keys(CATS).map(t => '<a class="cat" href="#/c/' + t + '"><b>' + CATS[t].n + "</b><span>" + count(t) + " pages</span></a>").join("") + "</div>"
+    + '<h2 class="sh">Quick facts</h2>'
+    + '<div class="tablewrap"><table><tbody>'
+    + [["Developer","Prlz&#8217;s Den"],["Released","19 December 2025"],["Platforms","PC, mobile, console"],
+       ["Max level","6,000 &mdash; <span class=\"flag\" title=\"Newer guides say 7,000; level-5000 mobs exist, so the cap is above 5,000\">7,000 in newer sources</span>"],
+       ["World bosses","18, as of the Vasto Lorde &amp; Ulquiorra update"],["Dungeon keys","9"],
+       ["Damage channels","Strength, Weapon, Power"],["Rarest fruit roll","Light, 2%"],["Mythical race bucket","0.25%, shared by six races"],
+       ["Simulated Sea","5 sea levels, 13 rooms, 39 cards"]].map(r => "<tr><td><strong>" + r[0] + "</strong></td><td>" + r[1] + "</td></tr>").join("")
+    + "</tbody></table></div>"
+    + '<p class="note">Sister wiki, and the main page of this site: <a href="' + siblingHref() + '">the Fisch Field Guide</a> &mdash; a Fisch database with a beginner&#8217;s guide and a planner that reads your level, rod and C$ and tells you what to do next.</p>'
+    + '<div class="warnbox"><strong>On accuracy:</strong> Lineage Piece has no official public database &mdash; the developer posts to a Trello and Discord and everything else is community-maintained. Figures the sources disagree on are marked <span class="flag" title="Like this">like this</span> and listed in full on the <a href="#/g/sources">Accuracy &amp; sources</a> page.</div></div>';
+}
+
+/* ── category index ── */
+let sortState = {};
+function category(type) {
+  const cat = CATS[type], rows = DB.filter(e => e.type === type);
+  const facets = {}; rows.forEach(e => { const k = e.tier || e.rar; if (k) facets[k] = 1; });
+  const keys = Object.keys(facets);
+  const st = sortState[type] || {i: -1, dir: 1};
+  view.innerHTML = '<div class="page full"><div class="crumb"><a href="#/">Main page</a> &rsaquo; <span>' + cat.n + "</span></div>"
+    + '<h1 class="pt">' + cat.n + '</h1><div class="chips"><span class="chip">' + rows.length + " pages</span>"
+    + '<span class="chip">Click a column to sort</span></div>'
+    + (keys.length ? '<div class="filters"><button class="fbtn on" data-f="">All</button>' + keys.map(k => '<button class="fbtn" data-f="' + k + '">' + k + "</button>").join("") + "</div>" : "")
+    + '<div class="tablewrap"><table><thead><tr>' + cat.cols.map((c, i) => '<th class="s' + (st.i === i ? (st.dir > 0 ? " asc" : " desc") : "") + '" data-i="' + i + '">' + c + "</th>").join("") + '</tr></thead><tbody id="rows"></tbody></table></div>'
+    + '<p class="note">Every row links to its own page. Search from the bar above to jump straight to one.</p></div>';
+
+  let filter = "";
+  function draw() {
+    let list = rows.filter(e => !filter || e.tier === filter || e.rar === filter);
+    if (st.i >= 0) {
+      list = list.slice().sort((a, b) => {
+        const av = st.i === 0 ? a.name : a.t[st.i - 1], bv = st.i === 0 ? b.name : b.t[st.i - 1];
+        const an = parseFloat(strip(av)), bn = parseFloat(strip(bv));
+        const cmp = (!isNaN(an) && !isNaN(bn)) ? an - bn : strip(av).localeCompare(strip(bv));
+        return cmp * st.dir;
+      });
+    }
+    $("#rows").innerHTML = list.map(e => "<tr><td><a href='#/e/" + e.id + "'>" + e.name + "</a></td>"
+      + e.t.map(c => "<td>" + c + "</td>").join("") + "</tr>").join("")
+      || '<tr><td colspan="' + cat.cols.length + '" style="padding:20px;text-align:center;color:var(--muted)">Nothing matches that filter.</td></tr>';
+  }
+  draw();
+  view.querySelectorAll("th.s").forEach(th => th.addEventListener("click", () => {
+    const i = +th.dataset.i;
+    st.dir = (st.i === i) ? -st.dir : 1; st.i = i; sortState[type] = st;
+    view.querySelectorAll("th.s").forEach(x => x.classList.remove("asc", "desc"));
+    th.classList.add(st.dir > 0 ? "asc" : "desc");
+    draw();
+  }));
+  view.querySelectorAll(".fbtn").forEach(b => b.addEventListener("click", () => {
+    view.querySelectorAll(".fbtn").forEach(x => x.classList.remove("on"));
+    b.classList.add("on"); filter = b.dataset.f; draw();
+  }));
+}
+
+/* ── entry page ── */
+function entry(id) {
+  const e = BY[id];
+  if (!e) return notfound(id);
+  const cat = CATS[e.type], sibs = DB.filter(x => x.type === e.type), i = sibs.indexOf(e);
+  const chips = ['<span class="chip">' + cat.n + "</span>"]
+    .concat(e.rar ? ['<span class="chip t rar-' + e.rar + '" style="color:var(--r-' + e.rar + ')">' + e.rar + "</span>"] : [])
+    .concat(e.tier ? ['<span class="chip t" style="color:var(--r-' + (e.tier === "S" ? "mythical" : e.tier === "A" ? "legendary" : "common") + ')">Tier ' + e.tier + "</span>"] : []);
+  const see = (e.see || []).map(link).filter(Boolean)
+    .filter(l => l[0] !== "#/e/" + id)
+    .map(l => '<a href="' + l[0] + '">' + l[1] + "</a>").join("");
+  view.innerHTML = '<div class="page"><article><div class="crumb"><a href="#/">Main page</a> &rsaquo; <a href="#/c/' + e.type + '">' + cat.n + "</a> &rsaquo; <span>" + e.name + "</span></div>"
+    + '<h1 class="pt">' + e.name + '</h1><div class="chips">' + chips.join("") + "</div>"
+    + '<p class="lead">' + e.lead + "</p>"
+    + (e.sec || []).map(s => '<h2 class="sh">' + s[0] + '</h2><div class="prose">' + s[1] + "</div>").join("")
+    + (see ? '<h2 class="sh">See also</h2><div class="seealso">' + see + "</div>" : "")
+    + '<div class="pagefoot"><span>Data: Frieren patch, Sept 2026</span><span>'
+    + (i > 0 ? '<a href="#/e/' + sibs[i - 1].id + '">&larr; ' + sibs[i - 1].name + "</a>" : "")
+    + (i > 0 && i < sibs.length - 1 ? " &nbsp;&middot;&nbsp; " : "")
+    + (i < sibs.length - 1 ? '<a href="#/e/' + sibs[i + 1].id + '">' + sibs[i + 1].name + " &rarr;</a>" : "") + "</span></div></article>"
+    + '<aside class="infobox"><div class="ibhead"><span>' + cat.n + '</span><b>' + e.name + "</b></div>"
+    + (e.info || []).map(r => '<dl class="ibrow"><dt>' + r[0] + "</dt><dd>" + r[1] + "</dd></dl>").join("")
+    + "</aside></div>";
+}
+
+function notfound(id) {
+  view.innerHTML = '<div class="page full"><h1 class="pt">No such page</h1><p class="lead">Nothing in the database is filed under &ldquo;' + strip(id) + '&rdquo;. Try the search bar, or <a href="#/">start from the main page</a>.</p></div>';
+}
+
+/* ── guides ── */
+const KEY = "lineage-piece-manual.progress.v1";
+let done = {}; try { done = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) {}
+const saveProg = () => { try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) {} };
+
+function head(name, lede) {
+  return '<div class="crumb"><a href="#/">Main page</a> &rsaquo; <span>' + name + "</span></div>"
+    + '<h1 class="pt">' + name + '</h1><p class="lead">' + lede + "</p>";
+}
+
+const GUIDEVIEW = {
+ "progression": function () {
+   const total = PHASES.reduce((n, p) => n + p.tasks.length, 0);
+   view.innerHTML = '<div class="page full">' + head("Progression roadmap",
+     "Six phases from the starter village to the endgame loops, each ending in the thing that unlocks the next. Tick items off &mdash; progress is stored on this device.")
+     + '<div class="progline"><div class="progtrack"><div class="progfill" id="pf"></div></div><span class="num" id="pt" style="color:var(--muted);font-size:12.5px"></span><button class="ghost" id="reset" type="button">Clear progress</button></div>'
+     + PHASES.map((p, pi) => '<div class="phase"><div class="phasehead"><h3>' + p.t + '</h3><span class="lv">' + p.lv + '</span></div><ul class="tasks">'
+       + p.tasks.map((t, ti) => '<li class="task' + (done[pi + ":" + ti] ? " done" : "") + '" data-k="' + pi + ":" + ti + '"><input type="checkbox"'
+         + (done[pi + ":" + ti] ? " checked" : "") + ' aria-label="' + strip(t) + '"><span>' + t + "</span></li>").join("")
+       + "</ul></div>").join("") + "</div>";
+   const paint = () => {
+     const n = Object.keys(done).filter(k => done[k]).length;
+     $("#pf").style.width = Math.round(n / total * 100) + "%";
+     $("#pt").textContent = n + " / " + total + " steps";
+   };
+   view.querySelectorAll(".task").forEach(li => li.addEventListener("click", ev => {
+     const cb = $("input", li);
+     if (ev.target !== cb) cb.checked = !cb.checked;
+     if (cb.checked) done[li.dataset.k] = 1; else delete done[li.dataset.k];
+     li.classList.toggle("done", cb.checked); saveProg(); paint();
+   }));
+   $("#reset").addEventListener("click", () => {
+     done = {}; saveProg();
+     view.querySelectorAll(".task").forEach(li => { li.classList.remove("done"); $("input", li).checked = false; });
+     paint();
+   });
+   paint();
+ },
+ "first-hour": function () {
+   view.innerHTML = '<div class="page full">' + head("The first hour",
+     "Lineage Piece hands you nothing and expects you to route yourself. These six decisions skip the mistakes that cost new accounts the most time.")
+     + '<div class="tiles">' + FIRST.map((f, i) => '<div class="tile" style="cursor:default"><em>' + (i + 1) + " &middot; " + f[1] + '</em><b>' + f[0] + "</b><span>" + f[2] + "</span></div>").join("")
+     + '</div><p class="note">Next: the <a href="#/g/progression">progression roadmap</a> takes it from here to the endgame.</p></div>';
+ },
+ "tiers": function () {
+   const tiers = ["S", "A", "B", "C"], names = {S: "Top of the meta", A: "Strong, and realistic", B: "Serviceable", C: "Replace when you can"};
+   let h = '<div class="page full">' + head("Tier lists",
+     "Generated from every ranked page in the database. Rankings are the one thing community sources broadly agree on &mdash; the percentages behind them are not.");
+   tiers.forEach(t => {
+     const rows = DB.filter(e => e.tier === t);
+     if (!rows.length) return;
+     h += '<h2 class="sh"><span class="tier t-' + t + '">' + t + "</span> &nbsp;" + names[t] + "</h2><div class='prose'><ul>"
+       + rows.map(e => "<li><a href='#/e/" + e.id + "'><strong>" + e.name + "</strong></a> <span class='chip'>" + CATS[e.type].n + "</span> &mdash; " + strip(e.t[e.t.length - 1]).slice(0, 130) + "</li>").join("")
+       + "</ul></div>";
+   });
+   h += '<h2 class="sh">Races, ranked</h2><div class="prose"><p>Races don&#8217;t carry tiers, they carry rarities &mdash; but the consensus order is <strong>Enlightened</strong> and <strong>Demon</strong> first (both give total damage, which applies whatever you build), then <strong>Archon</strong> for weapon builds and <strong>Demi God</strong> for melee, then <strong>True Shinigami</strong>, then everything else.</p></div>';
+   view.innerHTML = h + "</div>";
+ },
+ "codes": function () {
+   view.innerHTML = '<div class="page full">' + head("Codes",
+     "Codes drop with updates and expire without notice, and most carry a minimum level. Like the game and join the Roblox group first, then redeem via the <strong>Settings</strong> icon &rarr; text box &rarr; enter arrow.")
+     + '<div class="codegrid">' + CODES.map(c => '<div class="code"><span class="c">' + c[0] + "<small>" + c[1] + '</small></span><button class="copy" type="button" data-c="' + c[0] + '">Copy</button></div>').join("") + "</div>"
+     + '<div class="warnbox">Current as of the <strong>Frieren</strong> patch, early September 2026. A dead code is normal rather than a redemption mistake &mdash; the official Discord posts new ones as they ship.</div></div>';
+   view.querySelectorAll(".copy").forEach(b => b.addEventListener("click", () => {
+     navigator.clipboard.writeText(b.dataset.c).then(() => {
+       b.textContent = "Copied"; b.classList.add("ok");
+       setTimeout(() => { b.textContent = "Copy"; b.classList.remove("ok"); }, 1400);
+     }, () => { b.textContent = "Select it"; });
+   }));
+ },
+ "sources": function () {
+   view.innerHTML = '<div class="page full">' + head("Accuracy &amp; sources",
+     "Lineage Piece has no official public database. The developer posts to a Trello and a Discord; everything else is community-maintained, and the community disagrees with itself. This page says where.")
+     + '<h2 class="sh">Where the sources disagree</h2><div class="tablewrap"><table><thead><tr><th>Figure</th><th>The disagreement</th></tr></thead><tbody>'
+     + DISPUTED.map(d => "<tr><td><strong>" + d[0] + "</strong></td><td>" + d[1] + "</td></tr>").join("") + "</tbody></table></div>"
+     + '<h2 class="sh">Check these first</h2><div class="prose"><ul>'
+     + "<li>The in-game <strong>Trello</strong> and <strong>Discord</strong>, linked from the Roblox page &mdash; the only first-party sources.</li>"
+     + "<li>Anything a patch can touch: recipe costs, drop rates, level gates, torch positions.</li><li>Codes, always.</li></ul>"
+     + "<p style='margin-top:10px'>Compiled September 2026. Recipes and rates here are the community&#8217;s reading of the current build, not developer specs. Not affiliated with Prlz&#8217;s Den or Roblox Corporation.</p></div>"
+     + '<h2 class="sh">Consulted</h2><ul class="srclist">'
+     + SOURCES.map(s => '<li><a href="' + s[1] + '" target="_blank" rel="noopener">' + s[0] + "</a></li>").join("") + "</ul></div>";
+ }
+};
+
+/* ── tools ── */
+const attemptsFor = (p, c) => Math.ceil(Math.log(1 - c) / Math.log(1 - p));
+const TOOLVIEW = {
+ "odds": function () {
+   view.innerHTML = '<div class="page full">' + head("Reroll &amp; drop odds",
+     "Every roll and every drop in this game is an independent event, so &ldquo;I&#8217;m due&rdquo; is never true. Pick a target and see what an attempt count actually buys &mdash; and what it costs before you start.")
+     + '<div class="tool"><div class="controls">'
+     + '<div class="field"><label for="target">Target</label><select id="target">'
+     + TARGETS.map((t, i) => '<option value="' + i + '">' + t.n + " &mdash; " + (t.p * 100) + "%</option>").join("") + "</select></div>"
+     + '<div class="field"><label for="rolls">Attempts</label><input id="rolls" type="number" min="1" max="20000" value="100"></div>'
+     + '<div class="field"><label for="rollslide">Drag attempts</label><input id="rollslide" type="range" min="1" max="200" value="100"></div></div>'
+     + '<div class="readout">'
+     + '<div class="ro"><small>Chance by then</small><b id="o-chance"></b></div>'
+     + '<div class="ro"><small>Coin-toss point</small><b id="o-median"></b></div>'
+     + '<div class="ro"><small>Average attempts</small><b id="o-mean"></b></div>'
+     + '<div class="ro"><small>95% confident by</small><b id="o-p95"></b></div>'
+     + '<div class="ro"><small>Cost for your attempts</small><b id="o-cost"></b></div></div>'
+     + '<div class="chartbox"><svg id="oddschart" viewBox="0 0 720 200" role="img" aria-label="Cumulative chance of hitting the target as attempts increase"></svg></div>'
+     + '<p class="note" id="o-note"></p></div></div>';
+   const sel = $("#target"), rolls = $("#rolls"), slide = $("#rollslide");
+   function chart(p, n) {
+     const W = 720, H = 200, L = 46, R = 14, T = 14, B = 30;
+     const maxX = Math.max(10, Math.min(n * 2, attemptsFor(p, 0.995)));
+     const x = v => L + v / maxX * (W - L - R), y = v => T + (1 - v) * (H - T - B);
+     let g = "";
+     [0, .25, .5, .75, 1].forEach(v => {
+       g += '<line x1="' + L + '" y1="' + y(v).toFixed(1) + '" x2="' + (W - R) + '" y2="' + y(v).toFixed(1) + '" stroke="var(--line)" stroke-width="1"/>'
+         + '<text x="' + (L - 8) + '" y="' + (y(v) + 4).toFixed(1) + '" text-anchor="end" fill="var(--muted)" font-family="IBM Plex Mono, monospace" font-size="10">' + (v * 100) + "%</text>";
+     });
+     let d = "";
+     for (let i = 0; i <= 120; i++) { const v = maxX * i / 120; d += (i ? "L" : "M") + x(v).toFixed(1) + " " + y(1 - Math.pow(1 - p, v)).toFixed(1) + " "; }
+     const cx = x(Math.min(n, maxX)), cy = y(1 - Math.pow(1 - p, Math.min(n, maxX))), med = attemptsFor(p, .5);
+     const medline = med <= maxX ? '<line x1="' + x(med).toFixed(1) + '" y1="' + y(0) + '" x2="' + x(med).toFixed(1) + '" y2="' + y(1) + '" stroke="var(--teal)" stroke-width="1" stroke-dasharray="3 3"/>'
+       + '<text x="' + (x(med) + 5).toFixed(1) + '" y="' + (T + 11) + '" fill="var(--teal)" font-family="IBM Plex Mono, monospace" font-size="10">50% at ' + commas(med) + "</text>" : "";
+     $("#oddschart").innerHTML = g + medline
+       + '<path d="' + d + '" fill="none" stroke="var(--gold)" stroke-width="2.5" stroke-linejoin="round"/>'
+       + '<circle cx="' + cx.toFixed(1) + '" cy="' + cy.toFixed(1) + '" r="4.5" fill="var(--gold)"/>'
+       + '<text x="' + L + '" y="' + (H - 10) + '" fill="var(--muted)" font-family="IBM Plex Mono, monospace" font-size="10">0</text>'
+       + '<text x="' + (W - R) + '" y="' + (H - 10) + '" text-anchor="end" fill="var(--muted)" font-family="IBM Plex Mono, monospace" font-size="10">' + commas(Math.round(maxX)) + " attempts</text>"
+       + '<text x="' + (cx > W - 150 ? cx - 9 : cx + 9).toFixed(1) + '" y="' + Math.min(H - B - 6, cy + 17).toFixed(1) + '" text-anchor="' + (cx > W - 150 ? "end" : "start") + '" fill="var(--ink)" font-family="IBM Plex Mono, monospace" font-size="11" font-weight="600">' + commas(n) + " &#8594; " + ((1 - Math.pow(1 - p, n)) * 100).toFixed(1) + "%</text>";
+   }
+   function odds() {
+     const t = TARGETS[+sel.value], n = Math.max(1, Math.min(20000, +rolls.value || 1)), p = t.p;
+     const ch = 1 - Math.pow(1 - p, n);
+     $("#o-chance").textContent = (ch * 100).toFixed(ch > .999 ? 3 : 1) + "%";
+     $("#o-median").textContent = commas(attemptsFor(p, .5));
+     $("#o-mean").textContent = commas(Math.round(1 / p));
+     $("#o-p95").textContent = commas(attemptsFor(p, .95));
+     $("#o-cost").innerHTML = t.cost ? commas(t.cost * n) + ' <small style="font-family:var(--sans);font-size:11px;letter-spacing:0;text-transform:none">' + t.cur + "</small>" : "&mdash;";
+     $("#o-note").innerHTML = "<strong>" + commas(attemptsFor(p, .5)) + " " + t.unit + "</strong> is the coin-toss point &mdash; half of players hit by then, half don&#8217;t. Reaching 95% confidence takes <strong>"
+       + commas(attemptsFor(p, .95)) + "</strong>" + (t.cost ? ", which is " + commas(t.cost * attemptsFor(p, .95)) + " " + t.cur : "") + ". " + t.alt;
+     chart(p, n);
+   }
+   sel.addEventListener("change", () => { slide.max = Math.max(50, attemptsFor(TARGETS[+sel.value].p, .97)); rolls.value = Math.min(+rolls.value, +slide.max); slide.value = rolls.value; odds(); });
+   rolls.addEventListener("input", () => { slide.value = Math.min(+rolls.value || 1, +slide.max); odds(); });
+   slide.addEventListener("input", () => { rolls.value = slide.value; odds(); });
+   slide.max = attemptsFor(0.02, .97); odds();
+ },
+ "planner": function () {
+   const ART4 = {"Azure Edge": {ch:"weapon", v:30, extra:"+7.5% damage reduction"}, "Abyssal Striker": {ch:"melee", v:30, extra:"+15% HP"},
+     "Mythical Awakening": {ch:"power", v:30, extra:"+1% lifesteal"}, "Pure Lineage": {ch:"any", v:15, extra:"all three channels"},
+     "Titan Executioner": {ch:"boss", v:32.5, extra:"boss fights only"}, "Supreme Mastery": {ch:"mastery", v:47.5, extra:"mastery skills only"}};
+   const races = DB.filter(e => e.type === "race");
+   view.innerHTML = '<div class="page full">' + head("Build planner",
+     "The one rule of Lineage Piece building: race, trait, artifact set, outfit and stat points all have to land on the same damage channel. Set a channel and this adds up only what applies to it &mdash; then names what you&#8217;d be wasting.")
+     + '<div class="tool"><div class="controls">'
+     + '<div class="field"><label for="chan">Damage channel</label><select id="chan"><option value="weapon">Weapon &mdash; sword skills</option><option value="melee">Strength / melee &mdash; styles &amp; M1s</option><option value="power">Power &mdash; fruit &amp; spec skills</option></select></div>'
+     + '<div class="field"><label for="p-race">Race</label><select id="p-race">' + races.map((r, i) => '<option value="' + i + '">' + r.name.replace(/&middot;/g, "/") + "</option>").join("") + "</select></div>"
+     + '<div class="field"><label for="p-art">Artifact set (4pc)</label><select id="p-art">' + Object.keys(ART4).map(k => '<option value="' + k + '">' + k + " (+" + ART4[k].v + "%)</option>").join("") + "</select></div>"
+     + '<div class="field"><label for="p-haki">Armament Haki</label><select id="p-haki"><option value="25">Unlocked (+25%)</option><option value="0">Not yet</option></select></div></div>'
+     + '<div class="stack" id="stackout"></div><div id="mismatch"></div>'
+     + '<p class="note">Additive estimate. The game does not publish its damage formula and some multipliers are almost certainly multiplicative &mdash; use this to compare two setups, not to predict a number.</p></div></div>';
+   $("#p-race").value = races.findIndex(r => r.id === "enlightened");
+   function plan() {
+     const ch = $("#chan").value, r = races[+$("#p-race").value], b = r.buff || {}, art = ART4[$("#p-art").value], haki = +$("#p-haki").value;
+     const lines = [], unused = []; let sum = 0;
+     const add = (s, v) => { lines.push([s, v]); sum += v; };
+     if (haki) add("Armament Haki", 25);
+     if (b.all) add(r.name + " &mdash; total damage", b.all);
+     if (b[ch]) add(r.name + " &mdash; " + ch + " damage", b[ch]);
+     else if (b.melee && ch !== "melee") unused.push(r.name + "&#8217;s +" + b.melee + "% melee damage does nothing for your " + ch + " skills.");
+     if (!b.all && !b[ch] && !b.melee) unused.push(r.id === "human"
+       ? "Human is the default roll with no stat bonuses &mdash; every other race is an upgrade."
+       : r.name + " has no published damage figure, so this planner can&#8217;t count it. It may still be the right race for you.");
+     if (art.ch === ch || art.ch === "any") add($("#p-art").value + " 4-piece", art.v);
+     else if (art.ch === "boss" || art.ch === "mastery") lines.push([$("#p-art").value + " 4-piece &mdash; conditional (" + art.extra + ")", art.v, 1]);
+     else unused.push($("#p-art").value + " gives +" + art.v + "% " + art.ch + " damage and you&#8217;re building " + ch + ". Swap the set or swap the channel.");
+     $("#stackout").innerHTML = lines.map(l => '<div class="stackrow"' + (l[2] ? ' style="opacity:.72"' : "") + "><span>" + l[0] + '</span><span class="amt">' + (l[2] ? "" : "+") + l[1] + "%</span></div>").join("")
+       + '<div class="stackrow total"><span>Stacked on your ' + ch + ' channel</span><span class="amt">+' + String(sum.toFixed(1)).replace(/\.0$/, "") + "%</span></div>";
+     $("#mismatch").innerHTML = unused.length
+       ? '<div class="warnbox"><strong>Wasted on this build:</strong> ' + unused.join(" ") + "</div>"
+       : '<p class="note">Nothing wasted &mdash; every source above lands on the channel you&#8217;re building.</p>';
+   }
+   ["#chan", "#p-race", "#p-art", "#p-haki"].forEach(s => $(s).addEventListener("change", plan));
+   plan();
+ }
+};
+
+/* ── router ── */
+function route() {
+  const h = location.hash.replace(/^#/, "") || "/";
+  const p = h.split("/").filter(Boolean);
+  if (!p.length) home();
+  else if (p[0] === "c" && CATS[p[1]]) category(p[1]);
+  else if (p[0] === "e") entry(p[1]);
+  else if (p[0] === "g" && GUIDEVIEW[p[1]]) GUIDEVIEW[p[1]]();
+  else if (p[0] === "t" && TOOLVIEW[p[1]]) TOOLVIEW[p[1]]();
+  else notfound(p.join("/"));
+  document.querySelectorAll(".side a").forEach(a => a.classList.toggle("on", a.getAttribute("href") === "#" + h));
+  window.scrollTo(0, 0);
+  view.focus({preventScroll: true});
+}
+window.addEventListener("hashchange", route);
+
+/* ── search ── */
+const INDEX = DB.map(e => ({id: "#/e/" + e.id, n: e.name, t: CATS[e.type].n,
+  hay: (strip(e.name) + " " + CATS[e.type].n + " " + strip(e.lead || "") + " " + (e.info || []).map(r => strip(r[0]) + " " + strip(r[1])).join(" ")).toLowerCase()}))
+ .concat(Object.keys(CATS).map(t => ({id: "#/c/" + t, n: CATS[t].n, t: "Index", hay: strip(CATS[t].n).toLowerCase() + " index list all"})))
+ .concat(Object.keys(GUIDES).map(k => ({id: "#/g/" + k, n: GUIDES[k].n, t: "Guide", hay: strip(GUIDES[k].n).toLowerCase() + " guide"})))
+ .concat(Object.keys(TOOLS).map(k => ({id: "#/t/" + k, n: TOOLS[k].n, t: "Tool", hay: strip(TOOLS[k].n).toLowerCase() + " tool calculator"})));
+
+const box = $("#search"), out = $("#results");
+let hits = [], cur = -1;
+box.placeholder = "Search " + DB.length + " pages — fruits, races, bosses, keys, NPCs…  (press /)";
+
+function search() {
+  const q = box.value.trim().toLowerCase();
+  if (!q) { out.hidden = true; return; }
+  hits = INDEX.map(r => {
+    const n = strip(r.n).toLowerCase();
+    let s = -1;
+    if (n === q) s = 0; else if (n.startsWith(q)) s = 1; else if (n.includes(q)) s = 2; else if (r.hay.includes(q)) s = 3;
+    return s < 0 ? null : {r: r, s: s};
+  }).filter(Boolean).sort((a, b) => a.s - b.s || a.r.n.length - b.r.n.length).slice(0, 12).map(x => x.r);
+  cur = -1;
+  out.innerHTML = hits.length
+    ? hits.map((r, i) => '<button type="button" data-i="' + i + '"><span class="rn">' + r.n + '</span><span class="rt">' + r.t + "</span></button>").join("")
+    : '<div class="none">No page matches &ldquo;' + strip(box.value) + "&rdquo;.</div>";
+  out.hidden = false;
+  out.querySelectorAll("button").forEach(b => b.addEventListener("mousedown", ev => { ev.preventDefault(); go(hits[+b.dataset.i]); }));
+}
+function go(r) { if (!r) return; location.hash = r.id; box.value = ""; out.hidden = true; box.blur(); }
+function mark() { out.querySelectorAll("button").forEach((b, i) => b.classList.toggle("sel", i === cur)); }
+
+box.addEventListener("input", search);
+box.addEventListener("focus", () => { if (box.value.trim()) search(); });
+box.addEventListener("blur", () => setTimeout(() => { out.hidden = true; }, 120));
+box.addEventListener("keydown", ev => {
+  if (ev.key === "Escape") { box.value = ""; out.hidden = true; box.blur(); }
+  else if (ev.key === "ArrowDown" && hits.length) { ev.preventDefault(); cur = (cur + 1) % hits.length; mark(); }
+  else if (ev.key === "ArrowUp" && hits.length) { ev.preventDefault(); cur = (cur - 1 + hits.length) % hits.length; mark(); }
+  else if (ev.key === "Enter") { ev.preventDefault(); go(hits[cur < 0 ? 0 : cur]); }
+});
+document.addEventListener("keydown", ev => {
+  if (ev.key === "/" && document.activeElement !== box && !/^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement.tagName)) {
+    ev.preventDefault(); box.focus();
+  }
+});
+
+/* ── theme, random ── */
+const modes = ["system", "light", "dark"], labels = {system: "Theme: auto", light: "Theme: light", dark: "Theme: dark"};
+let mode = "system"; try { mode = localStorage.getItem("lineage-piece-manual.theme") || "system"; } catch (e) {}
+function applyTheme() {
+  if (mode === "system") document.documentElement.removeAttribute("data-theme");
+  else document.documentElement.setAttribute("data-theme", mode);
+  $("#themebtn").textContent = labels[mode];
+  try { localStorage.setItem("lineage-piece-manual.theme", mode); } catch (e) {}
+}
+$("#themebtn").addEventListener("click", () => { mode = modes[(modes.indexOf(mode) + 1) % 3]; applyTheme(); });
+$("#randbtn").addEventListener("click", () => { location.hash = "#/e/" + DB[Math.floor(Math.random() * DB.length)].id; });
+applyTheme();
+route();
+</script>
+
+</body>
+</html>

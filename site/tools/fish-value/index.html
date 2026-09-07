@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fish value calculator — Fisch Field Guide</title>
+<meta name="description" content="A fish sells for its species’ base value scaled by weight and then multiplied by whatever mutation and attributes it carries. This models that structure so you can see what a mutat">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#e8eef2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#06121a" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Fisch Field Guide">
+<meta property="og:title" content="Fish value calculator — Fisch Field Guide">
+<meta property="og:description" content="A fish sells for its species’ base value scaled by weight and then multiplied by whatever mutation and attributes it carries. This models that structure so you can see what a mutat">
+<meta property="og:url" content="https://hmobolajibello-commits.github.io/Claude/tools/fish-value/">
+<meta property="og:image" content="https://hmobolajibello-commits.github.io/Claude/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Fish value calculator — Fisch Field Guide">
+<meta name="twitter:description" content="A fish sells for its species’ base value scaled by weight and then multiplied by whatever mutation and attributes it carries. This models that structure so you can see what a mutat">
+<meta name="twitter:image" content="https://hmobolajibello-commits.github.io/Claude/og.png">
+<link rel="canonical" href="https://hmobolajibello-commits.github.io/Claude/tools/fish-value/">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <a class="mark" href="../../"><b>Fisch</b><span>Field Guide</span></a>
+  <div class="searchwrap">
+    <input id="search" type="search" autocomplete="off" spellcheck="false" placeholder="Search 194 pages — rods, baits, fish, locations…  (press /)" aria-label="Search the wiki">
+    <div class="results" id="results" hidden></div>
+  </div>
+  <div class="topright">
+    <span class="stamp">Sept 2026</span>
+    <button class="ghost" id="randbtn" type="button">Random</button>
+    <button class="ghost" id="themebtn" type="button">Theme: auto</button>
+  </div>
+</header>
+<div class="frame">
+  <nav class="side" aria-label="Sections"><a href="../../" style="font-weight:600">Main page</a><div class="sgroup">The world</div><a href="../../locations/">Locations<em>31</em></a><a href="../../npcs/">NPCs<em>15</em></a><a href="../../bosses/">Bosses &amp; hunts<em>4</em></a><div class="sgroup">Gear</div><a href="../../rods/">Rods<em>67</em></a><a href="../../baits/">Baits<em>6</em></a><a href="../../enchants/">Enchants<em>4</em></a><a href="../../items/">Items &amp; gear<em>20</em></a><div class="sgroup">Database</div><a href="../../fish/">Fish<em>8</em></a><a href="../../mutations/">Mutations<em>22</em></a><a href="../../mechanics/">Mechanics<em>17</em></a><div class="sgroup">Guides</div><a href="../../guides/beginner/">Beginner&#8217;s guide</a><a href="../../guides/mistakes/">12 beginner mistakes</a><a href="../../guides/money-guide/">Making money</a><a href="../../guides/xp-guide/">XP &amp; levelling</a><a href="../../guides/enchanting/">Enchanting</a><a href="../../guides/codes/">Codes</a><a href="../../guides/sources/">Accuracy &amp; sources</a><a href="../../guides/progression/">Progression roadmap</a><div class="sgroup">Tools</div><a href="../../tools/path-planner/">Where am I? &mdash; path planner</a><a href="../../tools/rod-budget/">Rod budget planner</a><a href="../../tools/odds/">Drop &amp; catch odds</a><a href="../../tools/fish-value/" class="on">Fish value calculator</a></nav>
+  <main class="view" id="main"><div class="crumb"><a href="../../">Main page</a> &rsaquo; <span>Tools</span> &rsaquo; <span>Fish value calculator</span></div><h1 class="pt">Fish value calculator</h1><p class="lead">A fish sells for its species&#8217; base value scaled by weight and then multiplied by whatever mutation and attributes it carries. This models that structure so you can see what a mutation is actually worth before you decide whether to <a href="../../mechanics/appraisal/">appraise</a> it.</p><div class="tool"><div class="controls"><div class="field"><label for="v-base">Plain sale value, C$</label><input id="v-base" type="number" min="1" value="8000"></div><div class="field"><label for="v-mut">Mutation</label><select id="v-mut"></select></div><div class="field"><label for="v-weight">Weight vs. average</label><select id="v-weight"></select></div><div class="field"><label for="v-overlord">Sea Overlord enchant</label><select id="v-overlord"><option value="1">No</option><option value="1.25">Yes &mdash; +25% weight</option></select></div></div><div class="checkgrid"><label><input type="checkbox" id="v-shiny"> Shiny (1.85&times;, appraisal-safe)</label><label><input type="checkbox" id="v-spark"> Sparkling (1.85&times;, appraisal-safe)</label></div><div class="readout" id="v-out"></div><div class="stack" id="v-stack"></div><p class="note">A model of the multiplier structure, not the game&#8217;s exact arithmetic &mdash; Fisch does not publish its value formula, and weight scaling in particular is an approximation here. Use it to compare two catches, not to predict a sale.</p></div></main>
+</div>
+<footer class="sitefoot">
+  <span>Unofficial fan documentation &mdash; not affiliated with the Fisch developers or Roblox Corporation.</span>
+  <span>Data compiled September 2026 &middot; <a href="../../guides/sources/">Accuracy &amp; sources</a> &middot; <a href="../../lineage-piece.html">Lineage Piece Field Manual</a></span>
+</footer>
+<script>window.BASE="../../";</script>
+<script src="../../assets/search-index.js"></script>
+<script src="../../assets/app-data.js"></script>
+<script src="../../assets/site.js"></script>
+</body>
+</html>
