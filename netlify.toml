@@ -1,0 +1,16 @@
+# Netlify: connect this repo and the settings below are picked up automatically.
+# SITE_URL is derived from Netlify's own $URL, so the canonical link and the
+# social-card URLs match whatever domain the site ends up on.
+[build]
+  command = "./build.sh"
+  publish = "_site"
+
+[build.environment]
+  PYTHON_VERSION = "3.11"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "SAMEORIGIN"

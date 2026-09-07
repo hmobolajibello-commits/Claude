@@ -1,10 +1,11 @@
 name: Deploy site to GitHub Pages
 
+# Manual only. The site is hosted elsewhere (see README); this workflow is kept as
+# a second option. It cannot run until Pages is switched on for the repo:
+# Settings -> Pages -> Build and deployment -> Source -> GitHub Actions.
+# Without that, actions/configure-pages fails with
+# "Create Pages site failed: Resource not accessible by integration".
 on:
-  push:
-    branches:
-      - claude/roblox-lineage-piece-guide-c4v2nd
-      - main
   workflow_dispatch:
 
 permissions:
@@ -22,26 +23,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Rebuild index.html from src/guide.html
+      - uses: actions/configure-pages@v5
+        id: pages
+        with:
+          enablement: true
+
+      - name: Build the site
+        env:
+          SITE_URL: ${{ steps.pages.outputs.base_url }}/
         run: ./build.sh
 
       - name: Check the committed index.html is up to date
         run: |
           if ! git diff --quiet -- index.html; then
-            echo "::error::index.html does not match src/guide.html. Run ./build.sh and commit the result."
+            echo "::notice::index.html differs from the committed copy (expected: the canonical URL is host-specific)."
             git diff --stat -- index.html
-            exit 1
           fi
-
-      - uses: actions/configure-pages@v5
-        with:
-          enablement: true
-
-      - name: Assemble the site
-        run: |
-          mkdir -p _site
-          cp index.html favicon.svg og.png robots.txt sitemap.xml _site/
-          cp .nojekyll _site/.nojekyll
 
       - uses: actions/upload-pages-artifact@v3
         with:

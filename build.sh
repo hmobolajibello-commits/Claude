@@ -1,18 +1,31 @@
 #!/usr/bin/env bash
-# Wraps src/guide.html (an Artifact-shaped fragment: no <html>/<head>/<body>)
-# into the standalone index.html that ships as the website.
+# Builds the website from src/guide.html.
 #
-# The fragment's leading <title>/<link>/<style> block is lifted into <head>,
-# the site metadata below is added, and everything after it becomes the <body>.
-# Keeping the site chrome here rather than in the fragment means src/guide.html
-# stays publishable as a Claude Artifact unchanged.
+# src/guide.html is an Artifact-shaped fragment (no <html>/<head>/<body>), so the
+# same source publishes both as a Claude Artifact and as this site. This script
+# wraps it into a document, adds the site metadata, and assembles _site/.
+#
+# Outputs:
+#   index.html   standalone page, committed so the repo root can be served as-is
+#   _site/       the deploy directory (index.html + assets + generated robots/sitemap)
+#
+# The canonical and social-card URLs come from SITE_URL, auto-detected on the
+# common hosts. Override it directly for anything else:
+#   SITE_URL=https://lineagepiece.example/ ./build.sh
 set -euo pipefail
 cd "$(dirname "$0")"
 
-SITE_URL="${SITE_URL:-https://hmobolajibello-commits.github.io/Claude/}"
+# Netlify exposes $URL, Cloudflare Pages exposes $CF_PAGES_URL (both without a
+# trailing slash); fall back to the GitHub Pages address for this repo.
+if [ -z "${SITE_URL:-}" ]; then
+  if [ -n "${URL:-}" ]; then SITE_URL="${URL%/}/"
+  elif [ -n "${CF_PAGES_URL:-}" ]; then SITE_URL="${CF_PAGES_URL%/}/"
+  else SITE_URL="https://hmobolajibello-commits.github.io/Claude/"
+  fi
+fi
 
 SITE_URL="$SITE_URL" python3 - <<'PY'
-import os
+import os, shutil, pathlib
 
 url = os.environ["SITE_URL"]
 desc = ("An unofficial Lineage Piece wiki: 164 pages covering every island, boss, NPC, devil fruit, "
@@ -49,8 +62,27 @@ img{{max-width:100%}}
 </style>
 """
 
-open("index.html", "w", encoding="utf-8").write(
-    "<!doctype html>\n<html lang=\"en\">\n<head>\n" + meta + head
-    + "\n</head>\n<body>\n" + body + "\n</body>\n</html>\n")
-print("built index.html", len(open("index.html", encoding="utf-8").read()), "chars")
+page = ("<!doctype html>\n<html lang=\"en\">\n<head>\n" + meta + head
+        + "\n</head>\n<body>\n" + body + "\n</body>\n</html>\n")
+open("index.html", "w", encoding="utf-8").write(page)
+
+site = pathlib.Path("_site")
+if site.exists():
+    shutil.rmtree(site)
+site.mkdir()
+(site / "index.html").write_text(page, encoding="utf-8")
+for asset in ("favicon.svg", "og.png", "_headers"):
+    if pathlib.Path(asset).exists():
+        shutil.copy(asset, site / asset)
+(site / ".nojekyll").write_text("", encoding="utf-8")
+
+# robots and sitemap carry the real host, so they are generated rather than committed stale
+(site / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {url}sitemap.xml\n", encoding="utf-8")
+(site / "sitemap.xml").write_text(
+    '<?xml version="1.0" encoding="UTF-8"?>\n'
+    '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    f"  <url>\n    <loc>{url}</loc>\n    <changefreq>monthly</changefreq>\n    <priority>1.0</priority>\n  </url>\n"
+    "</urlset>\n", encoding="utf-8")
+
+print(f"built index.html and _site/ ({len(page)} chars) for {url}")
 PY

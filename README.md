@@ -44,23 +44,44 @@ tier lists (generated from the database) · codes · accuracy & sources.
 - **Progression checklist** — saved to `localStorage`.
 - **Random page**, light/dark/auto theme, cross-linked "See also" and prev/next within each category.
 
-## The website
+## Putting it online
 
-Live at **https://hmobolajibello-commits.github.io/Claude/**
+The repo is ready to deploy as-is on either host below. Both build with `./build.sh` and
+serve the generated `_site/` directory.
 
-`.github/workflows/pages.yml` deploys on every push to the default branch. It rebuilds
-`index.html` from `src/guide.html`, fails the run if the committed `index.html` is stale,
-then publishes `index.html`, `favicon.svg`, `og.png`, `robots.txt` and `sitemap.xml` to
-GitHub Pages. Pages is enabled by the workflow itself (`actions/configure-pages` with
-`enablement: true`), so no manual repo setting is needed; if the run reports it lacks
-permission, set **Settings → Pages → Source** to **GitHub Actions** once and re-run.
+### Cloudflare Pages (recommended)
 
-To point it at a different host, `SITE_URL=https://example.com/ ./build.sh` rewrites the
-canonical link and the social-card URLs.
+1. [dash.cloudflare.com](https://dash.cloudflare.com) → **Workers & Pages** → **Create** → **Pages** → **Connect to Git**
+2. Pick `hmobolajibello-commits/Claude`, branch `claude/roblox-lineage-piece-guide-c4v2nd`
+3. Build command `./build.sh` · Build output directory `_site` · Framework preset **None**
+4. Save and Deploy
 
-Note on search engines: the wiki routes with `#/` hashes, so crawlers index the site as a
-single page. Per-page indexing would need real paths (one HTML file per entry) — worth
-doing only if organic search traffic matters.
+Unlimited bandwidth on the free plan, and a custom domain is one click under
+**Custom domains** if you ever want one.
+
+### Netlify
+
+1. [app.netlify.com](https://app.netlify.com) → **Add new site** → **Import an existing project** → GitHub
+2. Pick the repo and branch
+
+`netlify.toml` already sets the build command, publish directory and Python version, so
+there is nothing to type. Deploy.
+
+### What the build does with the host
+
+`build.sh` picks up the deploy URL automatically — Netlify's `$URL`, Cloudflare's
+`$CF_PAGES_URL` — and writes it into the canonical link, the Open Graph / Twitter card
+URLs, `robots.txt` and `sitemap.xml`. For a custom domain, nothing needs editing; for
+anything unusual, `SITE_URL=https://example.com/ ./build.sh`.
+
+`_headers` sets caching and the usual security headers on both hosts.
+
+### GitHub Pages, if you'd rather
+
+`.github/workflows/pages.yml` is set to **manual runs only**, because GitHub Actions is
+not allowed to switch Pages on by itself. To use it: **Settings → Pages → Build and
+deployment → Source → GitHub Actions**, then run the workflow from the Actions tab. The
+site would land at `https://hmobolajibello-commits.github.io/Claude/`.
 
 ### Running it locally
 
@@ -70,14 +91,22 @@ xdg-open index.html      # Linux
 python3 -m http.server   # or serve the directory
 ```
 
+`index.html` is committed, so the repo root is also directly serveable if a host offers
+no build step.
+
 ## Repo layout
 
 ```
-src/guide.html   the app: markup, CSS, data and router in one fragment
-                 (no <html>/<head>/<body> — it publishes directly as a Claude Artifact)
-build.sh         lifts the fragment's <title>/<link>/<style> into a <head>, wraps the
-                 rest in a document -> index.html
-index.html       generated standalone page (committed)
+src/guide.html          the app: markup, CSS, data and router in one fragment
+                        (no <html>/<head>/<body> — publishes directly as a Claude Artifact)
+build.sh                wraps the fragment into a document, adds the site metadata,
+                        assembles _site/ -> index.html + _site/
+index.html              generated standalone page (committed)
+_site/                  deploy directory (generated, gitignored)
+favicon.svg  og.png     site icon and social card
+_headers                cache and security headers (Cloudflare Pages / Netlify)
+netlify.toml            Netlify build config
+.github/workflows/      manual GitHub Pages deploy, as an alternative
 ```
 
 Edit `src/guide.html`, then run `./build.sh`.
