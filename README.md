@@ -1,3 +1,82 @@
+# Roblox wiki apps
+
+Two unofficial, self-contained **wiki apps**, each one HTML file with no framework, no
+build dependencies and no network calls beyond Google Fonts:
+
+| App | Source | Deployed at | What it covers |
+| --- | --- | --- | --- |
+| **Fisch Field Guide** | `src/fisch.html` | `/fisch/` | Roblox's fishing game — 135 pages, a beginner's guide, an eight-phase roadmap and a "where am I" progression planner |
+| **Lineage Piece Field Manual** | `src/guide.html` | `/` | Prlz's Den's anime-crossover action RPG — 164 pages, odds calculator and build planner |
+
+---
+
+# Fisch Field Guide
+
+An unofficial wiki for **Fisch**, the Roblox fishing game — built around the question the
+other wikis do not answer: *given where I actually am, what do I do next?*
+
+## The path planner
+
+The headline tool. Put in your **level**, your **best rod**, your **C$ on hand**, what you
+have already unlocked and what you want right now, and it:
+
+- works out which of **19 route milestones** you have cleared and which phase you are in;
+- gives you the **next five steps in order**, each with its cost, its level gate and where
+  to do it;
+- marks a step **blocked** when you cannot afford it yet, and tells you how many hours of
+  farming that gap is *at your stage*, at the right farm for your stage;
+- flags things you **skipped** — the 400 C$ Keepers Altar bribe you never paid, the free
+  Fungal Rod you walked past, money sitting unspent on a stage-1 rod;
+- infers what your rod proves (you cannot own a Rod of the Depths without having cleared
+  Vertigo), so a returning player does not have to re-tick everything.
+
+The planner and the roadmap read **the same milestone list**, so the two can never drift
+apart. Your answers save to `localStorage`.
+
+## 135 pages
+
+| Category | Pages | What's on each page |
+| --- | --- | --- |
+| Locations | 24 | Stage, how you get there, what to do while you're there, what it gates |
+| Rods | 21 | Stage, price, source, passive — the progression spine, not all 230+ rods |
+| Items & gear | 20 | Boats, relics, keys, totems, potions, charms, crates |
+| Mutations | 22 | Multipliers, and which ones you can manufacture on purpose |
+| Mechanics | 15 | The three-part minigame, both kinds of luck, XP maths, weather, appraisal |
+| NPCs | 11 | Who sells what, and who hands things over free |
+| Fish | 8 | The ones that change a decision — quest fish, money fish, weather-gated holes |
+| Baits | 6 | Preferred vs. universal luck, and when each is the wrong choice |
+| Enchants | 4 | The exalted enchants the sources actually agree on |
+| Bosses & hunts | 4 | Megalodon, Kraken, Abaia, Isonade — and how each one starts |
+
+**Guides:** beginner's guide · progression roadmap (8 phases, saved checklist) · 12 beginner
+mistakes · making money · XP & levelling · enchanting · codes · accuracy & sources.
+
+**Tools:** path planner · rod budget planner · drop & catch odds · fish value calculator.
+
+## About the Fisch data
+
+Fisch patches constantly and its community documentation disagrees with itself in exactly
+the places you would expect — shop prices, drop rates, anything a recent update touched.
+This app **marks the disagreements** rather than picking one reading and sounding certain,
+and where the sources are simply thin (the regular enchant pool, several shop prices) it
+says so instead of filling the gap with a guess. Every disputed figure carries a dotted
+underline and is listed on the *Accuracy & sources* page:
+
+| Disputed | Readings in circulation |
+| --- | --- |
+| Kraken Rod price | 950,000 C$ vs. 1,333,333 C$ |
+| The "extra fish every third catch" passive | Credited to the Rod of the Depths in one source, the Great Dreamer Rod in another |
+| Rarity tier count | 12, 17 or 18, plus Limited / Special / Extinct |
+| 100% bestiary reward | Aurora Bobber, Aurora Glow Lantern, or the Masterline Rod |
+| Totem count | 20 vs. 26 |
+| Bait roster size | 25 vs. 62 vs. 65 |
+| Money rates per hour | All community estimates under unstated setups |
+
+Data compiled **September 2026**, right after the Skycrest update. Verify anything
+expensive at the merchant before you commit to it.
+
+---
+
 # Lineage Piece Field Manual
 
 An unofficial, self-contained **wiki app** for **Lineage Piece**, the One Piece–inspired
@@ -52,7 +131,7 @@ serve the generated `_site/` directory.
 ### Cloudflare Pages (recommended)
 
 1. [dash.cloudflare.com](https://dash.cloudflare.com) → **Workers & Pages** → **Create** → **Pages** → **Connect to Git**
-2. Pick `hmobolajibello-commits/Claude`, branch `claude/roblox-lineage-piece-guide-c4v2nd`
+2. Pick `hmobolajibello-commits/Claude`, branch `claude/fisch-wiki-progression-jfb5x0`
 3. Build command `bash build.sh` · Build output directory `_site` · Framework preset **None**
 4. Save and Deploy
 
@@ -76,7 +155,8 @@ skip the build entirely:
 - **Build command:** *(leave empty)*
 - **Output / publish directory:** `/` (the repo root)
 
-`index.html` is committed and complete, so the site works served straight from the root.
+`index.html` and `fisch.html` are committed and complete, so the site works served straight
+from the root (the Fisch guide lands at `/fisch.html` rather than `/fisch/`).
 The only thing lost is host-specific metadata: the canonical link and social-card URLs
 keep pointing at the GitHub Pages address, and `sitemap.xml` isn't generated.
 
@@ -99,30 +179,40 @@ site would land at `https://hmobolajibello-commits.github.io/Claude/`.
 ### Running it locally
 
 ```bash
-open index.html          # macOS
-xdg-open index.html      # Linux
+open fisch.html          # macOS — or index.html for the Lineage Piece manual
+xdg-open fisch.html      # Linux
 python3 -m http.server   # or serve the directory
 ```
 
-`index.html` is committed, so the repo root is also directly serveable if a host offers
-no build step.
+Both generated pages are committed, so the repo root is also directly serveable if a host
+offers no build step.
 
 ## Repo layout
 
 ```
-src/guide.html          the app: markup, CSS, data and router in one fragment
-                        (no <html>/<head>/<body> — publishes directly as a Claude Artifact)
-build.sh                wraps the fragment into a document, adds the site metadata,
-                        assembles _site/ -> index.html + _site/
-index.html              generated standalone page (committed)
+src/guide.html          Lineage Piece app: markup, CSS, data and router in one fragment
+src/fisch.html          Fisch app, same shape — data, milestone engine, router, tools
+                        (neither has <html>/<head>/<body>: each publishes directly as a
+                         Claude Artifact and as a page of this site)
+build.sh                wraps each fragment into a document, adds its site metadata,
+                        assembles _site/
+index.html              generated Lineage Piece page (committed)
+fisch.html              generated Fisch page (committed)
 _site/                  deploy directory (generated, gitignored)
+                        index.html + fisch.html + fisch/index.html
 favicon.svg  og.png     site icon and social card
 _headers                cache and security headers (Cloudflare Pages / Netlify)
 netlify.toml            Netlify build config
 .github/workflows/      manual GitHub Pages deploy, as an alternative
 ```
 
-Edit `src/guide.html`, then run `./build.sh`.
+Edit a file in `src/`, then run `./build.sh`.
+
+Both apps share one architecture: a `DB` of entries built by an `E()` helper, a hash
+router (`#/e/<id>`, `#/c/<category>`, `#/g/<guide>`, `#/t/<tool>`), a ranked search index
+and sortable category tables — everything else (sidebar counts, indexes, search, prev/next,
+"see also") derives from the data. In `src/fisch.html` the `MILESTONES` array is the single
+source of truth for both the roadmap checklist and the path planner.
 
 To add a page, call the `E()` helper with a category, id, name and an object holding its
 table row (`t`), infobox rows (`info`), lead paragraph, optional `sec` sections and `see`
@@ -153,4 +243,4 @@ Data compiled **September 2026 (Frieren patch)**. Recipes, rates and level gates
 with updates — verify anything load-bearing against the in-game Trello before spending a
 30-million-coin recipe on it. Codes expire fastest of all.
 
-Not affiliated with Prlz's Den or Roblox Corporation.
+Not affiliated with Prlz's Den, the Fisch developers, or Roblox Corporation.

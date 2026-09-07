@@ -1,0 +1,1619 @@
+<title>Fisch Field Guide</title>
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chivo:ital,wght@0,400;0,500;0,700;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&display=swap">
+
+<style>
+:root{
+  --ground:#e8eef2; --surface:#f8fbfc; --sunk:#dee7ec; --raise:#ffffff; --stripe:#f1f6f8;
+  --ink:#08171f; --ink2:#2f454f; --muted:#647b86; --line:#c1cfd6; --line2:#d7e1e6;
+  --gold:#a05f08; --gold-soft:#f6e7cc; --teal:#0a5f80; --teal-soft:#d9eaf1;
+  --violet:#5c3a9e; --good:#12734f; --warn:#8d5c0c; --bad:#9d2f28;
+  --r-trash:#7b8a90; --r-common:#5d7079; --r-uncommon:#22794c; --r-unusual:#17708a;
+  --r-rare:#1c5fb0; --r-exotic:#7132a8; --r-legendary:#a05f08; --r-mythical:#ac1f5f;
+  --r-secret:#2b2b3a; --r-limited:#0d7b86;
+  --sans:"Chivo","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --disp:"Big Shoulders Display","Big Shoulders","Oswald","Arial Narrow",Impact,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#06121a; --surface:#0c1e28; --sunk:#091924; --raise:#112733; --stripe:#0e2230;
+  --ink:#e7f2f6; --ink2:#b2c8d1; --muted:#7b96a2; --line:#1f3a49; --line2:#172d39;
+  --gold:#e6b14b; --gold-soft:#33280a; --teal:#4cc2e0; --teal-soft:#0a2c38;
+  --violet:#b79bff; --good:#4bd096; --warn:#e9b352; --bad:#ff7d6d;
+  --r-trash:#8fa1a9; --r-common:#9fb2bb; --r-uncommon:#57cf8d; --r-unusual:#54c8e2;
+  --r-rare:#5fa6f5; --r-exotic:#c08bff; --r-legendary:#e6b14b; --r-mythical:#ff62a5;
+  --r-secret:#cbd3e6; --r-limited:#3ddad0;
+}}
+:root[data-theme="dark"]{
+  --ground:#06121a; --surface:#0c1e28; --sunk:#091924; --raise:#112733; --stripe:#0e2230;
+  --ink:#e7f2f6; --ink2:#b2c8d1; --muted:#7b96a2; --line:#1f3a49; --line2:#172d39;
+  --gold:#e6b14b; --gold-soft:#33280a; --teal:#4cc2e0; --teal-soft:#0a2c38;
+  --violet:#b79bff; --good:#4bd096; --warn:#e9b352; --bad:#ff7d6d;
+  --r-trash:#8fa1a9; --r-common:#9fb2bb; --r-uncommon:#57cf8d; --r-unusual:#54c8e2;
+  --r-rare:#5fa6f5; --r-exotic:#c08bff; --r-legendary:#e6b14b; --r-mythical:#ff62a5;
+  --r-secret:#cbd3e6; --r-limited:#3ddad0;
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.62;-webkit-font-smoothing:antialiased}
+a{color:var(--teal);text-decoration:none}
+a:hover{text-decoration:underline}
+h1,h2,h3,h4{font-family:var(--disp);font-weight:800;line-height:1.05;margin:0;text-wrap:balance}
+p{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+table{border-collapse:collapse;width:100%}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:60;background:var(--surface);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;padding:9px clamp(12px,2vw,22px)}
+.mark{display:flex;flex-direction:column;gap:0;flex:0 0 auto}
+.mark b{font-family:var(--disp);font-size:18px;font-weight:800;letter-spacing:-.01em;line-height:1;color:var(--ink)}
+.mark span{font-family:var(--mono);font-size:8.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.mark:hover{text-decoration:none}
+.searchwrap{position:relative;flex:1 1 300px;max-width:520px}
+#search{width:100%;background:var(--raise);border:1px solid var(--line);border-radius:5px;padding:8px 11px;font:inherit;font-size:13.5px;color:var(--ink)}
+#search::placeholder{color:var(--muted)}
+.results{position:absolute;top:calc(100% + 5px);left:0;right:0;background:var(--raise);border:1px solid var(--line);border-radius:6px;box-shadow:0 18px 40px -18px rgba(0,0,0,.45);max-height:56vh;overflow-y:auto;z-index:80}
+.results button{display:flex;width:100%;gap:9px;align-items:baseline;text-align:left;background:none;border:0;border-bottom:1px solid var(--line2);padding:8px 11px;font-size:13px}
+.results button:last-child{border-bottom:0}
+.results button:hover,.results button.sel{background:var(--sunk)}
+.results .rn{flex:1;color:var(--ink)}
+.results .rt{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.results .none{padding:12px;color:var(--muted);font-size:13px}
+.topright{display:flex;gap:8px;align-items:center;margin-left:auto;flex:0 0 auto}
+.stamp{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:3px 9px;white-space:nowrap}
+.ghost{background:none;border:1px solid var(--line);border-radius:5px;padding:5px 9px;font-size:12px;color:var(--ink2);white-space:nowrap}
+.ghost:hover{border-color:var(--ink2);color:var(--ink)}
+
+/* frame */
+.frame{display:grid;grid-template-columns:222px minmax(0,1fr);max-width:1500px;margin:0 auto}
+.side{border-right:1px solid var(--line);background:var(--surface);padding:16px 0 50px;position:sticky;top:47px;height:calc(100vh - 47px);overflow-y:auto}
+.sgroup{font-family:var(--mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);padding:14px 18px 5px}
+.side a{display:flex;justify-content:space-between;gap:8px;align-items:baseline;padding:5px 18px;color:var(--ink2);font-size:13px;border-left:2px solid transparent}
+.side a:hover{background:var(--sunk);color:var(--ink);text-decoration:none}
+.side a.on{background:var(--sunk);color:var(--ink);border-left-color:var(--gold);font-weight:500}
+.side a em{font-family:var(--mono);font-size:10px;font-style:normal;color:var(--muted)}
+.view{padding:20px clamp(14px,2.6vw,40px) 90px;min-width:0}
+
+/* article + infobox */
+.page{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:32px;align-items:start}
+.page.full{grid-template-columns:minmax(0,1fr)}
+.crumb{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:9px;display:flex;gap:7px;flex-wrap:wrap}
+.crumb a{color:var(--muted)}
+h1.pt{font-size:clamp(30px,4.2vw,44px);letter-spacing:-.015em;padding-bottom:9px;border-bottom:2px solid var(--ink)}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px}
+.chip{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border-radius:99px;border:1px solid var(--line);color:var(--muted)}
+.chip.t{border-color:currentColor;font-weight:600}
+.lead{margin-top:16px;font-size:15.5px;color:var(--ink2);max-width:66ch}
+.lead strong{color:var(--ink)}
+h2.sh{font-size:21px;margin:26px 0 9px;padding-bottom:5px;border-bottom:1px solid var(--line)}
+.prose{color:var(--ink2);max-width:70ch}
+.prose p+p{margin-top:9px}
+.prose ul{margin:8px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:5px}
+.prose li::marker{color:var(--gold)}
+.prose strong{color:var(--ink)}
+.prose ol{margin:8px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:5px}
+.prose table{margin-top:10px;border:1px solid var(--line);border-radius:5px;overflow:hidden}
+
+.infobox{background:var(--surface);border:1px solid var(--line);border-radius:6px;overflow:hidden;position:sticky;top:62px}
+.ibhead{background:var(--teal-soft);border-bottom:1px solid var(--line);padding:9px 13px}
+.ibhead b{font-family:var(--disp);font-size:17px;font-weight:800;display:block;line-height:1.1;color:var(--ink)}
+.ibhead span{font-family:var(--mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--teal)}
+.ibrow{display:grid;grid-template-columns:92px 1fr;gap:10px;padding:7px 13px;border-bottom:1px solid var(--line2);font-size:12.5px}
+.ibrow:last-child{border-bottom:0}
+.ibrow dt{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-top:2px}
+.ibrow dd{margin:0;color:var(--ink2)}
+.ibrow dd b{color:var(--ink)}
+.seealso{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.seealso a{font-size:12.5px;border:1px solid var(--line);border-radius:99px;padding:3px 10px;color:var(--ink2);background:var(--surface)}
+.seealso a:hover{border-color:var(--gold);color:var(--gold);text-decoration:none}
+.pagefoot{margin-top:30px;padding-top:12px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+
+/* index tables */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--surface);margin-top:14px}
+thead th{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap;font-weight:400;background:var(--surface);position:relative;user-select:none}
+thead th.s{cursor:pointer}
+thead th.s:hover{color:var(--ink)}
+thead th.asc::after{content:" \2191";color:var(--gold)}
+thead th.desc::after{content:" \2193";color:var(--gold)}
+tbody td{padding:8px 12px;border-bottom:1px solid var(--line2);vertical-align:top;color:var(--ink2);font-size:13px}
+tbody tr:nth-child(even) td{background:var(--stripe)}
+tbody tr:hover td{background:var(--sunk)}
+tbody tr:last-child td{border-bottom:0}
+tbody a{color:var(--ink);font-weight:700}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-top:14px;align-items:center}
+.fbtn{background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:4px 11px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.fbtn.on{background:var(--ink);border-color:var(--ink);color:var(--ground)}
+.rar{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;font-weight:600}
+.rar-trash{color:var(--r-trash)} .rar-common{color:var(--r-common)} .rar-uncommon{color:var(--r-uncommon)}
+.rar-unusual{color:var(--r-unusual)} .rar-rare{color:var(--r-rare)} .rar-exotic{color:var(--r-exotic)}
+.rar-legendary{color:var(--r-legendary)} .rar-mythical{color:var(--r-mythical)}
+.rar-secret{color:var(--r-secret)} .rar-limited{color:var(--r-limited)}
+.tier{font-family:var(--disp);font-weight:800;font-size:14px;min-width:23px;height:23px;padding:0 5px;display:inline-grid;place-items:center;border-radius:4px;color:#fff}
+.t-S{background:var(--r-mythical)} .t-A{background:var(--r-legendary)} .t-B{background:var(--teal)} .t-C{background:var(--r-common)} .t-D{background:var(--r-trash)}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.flag{border-bottom:1px dotted var(--warn);color:var(--warn);cursor:help}
+.stage{font-family:var(--mono);font-size:10px;color:var(--muted)}
+
+/* home */
+.hero{border-bottom:2px solid var(--ink);padding-bottom:20px}
+.hero h1{font-size:clamp(34px,5.4vw,60px);letter-spacing:-.02em}
+.hero h1 em{font-style:normal;color:var(--teal)}
+.hero p{margin-top:11px;max-width:64ch;color:var(--ink2);font-size:15.5px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(212px,1fr));gap:12px;margin-top:18px}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:13px 15px;display:flex;flex-direction:column;gap:5px}
+.tile:hover{border-color:var(--teal);text-decoration:none}
+.tile b{font-family:var(--disp);font-size:18px;font-weight:800;color:var(--ink)}
+.tile span{font-size:12.5px;color:var(--ink2)}
+.tile em{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;font-style:normal;color:var(--teal)}
+.tile.hi{border-color:var(--teal);box-shadow:inset 0 0 0 1px var(--teal)}
+.catgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:8px;margin-top:14px}
+.cat{background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:12px 14px;display:flex;flex-direction:column;gap:1px}
+.cat:hover{background:var(--sunk);border-color:var(--teal);text-decoration:none}
+.cat b{font-family:var(--disp);font-size:17px;font-weight:700;color:var(--ink)}
+.cat span{font-family:var(--mono);font-size:10px;color:var(--muted)}
+.warnbox{border-left:2px solid var(--warn);background:color-mix(in srgb,var(--warn) 9%,transparent);padding:11px 14px;border-radius:0 4px 4px 0;font-size:13px;color:var(--ink2);margin-top:16px}
+.goodbox{border-left:2px solid var(--good);background:color-mix(in srgb,var(--good) 9%,transparent);padding:11px 14px;border-radius:0 4px 4px 0;font-size:13px;color:var(--ink2);margin-top:16px}
+.note{font-size:12.5px;color:var(--muted);border-left:2px solid var(--line);padding-left:11px;margin-top:12px}
+
+/* guides + tools */
+.phase{background:var(--surface);border:1px solid var(--line);border-radius:6px;overflow:hidden;margin-top:12px}
+.phasehead{display:flex;gap:12px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line2);background:var(--sunk)}
+.phasehead h3{font-size:17px;flex:1}
+.phasehead .lv{font-family:var(--mono);font-size:10.5px;color:var(--gold)}
+.tasks{list-style:none;margin:0;padding:5px 7px}
+.task{display:flex;gap:9px;align-items:flex-start;padding:6px 8px;border-radius:4px;cursor:pointer;font-size:13px;color:var(--ink2)}
+.task:hover{background:var(--sunk)}
+.task input{margin:4px 0 0;accent-color:var(--teal);width:14px;height:14px;flex:0 0 auto}
+.task.done{color:var(--muted);text-decoration:line-through}
+.progline{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:11px 14px;margin-top:14px}
+.progtrack{flex:1 1 180px;height:8px;background:var(--sunk);border:1px solid var(--line);border-radius:99px;overflow:hidden}
+.progfill{height:100%;background:var(--teal);width:0;transition:width .25s}
+.tool{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:16px;display:grid;gap:14px;margin-top:14px}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:11px}
+.field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.field label{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+select,input[type=number],input[type=text]{background:var(--raise);border:1px solid var(--line);border-radius:5px;padding:7px 9px;font:inherit;font-size:13px;color:var(--ink);width:100%}
+input[type=range]{width:100%;accent-color:var(--teal)}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:5px;overflow:hidden}
+.ro{background:var(--raise);padding:10px 12px}
+.ro b{display:block;font-family:var(--disp);font-size:25px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.05}
+.ro small{font-family:var(--mono);font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.chartbox{border:1px solid var(--line2);border-radius:5px;background:var(--raise);padding:11px 7px 3px}
+.stackrow{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;font-size:13px;padding:7px 10px;background:var(--raise);border:1px solid var(--line2);border-radius:4px}
+.stackrow .amt{font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink)}
+.stackrow.total{background:var(--teal-soft);border-color:var(--teal)}
+.stackrow.total span{color:var(--ink);font-weight:700}
+.stack{display:flex;flex-direction:column;gap:6px}
+.codegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(206px,1fr));gap:10px;margin-top:14px}
+.code{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:5px;padding:9px 12px}
+.code .c{font-family:var(--mono);font-size:13.5px;font-weight:600;color:var(--ink);word-break:break-all}
+.code small{display:block;font-family:var(--sans);font-size:11.5px;color:var(--muted);font-weight:400}
+.copy{background:none;border:1px solid var(--line);border-radius:4px;padding:3px 8px;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);flex:0 0 auto}
+.copy:hover{border-color:var(--gold);color:var(--gold)}
+.copy.ok{border-color:var(--good);color:var(--good)}
+.srclist{columns:2 230px;column-gap:24px;font-size:12.5px;color:var(--ink2);padding-left:18px}
+.srclist li{margin-bottom:4px;break-inside:avoid}
+
+/* the path planner */
+.stepcard{background:var(--raise);border:1px solid var(--line);border-radius:6px;padding:12px 14px;display:grid;grid-template-columns:30px minmax(0,1fr);gap:12px;align-items:start}
+.stepcard .n{font-family:var(--disp);font-size:20px;font-weight:800;color:var(--ground);background:var(--teal);border-radius:5px;width:30px;height:30px;display:grid;place-items:center}
+.stepcard h4{font-size:17px;color:var(--ink)}
+.stepcard p{font-size:13px;color:var(--ink2);margin-top:3px}
+.stepcard .meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:7px}
+.stepcard .meta span{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--line);border-radius:99px;padding:2px 8px;color:var(--muted)}
+.stepcard.block .n{background:var(--warn)}
+.stepcard.done{opacity:.55}
+.stepcard.done .n{background:var(--good)}
+.steps{display:flex;flex-direction:column;gap:8px}
+.youare{background:var(--teal-soft);border:1px solid var(--teal);border-radius:6px;padding:14px 16px}
+.youare b{font-family:var(--disp);font-size:24px;display:block;line-height:1.1;color:var(--ink)}
+.youare span{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--teal)}
+.youare p{margin-top:7px;font-size:13.5px;color:var(--ink2)}
+.gapgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:10px}
+.gap{background:var(--raise);border:1px solid var(--line2);border-radius:5px;padding:9px 11px}
+.gap b{display:block;font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:17px;color:var(--ink)}
+.gap small{font-family:var(--mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.checkgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:4px 12px}
+.checkgrid label{display:flex;gap:7px;align-items:center;font-size:12.5px;color:var(--ink2);cursor:pointer}
+.checkgrid input{accent-color:var(--teal);width:14px;height:14px}
+
+@media (max-width:1080px){.page{grid-template-columns:minmax(0,1fr)}.infobox{position:static;order:-1}}
+@media (max-width:860px){
+  .frame{grid-template-columns:1fr}
+  .side{position:static;height:auto;border-right:0;border-bottom:1px solid var(--line);padding:10px 0}
+  .side a{display:inline-flex;border:1px solid var(--line);border-radius:99px;margin:2px;padding:4px 11px;border-left-width:1px}
+  .side a.on{border-color:var(--gold)}
+  .side a em{display:none}
+  .sgroup{padding:9px 14px 3px}
+  .top{flex-wrap:wrap}.stamp{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<header class="top">
+  <a class="mark" href="#/"><b>Fisch</b><span>Field Guide</span></a>
+  <div class="searchwrap">
+    <input id="search" type="search" autocomplete="off" spellcheck="false" aria-label="Search the wiki">
+    <div class="results" id="results" hidden></div>
+  </div>
+  <div class="topright">
+    <span class="stamp">Sept 2026</span>
+    <button class="ghost" id="randbtn" type="button">Random</button>
+    <button class="ghost" id="themebtn" type="button">Theme: auto</button>
+  </div>
+</header>
+
+<div class="frame">
+  <nav class="side" id="side" aria-label="Categories"></nav>
+  <main class="view" id="view" tabindex="-1"></main>
+</div>
+
+<script>
+"use strict";
+/* ════════ Fisch Field Guide — a client-side wiki + progression planner ════════
+   Fisch (Roblox, Cursed Studios / Fisch Development). Data compiled September 2026,
+   after the Skycrest update, from community wikis and guides. Fisch patches often and
+   shop prices move with it: figures the sources disagree on carry a .flag mark and are
+   listed on the Accuracy & sources page.                                            */
+
+const DB = [];
+const E = (type, id, name, o) => { DB.push(Object.assign({type, id, name}, o)); };
+
+const CATS = {
+  loc:   {n:"Locations",       g:"The world",  cols:["Location","Stage","Getting there","Why you go"]},
+  npc:   {n:"NPCs",            g:"The world",  cols:["NPC","Where","What they do"]},
+  hunt:  {n:"Bosses &amp; hunts", g:"The world", cols:["Boss","Where","How it starts"]},
+  rod:   {n:"Rods",            g:"Gear",       cols:["Rod","Stage","Cost","Source","What it does for you"]},
+  bait:  {n:"Baits",           g:"Gear",       cols:["Bait","Rarity","Effect","Where"]},
+  ench:  {n:"Enchants",        g:"Gear",       cols:["Enchant","Relic","Effect"]},
+  item:  {n:"Items &amp; gear",g:"Gear",       cols:["Item","Kind","What it does"]},
+  fish:  {n:"Fish",            g:"Database",   cols:["Fish","Rarity","Where","Why it matters"]},
+  mut:   {n:"Mutations",       g:"Database",   cols:["Mutation","Multiplier","How you get it"]},
+  mech:  {n:"Mechanics",       g:"Database",   cols:["System","In one line"]}
+};
+
+/* stage 0-9: the planner, the rod table and the roadmap all key off this one scale */
+const STAGES = ["Start","Early","Early-mid","Mid","Mid-late","Late","Endgame","Endgame+","Money meta","Event"];
+const stageTag = s => '<span class="stage">' + s + " &middot; " + STAGES[s] + "</span>";
+
+/* ═════════════════════════ LOCATIONS ═════════════════════════ */
+E("loc","moosewood","Moosewood",{stage:0,
+ t:[stageTag(0),"You spawn here","Rod shop, first boat, the tutorial"],
+ info:[["Stage","0 &mdash; Start"],["Access","Spawn point"],["Key NPCs","Pierre, Marc, the Merchant, the Shipwright, the Appraiser"],["Shop rods","Plastic, Carbon, Fast, Lucky"],["First boat","Rowboat, 400 C$"]],
+ lead:"The starting village and the only place in the game you are handed anything. Everything an account needs in its first hour is inside a thirty-second walk of the dock: a tutorial NPC, a rod shop, a fish buyer, a boat seller and the Appraiser.",
+ sec:[["What to do here, in order","<ol><li>Talk to <strong>Pierre</strong> on the beach and finish the tutorial. He is onboarding, not a merchant &mdash; he does not sell anything.</li><li>Fish the dock with the <a href=\"#/e/flimsy-rod\">Flimsy Rod</a> until you have a few hundred C$. Sell to the Merchant in the middle of the village.</li><li>Buy the <a href=\"#/e/carbon-rod\">Carbon Rod</a> at <strong>2,000 C$</strong> from Marc&#8217;s shop. Skip the Plastic and Training rods entirely &mdash; the Carbon Rod is the first purchase worth making.</li><li>Buy the <strong>Rowboat</strong> from the Shipwright at the docks for <strong>400 C$</strong>. Without a boat the rest of the map does not exist.</li><li>Fill the Moosewood bestiary before you leave. It is the cheapest bestiary percentage in the game and it counts toward the 70% that unlocks the <a href=\"#/e/destiny-rod\">Destiny Rod</a>.</li></ol>"],
+  ["The one beginner trap here","<p>New accounts buy the Plastic Rod at 900 C$ because it is the first thing on the shelf, then have to save 2,000 C$ again for the Carbon Rod anyway. Fish a little longer and buy once.</p>"]],
+ see:["carbon-rod","pierre","marc","the-appraiser","rowboat","beginner","path"]});
+
+E("loc","the-ocean","The Ocean",{stage:1,
+ t:[stageTag(1),"Sail out from any island","Travel, ocean-only species, hunts"],
+ info:[["Stage","1 &mdash; Early"],["Access","Any boat"],["Holds","Ocean-only bestiary, drifting hunt events"],["Danger","Deep water species outweigh early rods"]],
+ lead:"The water between the islands is its own fishing location with its own bestiary, and it is where island names first appear on your screen &mdash; sail far enough from shore and the map fills itself in. Unlocking a location in Fisch mostly means visiting it once.",
+ sec:[["Using the Ocean well","<ul><li>Sail deliberately on your first trip out. Every island name you reveal is a fast-travel destination later.</li><li>Ocean bestiary entries are among the easiest percentage in the game &mdash; they count the same as hard ones toward the 70% Destiny Rod gate.</li><li>Hunt events (Megalodon and friends) spawn in open water; if a hunt is up on your server, everything else can wait.</li></ul>"]],
+ see:["rowboat","bestiary","megalodon","boats"]});
+
+E("loc","roslit-bay","Roslit Bay",{stage:1,
+ t:[stageTag(1),"Short sail from Moosewood","Steady Rod, relic farm, the Volcano"],
+ info:[["Stage","1 &mdash; Early"],["Access","Sail from Moosewood"],["Shop rod","Steady Rod &mdash; <span class=\"flag\" title=\"Community figure; shop prices move between patches\">7,000 C$</span>"],["Notable","Roslit Volcano; Nurse Shark shallows"],["Farms","Enchant Relics"]],
+ lead:"The second town, and the one that turns a beginner into a player. Its blacksmith sells the Steady Rod, its shallows are a workable Enchant Relic farm, and its volcano is the first place the game refuses to let you fish without the right gear.",
+ sec:[["What to do here","<ul><li>Buy the <a href=\"#/e/steady-rod\">Steady Rod</a> once you can afford it. Wider shake window and enough resilience that the minigame stops being the thing that loses you fish.</li><li>Fish the <strong>Nurse Shark</strong> shallows for <a href=\"#/e/enchant-relic\">Enchant Relics</a>. Ancient Isle is better later; this is the version you can reach now.</li><li>Fill the Roslit bestiary &mdash; another cheap block of percentage.</li></ul>"],
+  ["Roslit Volcano","<p>Lava fishing needs protection. The endgame answer is the <a href=\"#/e/invincible\">Invincible</a> exalted enchant, which lets any rod fish the Volcano and the Brine Pool. Until then, treat the volcano as scenery.</p>"]],
+ see:["steady-rod","enchant-relic","invincible","enchanting","ancient-isle"]});
+
+E("loc","terrapin-island","Terrapin Island",{stage:1,
+ t:[stageTag(1),"Sail from Moosewood","Easy bestiary percentage"],
+ info:[["Stage","1 &mdash; Early"],["Access","Sail"],["Best for","Bestiary completion"],["Difficulty","Low &mdash; early rods handle it"]],
+ lead:"An early island whose value is almost entirely bestiary. Guides that route players to the 70% Destiny Rod gate name the same four blocks every time &mdash; Moosewood, Roslit Bay, Terrapin and the Ocean &mdash; because they are large, easy and finishable with a rod you already own.",
+ see:["bestiary","destiny-rod","the-arch","terrapin-island"]});
+
+E("loc","sunstone-island","Sunstone Island",{stage:2,
+ t:[stageTag(2),"Sail","Its own bestiary block and merchant"],
+ info:[["Stage","2 &mdash; Early-mid"],["Access","Sail"],["Best for","Bestiary, mid-tier sell values"]],
+ lead:"One of the early-mid islands on the standard sailing loop. Community sources are consistent that it exists and is worth a bestiary pass, and inconsistent about its shop stock from patch to patch &mdash; check the merchant when you land rather than trusting any list, this one included.",
+ see:["bestiary","the-ocean","boats"]});
+
+E("loc","snowcap-island","Snowcap Island",{stage:2,
+ t:[stageTag(2),"Sail north","Cold-water species, Sleet mutation"],
+ info:[["Stage","2 &mdash; Early-mid"],["Access","Sail north"],["Weather","Cold; snow conditions"],["Mutation","Sleet is a cold-biome mutation"]],
+ lead:"Cold-water fishing. Its species do not appear in the southern islands, so it is a required stop for bestiary completion, and its weather is what makes the <a href=\"#/e/sleet\">Sleet</a> mutation reachable.",
+ see:["sleet","weather","bestiary","northern-expedition"]});
+
+E("loc","mushgrove-swamp","Mushgrove Swamp",{stage:2,
+ t:[stageTag(2),"Sail &mdash; the swamp channel","Agaric&#8217;s free Fungal Rod"],
+ info:[["Stage","2 &mdash; Early-mid"],["Access","Sail"],["Key NPC","Agaric"],["Free rod","<a href=\"#/e/fungal-rod\">Fungal Rod</a> &mdash; catch an Alligator"],["Species","Swamp-only bestiary"]],
+ lead:"The single best-value stop in the early-mid game, because the reward here is free. Agaric asks you to catch an <strong>Alligator</strong> in the swamp and hands over the Fungal Rod for nothing.",
+ sec:[["Why the Fungal Rod matters","<p>It is a real upgrade obtained without spending C$, and its passive &mdash; a strong luck window that triggers on a majority of catches &mdash; makes it punch above the rods you could buy at the same point. Every progression guide in circulation routes players through Agaric for exactly this reason.</p><p>Do this before you spend six figures on a shop rod. It costs an afternoon and saves a fortune.</p>"]],
+ see:["fungal-rod","agaric","alligator","path"]});
+
+E("loc","forsaken-shores","Forsaken Shores",{stage:3,
+ t:[stageTag(3),"Sail &mdash; a long way out","The early-mid money and XP farm"],
+ info:[["Stage","3 &mdash; Mid"],["Access","Sail; bring a real boat"],["Best for","C$ per hour <em>and</em> XP per hour"],["Landmark","Waterfall pond, around <span class=\"num\">&minus;2685, 165, 1770</span>"],["Realistic rate","<span class=\"flag\" title=\"Community estimate; depends on rod, bait, enchant and luck stacking\">100K&ndash;500K C$/hr with a mid rod</span>"]],
+ lead:"For most of the mid-game this is the answer to both &ldquo;where do I make money&rdquo; and &ldquo;where do I level&rdquo;, which is rare &mdash; usually those are different places. The waterfall pond is the specific spot guides point at.",
+ sec:[["Farming it","<ul><li>Fish the <strong>waterfall pond</strong>, not the open shore. The coordinates above are the ones that circulate; the pond is visible from the cliff path.</li><li>Bring a luck bait. Sell values here reward rarity, so universal luck converts directly into C$/hr.</li><li>This is where you bank the <strong>150,000 C$</strong> for the <a href=\"#/e/trident-rod\">Trident Rod</a>.</li></ul>"]],
+ see:["money","xp","trident-rod","fungal-rod"]});
+
+E("loc","statue-of-sovereignty","Statue of Sovereignty",{stage:3,
+ t:[stageTag(3),"Sail","The mines, and the way into the Keepers Altar"],
+ info:[["Stage","3 &mdash; Mid"],["Access","Sail"],["Gate","Bribe the NPC by the mine elevator &mdash; <b>400 C$</b>"],["Leads to","<a href=\"#/e/keepers-altar\">Keepers Altar</a>"]],
+ lead:"The island is a landmark; the reason you come is underneath it. Go into the mines, find the NPC standing next to the elevator, pay him <strong>400 C$</strong>, and the elevator takes you down to the Keepers Altar &mdash; where every enchant in the game is applied.",
+ sec:[["Do this early","<p>400 C$ is a first-hour amount of money and the altar is a permanent unlock. There is no reason to arrive here at level 200 discovering you still have not opened it.</p>"]],
+ see:["keepers-altar","enchanting","enchant-relic"]});
+
+E("loc","keepers-altar","Keepers Altar",{stage:3,
+ t:[stageTag(3),"Mine elevator, 400 C$ bribe","Enchanting &mdash; the only altar"],
+ info:[["Stage","3 &mdash; Mid"],["Access","Under the Statue of Sovereignty"],["Cost to enter","400 C$ bribe, one time"],["Timing","<span class=\"flag\" title=\"Widely reported as night-only; some write-ups omit the restriction\">Offer relics at night</span>"],["Consumes","Enchant Relics and Exalted Relics"]],
+ lead:"The chamber beneath the Statue of Sovereignty where you trade an <a href=\"#/e/enchant-relic\">Enchant Relic</a> for a random enchant on your rod. Every rod in your endgame kit gets its power here, not in a shop.",
+ sec:[["How enchanting actually goes","<ul><li>An enchant is a <strong>random roll from a pool</strong>, not a purchase. You are gambling relics, so farm relics in bulk before you come.</li><li>A new roll <strong>replaces</strong> what is on the rod. Never re-roll a rod you are happy with.</li><li><a href=\"#/e/exalted-relic\">Exalted Relics</a> roll from a smaller, much stronger pool &mdash; <a href=\"#/e/quantum\">Quantum</a>, <a href=\"#/e/sea-overlord\">Sea Overlord</a>, <a href=\"#/e/invincible\">Invincible</a>. Save them for the rod you intend to keep.</li></ul>"]],
+ see:["enchanting","enchant-relic","exalted-relic","quantum","invincible","ancient-isle"]});
+
+E("loc","ancient-isle","Ancient Isle",{stage:4,
+ t:[stageTag(4),"Sail","The best Enchant Relic farm"],
+ info:[["Stage","4 &mdash; Mid-late"],["Access","Sail"],["Best for","Enchant Relics"],["Compared with","Roslit Bay &mdash; better here, per player testing"]],
+ lead:"When players compare relic farms head to head, Ancient Isle comes out ahead of the Roslit Bay shallows. If you are building an enchant stack rather than hoping for one, this is the island you park on.",
+ sec:[["Relic farming, honestly","<p>Relics are a drop, so the rate is a rate: no amount of session length makes the next cast luckier. Farm here in blocks, bank the relics, then spend them at the <a href=\"#/e/keepers-altar\">Keepers Altar</a> in one sitting so you can stop the moment you roll something you want to keep.</p>"]],
+ see:["enchant-relic","keepers-altar","enchanting","odds"]});
+
+E("loc","northern-expedition","Northern Expedition &amp; Northern Summit",{stage:4,
+ t:[stageTag(4),"Sail far north","Arctic Rod, cold-biome species"],
+ info:[["Stage","4 &mdash; Mid-late"],["Access","Sail north; cold water"],["Shop rod","<a href=\"#/e/arctic-rod\">Arctic Rod</a>, at the Summit"],["Species","Arctic bestiary"]],
+ lead:"The far-north block. Progression guides route through it for one reason: the Arctic Rod at Northern Summit is the standard buy between the free Fungal Rod and the Trident Rod, and it is the rod that makes the cold biomes comfortable.",
+ see:["arctic-rod","snowcap-island","bestiary"]});
+
+E("loc","tridents-temple","Trident&#8217;s Temple",{stage:4,
+ t:[stageTag(4),"Sail","Trident Rod &mdash; 150,000 C$"],
+ info:[["Stage","4 &mdash; Mid-late"],["Access","Sail"],["Shop rod","<a href=\"#/e/trident-rod\">Trident Rod</a> &mdash; <b>150,000 C$</b>"],["Why","Atlantean mutation passive"]],
+ lead:"You come here to buy one thing. The Trident Rod is the most flexible mid-game rod in the game and its passive &mdash; a roughly 30% chance to apply the <a href=\"#/e/atlantean\">Atlantean</a> mutation, tripling a catch&#8217;s value &mdash; means it partly pays for itself.",
+ see:["trident-rod","atlantean","money","path"]});
+
+E("loc","vertigo","Vertigo",{stage:5,
+ t:[stageTag(5),"Deep water, far out","Gateway to The Depths"],
+ info:[["Stage","5 &mdash; Late"],["Access","Sail to deep water"],["Gate out","100% Vertigo bestiary, then fish the <strong>Strange Whirlpool</strong> for The Depths Key"],["Danger","Heavy species; weak rods simply lose"]],
+ lead:"A deep, dark, hostile zone, and the only door to The Depths. It is also the first place the game asks for real completion rather than attendance: you need the <strong>whole</strong> Vertigo bestiary before the key can drop.",
+ sec:[["The Depths Key","<ol><li>Complete the Vertigo bestiary to <strong>100%</strong>.</li><li>Fish the <strong>Strange Whirlpool</strong> until you catch <strong>The Depths Key</strong>.</li><li>The key opens <a href=\"#/e/the-depths\">The Depths</a> below.</li></ol><p>This is a hard stop, not a soft one. There is no shortcut, no shop route and no boat that skips it &mdash; which is why the roadmap treats finishing the Vertigo bestiary as its own phase.</p>"]],
+ see:["the-depths","depths-key","bestiary","rod-of-the-depths"]});
+
+E("loc","the-depths","The Depths",{stage:5,
+ t:[stageTag(5),"The Depths Key, from Vertigo","Rod of the Depths &mdash; 750,000 C$"],
+ info:[["Stage","5 &mdash; Late"],["Access","The Depths Key"],["Shop rod","<a href=\"#/e/rod-of-the-depths\">Rod of the Depths</a> &mdash; <b>750,000 C$</b>"],["Prerequisite","100% Vertigo bestiary"]],
+ lead:"A secret zone under Vertigo that cannot be sailed to. Inside is the Rod of the Depths at 750,000 C$ &mdash; the rod that carries most accounts from the late game into the endgame, and the reason people grind the Vertigo bestiary at all.",
+ sec:[["Budget before you come","<p>Arrive with the 750,000 C$ already banked. Nothing here helps you earn it, and the trip back out to a money farm is long. <a href=\"#/e/forsaken-shores\">Forsaken Shores</a> or <a href=\"#/e/castaway-cliffs\">Castaway Cliffs</a> first, The Depths second.</p>"]],
+ see:["rod-of-the-depths","vertigo","depths-key","money"]});
+
+E("loc","atlantis","Atlantis",{stage:6,
+ t:[stageTag(6),"Sunken city &mdash; late-game sail","Kraken Rod, the Kraken"],
+ info:[["Stage","6 &mdash; Endgame"],["Access","Late-game sail; deep water"],["Shop rod","<a href=\"#/e/kraken-rod\">Kraken Rod</a> &mdash; <span class=\"flag\" title=\"950,000 C$ in one widely-cited guide, 1,333,333 C$ in another\">950,000 or 1,333,333 C$</span>"],["Level gate","<span class=\"flag\" title=\"Reported as level 180 alongside the Atlantis task chain\">~level 180</span>"],["Boss","<a href=\"#/e/kraken\">The Kraken</a>, in the Kraken Pool"]],
+ lead:"The sunken city, and the first location that gates on your character level rather than your boat. Its rod is a genuine endgame item and its boss sits behind a five-lever world quest that most players do with a guide open.",
+ sec:[["The Kraken lever quest","<p>Five hidden levers have to be flicked before the Kraken Pool opens: <strong>behind the Merchant</strong>, <strong>under the Cannon Hut</strong>, <strong>behind the Waterfall</strong>, <strong>on the Mountain Bridge</strong> and <strong>inside the Skull Cave</strong>. Order does not matter; finding all five does.</p>"]],
+ see:["kraken-rod","kraken","the-depths","bestiary"]});
+
+E("loc","the-arch","The Arch",{stage:6,
+ t:[stageTag(6),"Sail","Caleia &mdash; the Destiny Rod at 70% bestiary"],
+ info:[["Stage","6 &mdash; Endgame"],["Access","Sail"],["Key NPC","Caleia"],["Sells","<a href=\"#/e/destiny-rod\">Destiny Rod</a> &mdash; <b>190,000 C$</b>"],["Gate","70% total bestiary completion"]],
+ lead:"The payoff for every easy bestiary entry you filled on the way here. At <strong>70% total bestiary</strong>, Caleia will sell you the Destiny Rod for 190,000 C$ &mdash; cheap for what it is, and the clearest example in Fisch of collection work converting into gear.",
+ sec:[["The bestiary rewards, in order","<ul><li><strong>70% total</strong> &mdash; Caleia unlocks the Destiny Rod (190,000 C$).</li><li><strong>100% total</strong> &mdash; a cosmetic-tier reward; sources name the <span class=\"flag\" title=\"Aurora Bobber in some guides, Aurora Glow Lantern in others; a further source adds the Masterline Rod\">Aurora Bobber, or the Aurora Glow Lantern</span>.</li></ul><p>Chase 70% deliberately: finish whole easy locations rather than one hard fish everywhere.</p>"]],
+ see:["destiny-rod","caleia","bestiary","terrapin-island"]});
+
+E("loc","cursed-isle","Cursed Isle",{stage:7,
+ t:[stageTag(7),"Late-game sail","Great Dreamer Rod &mdash; 500,000 C$"],
+ info:[["Stage","7 &mdash; Endgame+"],["Access","Late-game sail"],["Shop rod","<a href=\"#/e/great-dreamer-rod\">Great Dreamer Rod</a> &mdash; <b>500,000 C$</b>"],["Passive","<span class=\"flag\" title=\"An extra fish every third catch is attributed to the Great Dreamer in one source and to the Rod of the Depths in another\">Extra fish on a repeating cycle</span>"]],
+ lead:"Cursed water, and the shop that sells the Great Dreamer Rod. High lure speed, high luck, and a duplication passive that makes it a farming rod as much as a rarity rod.",
+ see:["great-dreamer-rod","money","enchanting"]});
+
+E("loc","underground-music-venue","Underground Music Venue",{stage:7,
+ t:[stageTag(7),"Hidden late-game location","Wingripper and Chrysalis rods"],
+ info:[["Stage","7 &mdash; Endgame+"],["Access","Hidden; late-game"],["Rods","<a href=\"#/e/wingripper-rod\">Wingripper</a>, <a href=\"#/e/chrysalis-rod\">Chrysalis</a>"],["Role","The end of the standard rod ladder"]],
+ lead:"Where the mainstream rod progression stops. Rod-progression guides that begin with &ldquo;take Agaric&#8217;s free Fungal Rod&rdquo; end with &ldquo;finish on the Wingripper or the Chrysalis Rod from the Underground Music Venue&rdquo; &mdash; these are the last rods most accounts will ever need.",
+ see:["wingripper-rod","chrysalis-rod","ruinous-oath","path"]});
+
+E("loc","castaway-cliffs","Castaway Cliffs",{stage:8,
+ t:[stageTag(8),"Late-game sail","The Elder Moss Ripper money meta"],
+ info:[["Stage","8 &mdash; Money meta"],["Access","Late-game sail"],["Rod","<a href=\"#/e/elder-moss-ripper\">Elder Moss Ripper Rod</a>"],["Rate","<span class=\"flag\" title=\"15-25M C$/hr is the figure quoted for the full Elder Moss Ripper setup; 2-4M/hr without it\">2&ndash;4M C$/hr, or 15&ndash;25M with the Elder Moss Ripper</span>"]],
+ lead:"The current money meta. The Elder Moss Ripper Rod&#8217;s <em>Lurking Mossjaw</em> passive puts a guaranteed high-value Mossy Great Gold Cursed Shark on your line on a roughly two-minute timer, which turns the cliffs into an income rate rather than a fishing spot.",
+ sec:[["What the numbers actually mean","<p>Fishing the cliffs with an ordinary late-game rod is a strong 2&ndash;4M C$/hr farm. The 15&ndash;25M figure is the <em>rod-specific</em> rate and does not transfer to any other setup. If you do not have the Elder Moss Ripper, you are farming the first number.</p>"]],
+ see:["elder-moss-ripper","money","calm-zone","mossy-great-gold-cursed-shark"]});
+
+E("loc","calm-zone","The Calm Zone",{stage:8,
+ t:[stageTag(8),"Deep water, endgame only","Crystallized Seadragon money"],
+ info:[["Stage","8 &mdash; Money meta"],["Access","Deep water; endgame rod required"],["Money fish","<a href=\"#/e/crystallized-seadragon\">Crystallized Seadragon</a> &mdash; <span class=\"flag\" title=\"Community average; individual sales swing hard on weight and mutation\">~26,100 C$ average</span>"],["Prerequisite","A rod that can land deep-water weight"]],
+ lead:"The other half of the endgame money meta, and the one that does not depend on owning a specific rod. Its draw is the Crystallized Seadragon at roughly 26,100 C$ a catch on average &mdash; enough that a good session here funds an entire rod tier.",
+ sec:[["Cliffs or Calm Zone?","<ul><li>You own the <strong>Elder Moss Ripper</strong> &rarr; <a href=\"#/e/castaway-cliffs\">Castaway Cliffs</a>, and it is not close.</li><li>You do not &rarr; the <strong>Calm Zone</strong>, which rewards the rod you already have rather than one specific drop.</li></ul>"]],
+ see:["crystallized-seadragon","money","castaway-cliffs","elder-moss-ripper"]});
+
+E("loc","brine-pool","The Brine Pool",{stage:8,
+ t:[stageTag(8),"Deep hazard water","Gated species &mdash; needs Invincible"],
+ info:[["Stage","8"],["Access","Hazard water"],["Requires","<a href=\"#/e/invincible\">Invincible</a> enchant, or a rod built for it"],["Sibling hazard","Roslit Volcano"]],
+ lead:"One of the two hazard pools &mdash; the Brine Pool and the Roslit Volcano &mdash; that ordinary rods cannot fish. The exalted <a href=\"#/e/invincible\">Invincible</a> enchant removes the restriction outright for whatever rod carries it, which is most of why it is chased.",
+ see:["invincible","exalted-relic","roslit-bay","enchanting"]});
+
+E("loc","fischfest","Fischfest",{stage:9,
+ t:[stageTag(9),"Seasonal event hub","Event fish, crates, event rods"],
+ info:[["Stage","9 &mdash; Event"],["Access","Open while the event runs"],["2026 window","Closed 12 September 2026"],["Holds","Event bestiary, crates, seasonal rods"]],
+ lead:"Fisch&#8217;s recurring festival hub. Event locations carry their own bestiary blocks and their own rods, and they close on a schedule &mdash; a Fischfest rod you did not buy while the gate was open is not purchasable afterwards.",
+ sec:[["Playing event content properly","<ul><li>Event bestiary counts toward your total. Fill it while the island exists.</li><li>Buy the event rods <strong>first</strong> and the cosmetics second.</li><li>Redeem the event codes on day one &mdash; they expire with the event.</li></ul>"]],
+ see:["skycrest","codes","bestiary"]});
+
+E("loc","skycrest","Skycrest",{stage:9,
+ t:[stageTag(9),"Swim up the waterfall from Fischfest","Idols, Sky Crystals, Abaia"],
+ info:[["Stage","9 &mdash; Event"],["Added","5 September 2026"],["Window","<span class=\"flag\" title=\"Opened 5 Sept 2026 12:00 ET, closed with Fischfest on 12 Sept 2026\">5&ndash;12 September 2026</span>"],["Access","From Fischfest, head right into the sea and swim up the waterfall"],["Progression","Crest Amulet &rarr; Idol Favor &rarr; 10 Sky Crystals &rarr; Abaia&#8217;s Chamber"],["Bestiary","29 fish"]],
+ lead:"The floating island above Fischfest, added on 5 September 2026 and closed a week later with the festival. It is the clearest example of Fisch&#8217;s modern event design: a self-contained progression track with its own currency, its own gear and a boss at the end.",
+ sec:[["The Skycrest track, in order","<ol><li>Reach Skycrest: from <strong>Fischfest</strong>, head right into the sea and <strong>swim up the waterfall</strong>.</li><li>Take the <strong>Crest Amulet</strong> from the <a href=\"#/e/keeper-of-the-sky\">Keeper of the Sky</a>. It is what holds Charms.</li><li>Fish the <strong>idol pond</strong> to grind <strong>Idol Favor</strong>.</li><li>Collect and place all <strong>10 Sky Crystals</strong> to open Abaia&#8217;s Chamber.</li><li>Sacrifice fish at the <strong>Fire of Spirits</strong> during a <strong>Tropical Squall</strong> to spawn the <a href=\"#/e/abaia\">Abaia</a> hunt.</li></ol>"],
+  ["What it added permanently","<p>Charms, Ancient Idol trials, Sky Crystals, new rods, relics and side quests arrived with Skycrest. Event <em>islands</em> close; some of what they introduce stays in the game. Treat the island as expired and the systems as live until a patch says otherwise.</p>"]],
+ see:["abaia","keeper-of-the-sky","charms","fischfest","codes"]});
+
+/* ═════════════════════════ RODS ═════════════════════════
+   [id, name, stage, cost (C$ number, 0 = free, null = no published price),
+    cost label, source, tier, one-line role, lead, passive/notes html, see] */
+const RODS = [
+["flimsy-rod","Flimsy Rod",0,0,"Free &mdash; you start with it","Given at spawn","D","The rod you are handed",
+ "Every account starts with the Flimsy Rod and roughly no money. It is not good and it is not supposed to be &mdash; it exists to catch enough trash and common fish off the Moosewood dock to pay for the Carbon Rod.",
+ "<p>No passive. Low luck, low resilience, low weight ceiling. Anything heavier than a Moosewood common will snap the fight.</p><p><strong>Use it for exactly one job:</strong> fish the dock until you have 2,000 C$, then never equip it again.</p>",["carbon-rod","moosewood","beginner"]],
+["training-rod","Training Rod",0,null,"<span class=\"flag\" title=\"Listed in shop rundowns; price varies between write-ups\">Shop &mdash; a few hundred C$</span>","Moosewood shop","D","Skip it",
+ "A marginal step above the Flimsy Rod, sold early enough that new players buy it before they know better. Every progression guide in circulation says the same thing: skip the Training Rod.",
+ "<p>The money spent here is money not spent on the <a href=\"#/e/carbon-rod\">Carbon Rod</a>, and the Carbon Rod is only 2,000 C$. Buying both is the single most common beginner mistake in Fisch.</p>",["carbon-rod","plastic-rod","beginner"]],
+["plastic-rod","Plastic Rod",0,900,"<b>900 C$</b>","Marc&#8217;s shop, Moosewood","D","Also skip it",
+ "The first rod on the shelf at 900 C$, which is why so many accounts own it. It is a real upgrade over the Flimsy Rod and a bad purchase anyway, because the rod you actually want costs 2,000.",
+ "<p>Buying the Plastic Rod means earning 900 C$, then earning 2,000 C$ again. Fishing the dock for another ten minutes and buying the Carbon Rod once is strictly faster.</p>",["carbon-rod","moosewood","beginner"]],
+["carbon-rod","Carbon Rod",1,2000,"<b>2,000 C$</b>","Marc&#8217;s shop, Moosewood","C","The first purchase worth making",
+ "The consensus best beginner rod in Fisch: balanced stats, a weight ceiling high enough for early islands, and cheap enough that it is your first real purchase rather than a project. Buy it, then leave Moosewood.",
+ "<p>No passive &mdash; its value is that nothing about it is bad. Enough resilience that the minigame stops punishing you, enough weight allowance that early-island catches land, and enough luck that bestiary work moves.</p><p>It stays fine until roughly <a href=\"#/e/mushgrove-swamp\">Mushgrove Swamp</a>, where the free <a href=\"#/e/fungal-rod\">Fungal Rod</a> replaces it for nothing.</p>",["fungal-rod","moosewood","beginner","path"]],
+["fast-rod","Fast Rod",1,4500,"<b>4,500 C$</b>","Marc&#8217;s shop, Moosewood","C","Casts per hour, not rarity",
+ "A lure-speed rod. Fish bite sooner, so you get more casts per hour &mdash; which is worth real money when you are farming common fish for C$ and worth much less when you are hunting one rare species.",
+ "<p>Lure speed multiplies your <em>throughput</em>; luck multiplies your <em>odds per cast</em>. Early on, throughput usually wins, because you are selling volume. Once you are chasing bestiary entries, the <a href=\"#/e/lucky-rod\">Lucky Rod</a> profile matters more.</p><p>Optional. If money is tight, skip both and save for the Steady Rod.</p>",["lucky-rod","steady-rod","money"]],
+["lucky-rod","Lucky Rod",1,5250,"<b>5,250 C$</b>","Marc&#8217;s shop, Moosewood","C","Rarity bias, early",
+ "The early luck rod. Where the Fast Rod gives you more casts, the Lucky Rod makes each cast likelier to produce something rare &mdash; which is what fills a bestiary and what sells for more than pocket change.",
+ "<p>Universal luck biases the whole rarity table upward. It does not guarantee anything: at these rates a dry stretch is normal and means nothing about the next cast.</p><p>Optional in the same way the Fast Rod is optional. The <a href=\"#/e/steady-rod\">Steady Rod</a> at 7,000 C$ is the rod both of them are a detour from.</p>",["steady-rod","fast-rod","luck","bestiary"]],
+["steady-rod","Steady Rod",1,7000,"<span class=\"flag\" title=\"Community figure; shop prices move between patches\"><b>7,000 C$</b></span>","Blacksmith, Roslit Bay","B","The rod that ends the early game",
+ "The first rod that feels like equipment rather than a starter item. It widens the shake UI and carries enough control and resilience to land almost anything the early and early-mid islands throw at you.",
+ "<p>Its signature effect is a <strong>larger shake window</strong>, which is a direct difficulty reduction on the part of Fisch that costs new players the most fish. Combined with high resilience, it turns the minigame from a skill check into a formality on ordinary catches.</p><p>Buy it, sail to <a href=\"#/e/mushgrove-swamp\">Mushgrove Swamp</a>, and get the Fungal Rod for free.</p>",["fungal-rod","roslit-bay","minigame","path"]],
+["fungal-rod","Fungal Rod",2,0,"<b>Free</b>","Agaric, Mushgrove Swamp &mdash; catch an Alligator","B","The best value in the game",
+ "A free rod with a real passive, handed over for catching one Alligator in the swamp. There is no other point in Fisch where the reward-to-effort ratio is this lopsided, which is why every rod-progression guide routes through Agaric.",
+ "<p><strong>Passive:</strong> roughly a <span class=\"flag\" title=\"60% is the figure the progression guides quote\">60% chance after each catch</span> to grant a strong luck boost for about <strong>45 seconds</strong>. Chained across a session it is close to permanent uptime.</p><p>That passive outperforms the shop rods available at the same stage, and it costs nothing. Get it before you spend six figures on anything.</p>",["agaric","mushgrove-swamp","luck","arctic-rod","path"]],
+["midas-rod","Midas Rod",3,null,"<span class=\"flag\" title=\"Widely described but shop location and price differ between write-ups\">Price and vendor vary by source</span>","Shop &mdash; verify in game","B","A money rod, not a rarity rod",
+ "The dedicated money rod of the mid-game: a large chance for anything you catch to come up Golden, which doubles what it sells for. It does nothing for bestiary work and everything for your bank balance.",
+ "<p><strong>Passive:</strong> roughly a <span class=\"flag\" title=\"60% golden chance is the commonly quoted figure\">60% chance for a catch to be Golden</span>, doubling its value.</p><p>Worth owning if you are grinding toward a 750,000 C$ rod. Worth ignoring if you are grinding bestiary percentage, because a Golden common is still a common.</p>",["money","mutations-index","trident-rod"]],
+["kings-rod","King&#8217;s Rod",4,120000,"<span class=\"flag\" title=\"120,000 C$ at the Enchant Altar in one guide; other write-ups place it differently\"><b>120,000 C$</b></span>","<span class=\"flag\" title=\"Sold near the Enchant Altar per one source\">Enchant Altar area</span>","B","A mid-late shop rod",
+ "A solid mid-late purchase that sits between the Trident Rod and the rods below it. Sources agree it exists and is good; they do not fully agree on where it is sold or what it costs, so treat the figures here as a starting point.",
+ "<p>If you are choosing between this and the <a href=\"#/e/trident-rod\">Trident Rod</a> at 150,000 C$, take the Trident Rod &mdash; its Atlantean passive pays part of the difference back every session.</p>",["trident-rod","keepers-altar","enchanting"]],
+["arctic-rod","Arctic Rod",4,null,"<span class=\"flag\" title=\"Shop price not consistently published\">Shop price varies</span>","Northern Summit","B","The cold-biome step",
+ "The standard buy between the free Fungal Rod and the Trident Rod. Progression guides name it by position rather than by stat line: it is the rod you take north.",
+ "<p>Its job is to make the northern and cold-water blocks comfortable while you fill their bestiary. If your route is skipping the cold biomes entirely, you can skip this rod and save toward the Trident Rod instead.</p>",["northern-expedition","snowcap-island","trident-rod","path"]],
+["trident-rod","Trident Rod",4,150000,"<b>150,000 C$</b>","Trident&#8217;s Temple","A","The most flexible mid-game rod",
+ "The rod the mid-game is built around, and the first one that partly pays for itself. Good at everything, exceptional at nothing, and carrying a passive that turns ordinary catches into triple-value ones.",
+ "<p><strong>Passive:</strong> roughly a <strong>30% chance</strong> to apply the <a href=\"#/e/atlantean\">Atlantean</a> mutation, worth <strong>3&times; value</strong>.</p><p>That is the whole argument. At a 30% rate on a 3&times; multiplier, the rod is adding something in the region of 60% to your average sale &mdash; so the 150,000 C$ comes back, and every rod purchase after it comes faster.</p><p>This is the correct target for a mid-game player with no idea what to save for.</p>",["atlantean","tridents-temple","money","rod-of-the-depths","path"]],
+["destiny-rod","Destiny Rod",5,190000,"<b>190,000 C$</b>","Caleia, The Arch &mdash; needs <b>70% bestiary</b>","A","The collection payoff",
+ "Cheap for its tier, and locked behind work rather than money: Caleia will not sell it until your total bestiary completion reaches <strong>70%</strong>. It is the reward for having filled the easy locations properly on the way through.",
+ "<p>The 70% gate is total completion across locations, so the efficient route is finishing <em>whole easy blocks</em> &mdash; Moosewood, Roslit Bay, Terrapin, the Ocean &mdash; rather than chasing one hard species everywhere.</p><p>At 190,000 C$ it undercuts rods well below it in power. If you are near 70%, finish the bestiary before you buy anything else.</p>",["caleia","the-arch","bestiary","terrapin-island"]],
+["rod-of-the-depths","Rod of the Depths",5,750000,"<b>750,000 C$</b>","Inside The Depths","A","The late-game workhorse",
+ "The rod most accounts carry from the late game into the endgame, and the reason players grind the entire Vertigo bestiary. It costs 750,000 C$ and sits behind a key that cannot be bought.",
+ "<p><strong>Getting to the shop is the hard part:</strong> 100% Vertigo bestiary &rarr; fish the Strange Whirlpool for The Depths Key &rarr; The Depths.</p><p><strong>Passive:</strong> sources split &mdash; one credits it with <span class=\"flag\" title=\"An extra fish every third catch is credited to this rod in one guide and to the Great Dreamer Rod in another\">an extra fish every third catch</span>, another describes ghost-catch and relic utility. Both agree it is strong.</p><p>Arrive with the money already banked; nothing in The Depths helps you earn it.</p>",["the-depths","vertigo","depths-key","money","path"]],
+["kraken-rod","Kraken Rod",6,950000,"<span class=\"flag\" title=\"950,000 C$ in one guide, 1,333,333 C$ in another\"><b>950,000</b> or <b>1,333,333 C$</b></span>","Atlantis &mdash; <span class=\"flag\" title=\"Reported alongside the Atlantis task chain\">~level 180</span>","A","The endgame bridge",
+ "An Atlantis purchase gated on character level as well as money. Rare-catch bias, a duplication effect and a Tentacle Surge make it the bridge between late-game farming and genuine endgame gear.",
+ "<p>Requires the Atlantis task chain and around <strong>level 180</strong>. If your level is short, that is the thing to fix &mdash; money will not substitute.</p><p>The two published prices differ by nearly 400,000 C$. Bank the higher figure and be pleasantly surprised.</p>",["atlantis","kraken","xp","money"]],
+["great-dreamer-rod","Great Dreamer Rod",7,500000,"<b>500,000 C$</b>","Cursed Isle","S","Farming and rarity at once",
+ "Powerful lure speed, high luck and a duplication passive, for 500,000 C$ &mdash; less than the Rod of the Depths and arguably ahead of it. If Cursed Isle is reachable for you, this is the better buy.",
+ "<p><strong>Passive:</strong> <span class=\"flag\" title=\"Credited to the Great Dreamer in one source and the Rod of the Depths in another\">an extra fish every third catch</span>. On a high lure-speed rod that compounds: more casts per hour, and every third one counts twice.</p>",["cursed-isle","money","rod-of-the-depths"]],
+["wingripper-rod","Wingripper Rod",7,null,"<span class=\"flag\" title=\"No consistently published shop price\">Not a plain shop purchase</span>","Underground Music Venue","S","End of the standard ladder",
+ "One of the two rods the mainstream progression guides finish on. Past this point the ladder stops being a ladder and becomes a question of which specialist rod suits what you are farming.",
+ "<p>Pick between this and the <a href=\"#/e/chrysalis-rod\">Chrysalis Rod</a> from the same location. Guides list them as alternatives rather than ranking one above the other, so take whichever the venue offers you first.</p>",["chrysalis-rod","underground-music-venue","ruinous-oath"]],
+["chrysalis-rod","Chrysalis Rod",7,null,"<span class=\"flag\" title=\"No consistently published shop price\">Not a plain shop purchase</span>","Underground Music Venue","S","End of the standard ladder",
+ "The other finisher from the Underground Music Venue, and the other correct answer to &ldquo;what is the last rod I need&rdquo;. Interchangeable with the Wingripper for most purposes.",
+ "<p>If you own one of the pair, the other is a sidegrade, not an upgrade. Spend the effort on <a href=\"#/g/enchanting\">enchanting</a> the one you have instead &mdash; an exalted enchant is worth more than a second finisher rod.</p>",["wingripper-rod","underground-music-venue","enchanting"]],
+["elder-moss-ripper","Elder Moss Ripper Rod",8,null,"<span class=\"flag\" title=\"Obtained at Castaway Cliffs; acquisition details vary between write-ups\">Castaway Cliffs &mdash; verify in game</span>","Castaway Cliffs","S","The money meta, single-handedly",
+ "The rod that defines endgame income. Its <em>Lurking Mossjaw</em> passive guarantees a high-value Mossy Great Gold Cursed Shark on roughly a two-minute cycle, which is why Castaway Cliffs is quoted at 15&ndash;25M C$ per hour with it and 2&ndash;4M without.",
+ "<p><strong>Passive &mdash; Lurking Mossjaw:</strong> a guaranteed Mossy Great Gold Cursed Shark about every <strong>2 minutes</strong>.</p><p>Understand what that means: the rate is a <em>timer</em>, not a luck roll. Your job at the cliffs is to never be idle when the timer comes up &mdash; which makes lure speed and short fights worth more than extra luck here.</p>",["castaway-cliffs","money","mossy-great-gold-cursed-shark","calm-zone"]],
+["ruinous-oath","Ruinous Oath",8,null,"<span class=\"flag\" title=\"Endgame acquisition; not a standard shop purchase\">Endgame acquisition</span>","Endgame content","S","The high-level best rod",
+ "The rod named first when high-level players are asked what the best rod in Fisch is: very high luck, very high lure speed, and no meaningful weakness. It is an endgame answer to an endgame question.",
+ "<p>If you are reading this before the endgame, the useful takeaway is that it does not change your next three steps. Get the <a href=\"#/e/trident-rod\">Trident Rod</a>, get through Vertigo, and worry about the Ruinous Oath when the rest of your account is there.</p>",["wingripper-rod","elder-moss-ripper","enchanting","path"]],
+["masterline-rod","Masterline Rod",8,null,"<span class=\"flag\" title=\"Named as a 100% bestiary reward in one source; other sources name only cosmetic rewards at 100%\">100% bestiary reward &mdash; disputed</span>","Bestiary completion","S","The completionist rod",
+ "Named in one write-up as the reward for a fully completed bestiary. Other sources describe the 100% reward as cosmetic &mdash; an Aurora Bobber, or an Aurora Glow Lantern &mdash; and do not mention a rod at all.",
+ "<p>Do not plan a bestiary grind around this rod existing in its current form. Plan it around the <strong>70% Destiny Rod gate</strong>, which every source agrees on, and treat anything at 100% as a bonus.</p>",["bestiary","destiny-rod","the-arch","sources"]]
+];
+RODS.forEach(r => E("rod", r[0], r[1], {stage:r[2], cost:r[3], tier:r[6], src:r[5],
+  t:[stageTag(r[2]), r[4], r[5], r[7]],
+  info:[["Stage","<b>" + r[2] + "</b> &mdash; " + STAGES[r[2]]],["Cost",r[4]],["Source",r[5]],["Tier",'<span class="tier t-'+r[6]+'">'+r[6]+"</span>"],["Role",r[7]]],
+  lead:r[8], sec:[["Passive and notes", r[9]]], see:(r[10]||[]).concat(["rods-index","path"])}));
+
+/* ═════════════════════════ BAITS ═════════════════════════ */
+const BAITS = [
+["worm","Worm","common","Small universal luck","Starter bait; shops and bait spots everywhere",
+ "The default bait. A small universal luck bump for almost nothing, which makes it the right thing to have on the line when you are farming volume rather than hunting a species."],
+["fish-head","Fish Head","common","Small luck; cheap and plentiful","Shops, crates, cut from catches",
+ "The other everyday bait. Interchangeable with the Worm for most purposes &mdash; use whichever you have more of and save the good baits for when you are actually hunting something."],
+["flakes","Flakes","common","Small universal luck","Shops",
+ "Bulk bait. Buy it in stacks when you are settling in for a long farming session, because running out of bait mid-session costs more than the bait does."],
+["squid","Squid","rare","Preferred <em>and</em> universal luck; lower lure speed","Caught, crates",
+ "The first bait that behaves like real equipment: it raises both preferred and universal luck at the cost of lure speed. You are trading casts per hour for quality per cast, which is the correct trade when you are filling a bestiary."],
+["truffle-worm","Truffle Worm","legendary","<b>+300% preferred luck</b>, &minus;10% lure speed","Crates, events, bait spots",
+ "The species-hunting bait. A very large preferred-luck bonus for only a small lure-speed penalty &mdash; the best bait in the game for going after one specific fish, and close to wasted when you are farming whatever bites."],
+["weird-algae","Weird Algae","legendary","<b>+200% universal luck</b>, &minus;35% lure speed","Crates, bait spots",
+ "The rarity-hunting bait. It biases the whole table upward rather than one species, and it costs a third of your casting speed to do it. Right for bestiary sweeps and rare-drop farming, wrong for money farming, where throughput is the point."]
+];
+BAITS.forEach(b => E("bait", b[0], b[1], {rar:b[2],
+  t:['<span class="rar rar-'+b[2]+'">'+b[2]+"</span>", b[3], b[4]],
+  info:[["Rarity",'<span class="rar rar-'+b[2]+'">'+b[2]+"</span>"],["Effect",b[3]],["Sources",b[4]]],
+  lead:b[5],
+  sec:[["Choosing a bait","<p>The decision is always the same one: <strong>preferred luck</strong> if you are hunting a named fish, <strong>universal luck</strong> if you are hunting rarity in general, and <strong>lure speed</strong> if you are hunting money. A bait that helps one of those actively hurts the others.</p>"]],
+  see:["luck","baits-index","money","bestiary"]}));
+
+/* ═════════════════════════ FISH ═════════════════════════ */
+const FISH = [
+["alligator","Alligator","rare","Mushgrove Swamp","Agaric&#8217;s quest fish &mdash; catch one, get the Fungal Rod free",
+ "The most valuable fish in the early game and it sells for almost nothing. Catching one Alligator in Mushgrove Swamp completes Agaric&#8217;s quest, and Agaric hands over the <a href=\"#/e/fungal-rod\">Fungal Rod</a> for free."],
+["nurse-shark","Nurse Shark","uncommon","Roslit Bay shallows","Marks the early Enchant Relic shallows",
+ "Not valuable in itself. It matters because the water where Nurse Sharks spawn in <a href=\"#/e/roslit-bay\">Roslit Bay</a> is the early-game <a href=\"#/e/enchant-relic\">Enchant Relic</a> farm &mdash; if you are catching them, you are in the right spot."],
+["colossal-squid","Colossal Squid","legendary","Deep water, foggy weather","A weather-gated bestiary entry",
+ "One of the fish that will not appear until the weather cooperates. Fog is the condition, and a <a href=\"#/e/smokescreen-totem\">Smokescreen Totem</a> is how you make fog happen instead of waiting for it."],
+["crowned-anglerfish","Crowned Anglerfish","legendary","Deep water, foggy weather","The other classic fog catch",
+ "Filed with the Colossal Squid for the same reason: fog-preferring, deep, and a bestiary hole that stays open for a long time if you never buy a totem."],
+["crystallized-seadragon","Crystallized Seadragon","mythical","<a href=\"#/e/calm-zone\">The Calm Zone</a>","<span class=\"flag\" title=\"Community average; weight and mutation swing individual sales hard\">~26,100 C$ average</span> &mdash; the endgame money fish",
+ "The single fish the endgame money meta is built on outside the Castaway Cliffs setup. At roughly 26,100 C$ on average it turns a Calm Zone session into a rod budget."],
+["mossy-great-gold-cursed-shark","Mossy Great Gold Cursed Shark","mythical","<a href=\"#/e/castaway-cliffs\">Castaway Cliffs</a>","The Elder Moss Ripper&#8217;s guaranteed catch, ~every 2 min",
+ "The fish behind the 15&ndash;25M C$/hr figure. The <a href=\"#/e/elder-moss-ripper\">Elder Moss Ripper Rod</a>&#8217;s Lurking Mossjaw passive puts one on your line roughly every two minutes, which is an income rate rather than a drop rate."],
+["megalodon","Megalodon","secret","Open ocean &mdash; hunt event","The open-world boss catch",
+ "The classic Fisch trophy: an open-world hunt rather than a fish you find. Servers force Megalodon hunts through day/night cycling, which is why organised players carry stacks of <a href=\"#/e/sundial-totem\">Sundial Totems</a>."],
+["isonade","Isonade","mythical","Deep water","The standard example of a stacked catch",
+ "Community write-ups reach for Isonade whenever they explain stacking, because the canonical worked example is a <em>Glitched Shiny Sparkling Big Silver Isonade</em> &mdash; attributes and a mutation on one fish, all multiplying together."]
+];
+FISH.forEach(f => E("fish", f[0], f[1], {rar:f[2],
+  t:['<span class="rar rar-'+f[2]+'">'+f[2]+"</span>", f[3], f[4]],
+  info:[["Rarity",'<span class="rar rar-'+f[2]+'">'+f[2]+"</span>"],["Where",f[3]],["Why it matters",f[4]]],
+  lead:f[5], see:["fish-index","bestiary","mutations-index","money"]}));
+
+/* ═════════════════════════ MUTATIONS ═════════════════════════ */
+const MUTS = [
+["aether","Aether",12,"The top standard mutation. Rare enough that most players see one a handful of times."],
+["tryhard","Tryhard",10,"Joint second among standard mutations."],
+["plagued","Plagued",10,"Joint second, and the one people most often mistake for a debuff."],
+["atlantean","Atlantean",3,"The <a href=\"#/e/trident-rod\">Trident Rod</a> applies it at roughly a 30% rate &mdash; the only mutation you can reliably manufacture mid-game."],
+["midas","Midas",2.5,"Top of the common-tier multipliers, and the one the <a href=\"#/e/midas-rod\">Midas Rod</a> is named for."],
+["purified","Purified",2.5,"Shares the 2.5&times; band with Midas."],
+["sleet","Sleet",2.4,"A cold-biome mutation &mdash; <a href=\"#/e/snowcap-island\">Snowcap</a> and the northern water."],
+["electric","Electric",2.1,"Storm-adjacent. Weather changes what you can roll."],
+["aurelian","Aurelian",2,"Solid 2&times; band."],
+["lightning","Lightning",2,"Storm weather. A <a href=\"#/e/tempest-totem\">Tempest Totem</a> makes storms happen on demand."],
+["shiny","Shiny",1.85,"An <strong>attribute</strong>, not a mutation: admin-event only, stacks with a real mutation, and &mdash; critically &mdash; cannot be lost when you appraise."],
+["sparkling","Sparkling",1.85,"The other admin-event attribute. Stacks with Shiny <em>and</em> with a mutation on the same fish."],
+["silver","Silver",1.8,"Common enough to see regularly on a farming session."],
+["studded","Studded",1.8,"Shares the 1.8&times; band with Silver."],
+["glossy","Glossy",1.6,"Mid-band, unremarkable, adds up over a session."],
+["aurous","Aurous",1.5,"The 1.5&times; band is where most of your mutated catches land."],
+["cement","Cement",1.5,"1.5&times; band."],
+["darkened","Darkened",1.5,"1.5&times; band; night-adjacent."],
+["frozen","Frozen",1.5,"1.5&times; band; cold water."],
+["mosaic","Mosaic",1.5,"1.5&times; band."],
+["subspace","Subspace",null,"Applied by the exalted <a href=\"#/e/quantum\">Quantum</a> enchant at a 25% rate. The enchant is the reliable source; the multiplier itself is not consistently published."],
+["golden","Golden",2,"<span class=\"flag\" title=\"Described as doubling value; sources treat Golden as a value state rather than listing it in the mutation multiplier tables\">Doubles value</span>. The <a href=\"#/e/midas-rod\">Midas Rod</a> applies it at roughly 60%."]
+];
+MUTS.forEach(m => E("mut", m[0], m[1], {mult:m[2],
+  t:[m[2] ? '<span class="num"><b>' + m[2] + "&times;</b></span>" : '<span class="num flag" title="Multiplier not consistently published">unpublished</span>', m[3]],
+  info:[["Multiplier",m[2] ? "<b>" + m[2] + "&times;</b> value" : "Not consistently published"],["Kind",(m[0]==="shiny"||m[0]==="sparkling")?"Attribute (appraisal-safe)":"Mutation"],["Stacks with","Attributes, weight, and appraisal rerolls"]],
+  lead:m[3],
+  sec:[["How mutations are earned","<p>Mutations come from the conditions you fish in &mdash; biome, weather, time of day &mdash; from rod passives that apply one directly, and from enchants. The reliable ones are the manufactured ones: the <a href=\"#/e/trident-rod\">Trident Rod</a>&#8217;s Atlantean at ~30%, the <a href=\"#/e/midas-rod\">Midas Rod</a>&#8217;s Golden at ~60%, and <a href=\"#/e/quantum\">Quantum</a>&#8217;s Subspace at 25%.</p><p><strong>Attributes stack with mutations.</strong> A fish can carry Shiny and Sparkling and a mutation at once, and the multipliers apply together &mdash; which is where the enormous headline sale values come from.</p>"]],
+  see:["appraisal","mutations-index","value","weather"]}));
+
+/* ═════════════════════════ ENCHANTS ═════════════════════════ */
+const ENCH = [
+["quantum","Quantum","Exalted","<b>25% chance</b> for a caught fish to gain the <a href=\"#/e/subspace\">Subspace</a> mutation",
+ "The mutation-farming enchant. A quarter of everything you catch comes up mutated, which compounds with weight and attributes into sale values nothing else reaches.",
+ "Put it on the rod you farm money with, not the rod you explore with. A 25% mutation rate is worth the most when you are catching high-base-value fish repeatedly &mdash; <a href=\"#/e/calm-zone\">Calm Zone</a> or <a href=\"#/e/castaway-cliffs\">Castaway Cliffs</a>, not a bestiary sweep."],
+["sea-overlord","Sea Overlord","Exalted","<b>+25%</b> fish weight",
+ "A flat 25% on weight, and weight is a direct multiplier on sale value &mdash; so this is a flat 25% raise on every fish you sell, forever, with no conditions attached.",
+ "The least exciting exalted enchant and one of the best. It never misfires, never depends on a roll and never stops applying."],
+["invincible","Invincible","Exalted","Fish the <a href=\"#/e/brine-pool\">Brine Pool</a> and Roslit Volcano <em>regardless of rod</em>",
+ "Access rather than power. The two hazard pools reject ordinary rods; Invincible removes the restriction for whatever rod carries it.",
+ "If your bestiary is stuck on hazard-water species, this enchant is the fix and no amount of luck stacking substitutes for it."],
+["immortal","Immortal","<span class=\"flag\" title=\"Named as a strong all-rounder; sources do not consistently place it in the exalted pool\">Pool disputed</span>","Strong balance of luck and speed",
+ "The all-rounder pick: good luck, good lure speed, no glaring weakness. Named alongside Quantum whenever players are asked for the best enchant in the game.",
+ "The right roll to keep if you carry one rod for everything. If you carry a farming rod and a hunting rod, the specialists beat it on each."]
+];
+ENCH.forEach(e => E("ench", e[0], e[1], {rar:e[2]==="Exalted"?"mythical":"legendary",
+  t:[e[2], e[3]],
+  info:[["Relic",e[2]],["Effect",e[3]],["Applied at","<a href=\"#/e/keepers-altar\">Keepers Altar</a>"],["Roll","Random from its pool"]],
+  lead:e[4], sec:[["Using it well", "<p>" + e[5] + "</p>"]],
+  see:["enchanting","keepers-altar","exalted-relic","enchants-index"]}));
+
+/* ═════════════════════════ ITEMS & GEAR ═════════════════════════ */
+const ITEMS = [
+["rowboat","Rowboat","Boat","<b>400 C$</b> from the Shipwright at Moosewood docks &mdash; the unlock that opens the map",
+ "The cheapest important purchase in Fisch. Without a boat there is one island; with one there is a game. Buy it in your first session, before any rod above the Carbon Rod."],
+["enchant-relic","Enchant Relic","Relic","Fished up &mdash; best at <a href=\"#/e/ancient-isle\">Ancient Isle</a>, workable in <a href=\"#/e/roslit-bay\">Roslit Bay</a>",
+ "The currency of enchanting. One relic buys one random enchant roll at the <a href=\"#/e/keepers-altar\">Keepers Altar</a>, and since a new roll overwrites the old one, you want a stack before you start rather than one at a time."],
+["exalted-relic","Exalted Relic","Relic","Far rarer than a standard relic; same altar",
+ "Rolls from a smaller pool of much stronger enchants &mdash; <a href=\"#/e/quantum\">Quantum</a>, <a href=\"#/e/sea-overlord\">Sea Overlord</a>, <a href=\"#/e/invincible\">Invincible</a>. Spend these on the rod you intend to keep, not the rod you happen to be holding."],
+["depths-key","The Depths Key","Key","Fished from the Strange Whirlpool in <a href=\"#/e/vertigo\">Vertigo</a>, after 100% Vertigo bestiary",
+ "The only way into <a href=\"#/e/the-depths\">The Depths</a>. It cannot be bought, traded around or skipped, and it will not drop at all until the Vertigo bestiary is complete."],
+["crest-amulet","Crest Amulet","Event gear","Taken from the <a href=\"#/e/keeper-of-the-sky\">Keeper of the Sky</a> on <a href=\"#/e/skycrest\">Skycrest</a>",
+ "The Skycrest amulet, and the socket that <a href=\"#/e/charms\">Charms</a> go into. Everything on the island runs through it."],
+["sky-crystal","Sky Crystal","Event item","10 of them, hidden around Skycrest",
+ "Collect and place all ten to open Abaia&#8217;s Chamber. The gate is completion, not luck &mdash; each crystal is findable."],
+["charms","Charms","Event gear","Nine Skycrest charms, socketed into the Crest Amulet",
+ "Charms level up as you fish with them equipped, and a levelled charm&#8217;s passive is substantially stronger than a fresh one. Pick one and commit rather than rotating."],
+["totems","Totems","Consumable","Roughly <span class=\"flag\" title=\"20 in some guides, 26 in others\">20&ndash;26 totems</span>; shops, crates, codes",
+ "Consumables that overwrite the <em>server&#8217;s</em> time and weather. This is the single most underused system in Fisch: instead of waiting for the condition a fish wants, you buy it."],
+["sundial-totem","Sundial Totem","Totem","Cycles the server&#8217;s time of day",
+ "The time totem, and the backbone of organised <a href=\"#/e/megalodon-hunt\">Megalodon</a> hunting &mdash; players cycle day and night with <span class=\"flag\" title=\"Community figure for forcing hunt events\">60&ndash;70 totems</span> to force hunt events to spawn."],
+["tempest-totem","Tempest Totem","Totem","Forces rain",
+ "Rain and storms gate a set of species and storm-band mutations such as <a href=\"#/e/lightning\">Lightning</a>. One totem replaces an indefinite wait."],
+["windset-totem","Windset Totem","Totem","Forces windy weather",
+ "Wind is its own weather state with its own preferring species. Cheap, specific, and the reason a stalled bestiary suddenly moves."],
+["smokescreen-totem","Smokescreen Totem","Totem","Forces fog",
+ "The fog totem &mdash; how you get the <a href=\"#/e/colossal-squid\">Colossal Squid</a> and <a href=\"#/e/crowned-anglerfish\">Crowned Anglerfish</a> without camping the weather."],
+["clearcast-totem","Clearcast Totem","Totem","Clears the weather",
+ "The undo button. Useful when someone else&#8217;s totem has put the server into weather you do not want."],
+["potions","Potions","Consumable","<span class=\"flag\" title=\"Four potions named in one overview; the roster changes with patches\">Four potions</span>; shops and events",
+ "Timed stat boosts. The XP potion is the one that matters for levelling &mdash; a temporary XP boost stacked with everything else is how max-level runs are done."],
+["shell-of-wrath","Shell of Wrath","XP gear","<b>+25% XP</b>",
+ "Part of the standard XP-stacking loadout. XP bonuses in Fisch stack from several unrelated sources, so collecting three small ones beats hunting for one big one."],
+["companions","Companions","Companion","Pets that follow you and apply a passive &mdash; e.g. the Relic Construct",
+ "Companions are a stat slot, not a cosmetic. The XP-farming setups name a specific companion for a reason."],
+["crates","Crates &amp; geodes","Container","Bait Crates, Common and Quality Crates, Coral and Volcanic Geodes, Tropical Crates",
+ "Where most good <a href=\"#/c/bait\">bait</a> actually comes from. If you are buying legendary bait rather than opening for it, you are overpaying."],
+["personal-aquarium","Personal Aquarium","Facility","Holds fish you keep; produces bait over time",
+ "A passive bait source and a place to store trophies instead of selling them. Small, permanent, easy to forget you own."],
+["harpoon-gun","Harpoon Gun","Weapon","Added in the Harpoon Guns update",
+ "An alternative to the rod for some content, and significant enough that rod tier lists are dated &ldquo;after the Harpoon Guns update&rdquo;. Treat any rod ranking written before it with suspicion."],
+["aurora-bobber","Aurora Bobber","Cosmetic reward","<span class=\"flag\" title=\"Aurora Bobber in some guides, Aurora Glow Lantern in others\">100% bestiary reward &mdash; name disputed</span>",
+ "The completionist prize for a fully filled bestiary. Sources name it differently, which is a good sign it is cosmetic rather than load-bearing."]
+];
+ITEMS.forEach(i => E("item", i[0], i[1], {t:[i[2], i[3]],
+  info:[["Kind",i[2]],["Source / effect",i[3]]], lead:i[4],
+  see:["items-index","path","enchanting"]}));
+
+/* ═════════════════════════ NPCs ═════════════════════════ */
+const NPCS = [
+["pierre","Pierre","<a href=\"#/e/moosewood\">Moosewood</a> beach","Runs the tutorial. Onboarding only &mdash; he is not a merchant and sells nothing."],
+["marc","Marc","<a href=\"#/e/moosewood\">Moosewood</a>","The starter rod shop: Plastic, Carbon, Fast and Lucky rods. The Carbon Rod at 2,000 C$ is the only one worth your first purchase."],
+["moosewood-merchant","The Merchant","<a href=\"#/e/moosewood\">Moosewood</a>, village centre","Buys fish. Every named island has one, so you are never far from selling."],
+["shipwright","The Shipwright","<a href=\"#/e/moosewood\">Moosewood</a> docks","Sells boats, starting with the Rowboat at 400 C$. This is the NPC that opens the map."],
+["the-appraiser","The Appraiser","<a href=\"#/e/moosewood\">Moosewood</a>","Re-rolls a fish&#8217;s weight and mutation for a fee &mdash; a second chance at a better variant without catching a new fish."],
+["agaric","Agaric","<a href=\"#/e/mushgrove-swamp\">Mushgrove Swamp</a>","Asks for one Alligator and hands over the <a href=\"#/e/fungal-rod\">Fungal Rod</a> free. The best-value NPC in the game."],
+["roslit-blacksmith","The Blacksmith","<a href=\"#/e/roslit-bay\">Roslit Bay</a>","Sells the <a href=\"#/e/steady-rod\">Steady Rod</a> &mdash; the rod that ends the early game."],
+["mine-guard","The Mine Guard","<a href=\"#/e/statue-of-sovereignty\">Statue of Sovereignty</a>, by the elevator","Takes a <b>400 C$</b> bribe and lets you down to the <a href=\"#/e/keepers-altar\">Keepers Altar</a>. One-time, cheap, permanent."],
+["caleia","Caleia","<a href=\"#/e/the-arch\">The Arch</a>","Sells the <a href=\"#/e/destiny-rod\">Destiny Rod</a> for 190,000 C$ &mdash; but only once your total bestiary hits <b>70%</b>."],
+["keeper-of-the-sky","Keeper of the Sky","<a href=\"#/e/skycrest\">Skycrest</a>","Holds the <a href=\"#/e/crest-amulet\">Crest Amulet</a> and takes the ten Sky Crystals that open Abaia&#8217;s Chamber."],
+["merlin","Merlin","<span class=\"flag\" title=\"Named as the source of a temporary XP boost in XP-farming write-ups\">Named in XP-farming guides</span>","Sells a temporary XP boost, quoted at <b>+20% XP</b> &mdash; one layer of the max-level stack."]
+];
+NPCS.forEach(n => E("npc", n[0], n[1], {t:[n[2], n[3]],
+  info:[["Where",n[2]],["Role","NPC"]], lead:n[3], see:["npcs-index","path"]}));
+
+/* ═════════════════════════ BOSSES & HUNTS ═════════════════════════ */
+const HUNTS = [
+["megalodon-hunt","Megalodon Hunt","Open ocean","Forced by cycling the server&#8217;s day/night with <span class=\"flag\" title=\"Community figure\">~60&ndash;70 Sundial Totems</span>",
+ "Fisch&#8217;s signature hunt. It is a server event rather than a fishing spot, which is why the community answer to &ldquo;how do I get a Megalodon&rdquo; is a stack of totems rather than a better rod.",
+ "<ol><li>Bank <a href=\"#/e/sundial-totem\">Sundial Totems</a> &mdash; a lot of them.</li><li>Cycle the server&#8217;s time repeatedly to force hunt events to roll.</li><li>When the hunt spawns, everything else on the server stops. Be ready before you start cycling.</li></ol>"],
+["kraken","The Kraken",'Kraken Pool, beneath <a href="#/e/atlantis">Atlantis</a>',"A five-lever world quest",
+ "The base game&#8217;s most involved boss unlock. The pool does not exist for you until five hidden levers have been flicked.",
+ "<p>The five levers: <strong>behind the Merchant</strong>, <strong>under the Cannon Hut</strong>, <strong>behind the Waterfall</strong>, <strong>on the Mountain Bridge</strong>, and <strong>inside the Skull Cave</strong>. Order does not matter.</p><p>Do this on the same trip you buy the <a href=\"#/e/kraken-rod\">Kraken Rod</a> &mdash; Atlantis is a long sail to make twice.</p>"],
+["abaia","Abaia",'Abaia&#8217;s Chamber, beneath <a href="#/e/skycrest">Skycrest</a>',"Idol Favor &rarr; 10 Sky Crystals &rarr; Fire of Spirits during a Tropical Squall",
+ "The Skycrest event boss, and a good example of how modern Fisch events are built: a currency to grind, a collection to finish, a weather condition to wait for, and a multi-stage fight at the end.",
+ "<ol><li>Grind <strong>Idol Favor</strong> at the idol pond.</li><li>Return all <strong>10 <a href=\"#/e/sky-crystal\">Sky Crystals</a></strong> to the <a href=\"#/e/keeper-of-the-sky\">Keeper of the Sky</a> to open the gate.</li><li>Sacrifice caught fish at the <strong>Fire of Spirits</strong> during a <strong>Tropical Squall</strong> until the Abaia Hunt spawns.</li><li>Strip its barrier in the outer ponds, then fight it in the chamber.</li></ol>"],
+["isonade-hunt","Isonade","Deep water","A deep-water catch rather than a scripted quest",
+ "Treated as a trophy catch. Its main appearance in the wikis is as the worked example of stacking &mdash; the fabled <em>Glitched Shiny Sparkling Big Silver Isonade</em> that every mutation explainer reaches for.",
+ "<p>Nothing scripted to do here: bring luck, bring weight allowance, and fish the deep water.</p>"]
+];
+HUNTS.forEach(h => E("hunt", h[0], h[1], {t:[h[2], h[3]],
+  info:[["Where",h[2]],["How it starts",h[3]]], lead:h[4],
+  sec:[["Doing it", h[5]]], see:["hunts-index","totems","bestiary"]}));
+
+/* ═════════════════════════ MECHANICS ═════════════════════════ */
+E("mech","minigame","The fishing minigame",{t:["Cast, shake, then reel &mdash; three separate skill checks"],
+ info:[["Steps","Cast &rarr; Shake &rarr; Reel"],["Cast","Hold to fill the power meter, release"],["Shake","Click the prompts fast; a miss restarts the cast"],["Reel","Hold to move right, release to drift left"]],
+ lead:"Fisch&#8217;s core loop is three checks in a row, and each one is failed differently. Most fish lost by new players are lost in the shake, not the reel.",
+ sec:[["Casting","<p>Equip the rod, hold the mouse button to fill the power meter, release to cast. Distance matters: some species live further out than a lazy cast reaches.</p>"],
+  ["Shaking","<p>Once the line lands, prompts appear. Click them quickly to shorten the wait. <strong>Missing one restarts the cast</strong> &mdash; this is the single biggest early-game time sink, and it is exactly what the <a href=\"#/e/steady-rod\">Steady Rod</a>&#8217;s wider shake window fixes.</p>"],
+  ["Reeling","<p>A bar with a fish marker inside it. <strong>Hold</strong> to slide your bar right, <strong>release</strong> to let it drift left. Keep the bar over the fish until the progress meter fills. Fighting the drift with constant holds is how the bar overshoots &mdash; tap, do not grip.</p>"]],
+ see:["control","resilience","steady-rod","beginner"]});
+E("mech","luck","Luck &mdash; universal vs preferred",{t:["Two different luck stats that do two different jobs"],
+ info:[["Universal luck","Biases the whole rarity table upward"],["Preferred luck","Boosts one species or a named set"],["Sources","Rod stat, bait, enchants, rod passives"],["Rule","Universal for sweeps, preferred for hunts"]],
+ lead:"The most common gear mistake in Fisch is stacking the wrong luck. Universal luck raises your odds on <em>everything</em>; preferred luck raises your odds on <em>something specific</em>. A +300% preferred bait is close to worthless if you do not know what you are fishing for.",
+ sec:[["Choosing between them","<ul><li>Filling a bestiary block, or farming rarity for money &rarr; <strong>universal</strong> (<a href=\"#/e/weird-algae\">Weird Algae</a>, luck rods).</li><li>Hunting one named fish &rarr; <strong>preferred</strong> (<a href=\"#/e/truffle-worm\">Truffle Worm</a>).</li><li>Farming volume for C$ &rarr; neither. Take <strong>lure speed</strong> and sell more fish per hour.</li></ul>"]],
+ see:["lure-speed","baits-index","bestiary","money"]});
+E("mech","lure-speed","Lure speed",{t:["How fast fish bite &mdash; your casts per hour"],
+ info:[["Raises","Throughput"],["Trades against","Luck, on most baits"],["Matters most","Money farming and timer-based rod passives"]],
+ lead:"Lure speed decides how long you wait between bites, which makes it a throughput stat rather than a quality one. It is worth the most when the thing you are farming is common and the thing you want is volume.",
+ sec:[["Where it wins outright","<p>On a rod with a <em>timed</em> passive &mdash; the <a href=\"#/e/elder-moss-ripper\">Elder Moss Ripper</a>&#8217;s two-minute Mossjaw, the every-third-catch duplication passives &mdash; lure speed is the stat that converts the passive into income. Being idle when a timer comes up is pure loss.</p>"]],
+ see:["luck","fast-rod","elder-moss-ripper","money"]});
+E("mech","control","Control",{t:["How steadily your bar tracks the fish in the reel"],
+ info:[["Affects","The reeling minigame"],["High control","Bar responds precisely; less overshoot"],["Low control","Sloppy, drifty bar on hard fish"]],
+ lead:"Control is the difference between the reeling bar going where you meant and going where you pushed it. Cheap rods have little of it, which is why hard catches feel unfair on a Flimsy Rod and routine on a Steady Rod.",
+ see:["minigame","resilience","steady-rod"]});
+E("mech","resilience","Resilience",{t:["How much punishment the line absorbs before you lose the fish"],
+ info:[["Affects","Failure tolerance in the reel"],["High resilience","Mistakes cost progress, not the fish"],["Boosted by","Rod stats and some baits"]],
+ lead:"Resilience is your margin for error. With enough of it a fumbled reel costs progress; without it, the same fumble costs the catch. It is the least glamorous rod stat and the one that most changes how the game feels.",
+ see:["minigame","control","steady-rod"]});
+E("mech","max-weight","Max weight",{t:["The heaviest fish your rod can land at all"],
+ info:[["Hard limit","Yes &mdash; over it, you do not land the fish"],["Raised by","Better rods"],["Weight also","Multiplies sale value"]],
+ lead:"A hard ceiling, not a soft one. Deep-water and boss-tier species outweigh early rods outright, which is why the answer to &ldquo;why can I never land anything here&rdquo; is usually the rod rather than the technique.",
+ sec:[["Weight is also money","<p>Sale value scales with weight, so the same species is worth more as a heavier specimen. That is what makes <a href=\"#/e/sea-overlord\">Sea Overlord</a>&#8217;s flat +25% weight quietly one of the best enchants in the game, and what the <a href=\"#/e/the-appraiser\">Appraiser</a> lets you re-roll.</p>"]],
+ see:["value","appraisal","sea-overlord","rods-index"]});
+E("mech","rarity","Rarity tiers",{t:["Trash through Secret &mdash; and the sources do not agree on the count"],
+ info:[["Tiers","<span class=\"flag\" title=\"12, 17 and 18 tiers all appear in circulation, plus Limited/Special/Extinct side categories\">12 to 18, depending on the source</span>"],["Common chain","Trash &middot; Common &middot; Uncommon &middot; Unusual &middot; Rare &middot; Exotic &middot; Legendary &middot; Mythical &middot; Secret"],["Side categories","Limited, Special, Extinct"],["Effect","Higher tier &rarr; harder minigame, better value"]],
+ lead:"Rarity does two things at once: it decides how often a species appears and how hard its minigame is. The exact ladder is one of the messier parts of the Fisch documentation &mdash; different community databases count 12, 17 or 18 tiers.",
+ sec:[["What is safe to rely on","<p>The <em>ordering</em> is stable and the <em>direction</em> is stable: rarer means harder to hook, harder to land and worth more. The specific tier count and the published per-tier percentages are not consistent between sources, so do not build expectations around a number like &ldquo;45% common&rdquo;.</p>"]],
+ see:["luck","bestiary","sources","fish-index"]});
+E("mech","bestiary","The Bestiary",{t:["Per-location catch logs, and the gate on the Destiny Rod"],
+ info:[["Tracked","Per location, and as a total"],["70% total","<a href=\"#/e/destiny-rod\">Destiny Rod</a> unlocks at Caleia, 190,000 C$"],["100% Vertigo","Required before <a href=\"#/e/depths-key\">The Depths Key</a> can drop"],["100% total","<span class=\"flag\" title=\"Aurora Bobber, Aurora Glow Lantern and the Masterline Rod are all named by different sources\">Reward name disputed</span>"]],
+ lead:"Fisch&#8217;s collection log, and the only system in the game that converts patience directly into gear. Two thresholds actually matter: <strong>70% total</strong> for the Destiny Rod, and <strong>100% of Vertigo</strong> for The Depths Key.",
+ sec:[["Filling it efficiently","<p>Percentage is percentage. A five-minute Moosewood common moves your total as much as a two-hour deep-water hunt, so complete <strong>whole easy locations</strong> first: Moosewood, Roslit Bay, Terrapin Island and the Ocean are the four blocks every guide names for reaching 70%.</p><p>The exception is Vertigo, where the requirement is that <em>one</em> location hits 100%. Do that as a deliberate project, not incidentally.</p>"],
+  ["What blocks a bestiary","<ul><li><strong>Weather-gated species</strong> &mdash; buy a <a href=\"#/e/totems\">totem</a> instead of waiting.</li><li><strong>Weight-gated species</strong> &mdash; the rod is the problem.</li><li><strong>Hazard water</strong> &mdash; the Brine Pool and Roslit Volcano need <a href=\"#/e/invincible\">Invincible</a>.</li></ul>"]],
+ see:["destiny-rod","vertigo","totems","the-arch","path"]});
+E("mech","appraisal","Appraisal",{t:["Re-roll a caught fish&#8217;s weight and mutation"],
+ info:[["NPC","<a href=\"#/e/the-appraiser\">The Appraiser</a>, Moosewood"],["Re-rolls","Weight and mutation"],["Safe","Attributes &mdash; Shiny, Sparkling &mdash; are never lost"],["Risk","A good mutation can be re-rolled into a worse one"]],
+ lead:"A second roll of the dice on a fish you already own. The Appraiser re-rolls weight and mutation, which means it can improve a catch and can also ruin one &mdash; the mutation you have is not protected.",
+ sec:[["When to appraise","<p>The community rule is narrow and correct: <strong>appraise fish that already show a mutation</strong>, because those are the ones where an upgrade is worth the most and the base value is already high. Appraising plain catches burns money on lottery tickets.</p><p>Attributes such as Shiny and Sparkling carry no appraisal risk &mdash; they cannot be lost &mdash; so a Shiny fish is a strictly safer appraisal candidate than a plain one.</p>"]],
+ see:["mutations-index","value","the-appraiser","money"]});
+E("mech","weather","Time &amp; weather",{t:["Gates species and mutations &mdash; and totems let you buy the condition"],
+ info:[["States","Day/night, rain, storm, wind, fog, clear, and event weather"],["Gates","Species availability and some mutations"],["Control","<a href=\"#/e/totems\">Totems</a> overwrite the server state"],["Night","Carries its own XP and species effects"]],
+ lead:"Weather and time of day are not scenery in Fisch &mdash; they decide what is catchable. The important consequence is that a stalled bestiary is usually a weather problem, and weather is purchasable.",
+ sec:[["The totem shortcut","<ul><li>Fog &rarr; <a href=\"#/e/smokescreen-totem\">Smokescreen Totem</a></li><li>Rain and storms &rarr; <a href=\"#/e/tempest-totem\">Tempest Totem</a></li><li>Wind &rarr; <a href=\"#/e/windset-totem\">Windset Totem</a></li><li>Time of day &rarr; <a href=\"#/e/sundial-totem\">Sundial Totem</a></li><li>Undo all of it &rarr; <a href=\"#/e/clearcast-totem\">Clearcast Totem</a></li></ul><p>Totems change the state for the <strong>whole server</strong>, which is why hunt organisation in Fisch is a totem logistics problem.</p>"]],
+ see:["totems","bestiary","megalodon-hunt","mutations-index"]});
+E("mech","xp","Levels &amp; XP",{t:["190 &times; your current level to reach the next one"],
+ info:[["XP to next level","<b>190 &times; current level</b>"],["Level 1 &rarr; 2","190 XP"],["Past level 1001","<span class=\"flag\" title=\"Reported as doubling for every 500 levels past 1001\">Doubles every 500 levels</span>"],["Max level","<b>2,000</b>"],["Total to max","<span class=\"num\">997,120,000</span> XP"],["Gates","Locations, rods and gear &mdash; e.g. <a href=\"#/e/kraken-rod\">Kraken Rod</a> at ~180"]],
+ lead:"The XP curve is arithmetic, not exponential, for the first thousand levels: each level costs <strong>190 &times; your current level</strong>. That makes the early climb fast and the back half enormous &mdash; 997 million XP to reach the 2,000 cap.",
+ sec:[["Stacking XP","<p>XP bonuses in Fisch come from unrelated sources and stack, which is why max-level runs look like shopping lists rather than fishing trips:</p><ul><li>An XP rod with XP-flavoured mutations</li><li>A temporary XP potion &mdash; <a href=\"#/e/merlin\">Merlin&#8217;s</a> is quoted at <b>+20%</b></li><li><a href=\"#/e/shell-of-wrath\">Shell of Wrath</a> &mdash; <b>+25%</b></li><li>A <a href=\"#/e/companions\">companion</a> with an XP passive</li><li>Location and time multipliers &mdash; night multipliers as high as <b>3&times;</b> are quoted for specific spots</li><li>The <strong>Double XP</strong> gamepass, a flat permanent multiplier</li><li><strong>Friends in your party</strong> &mdash; <b>+10% each, up to +50%</b></li></ul><p>Stacked properly a single catch can be worth tens of thousands of XP rather than a few hundred. Unstacked levelling at the same spot is not slow; it is a different order of magnitude.</p>"]],
+ see:["xp-guide","merlin","shell-of-wrath","path"]});
+E("mech","money","C$ and selling",{t:["Value = base species &times; weight &times; mutation &times; attributes"],
+ info:[["Currency","C$"],["Sold to","The Merchant on any island"],["Multipliers","Weight, mutations, attributes, appraisal"],["Endgame rates","<span class=\"flag\" title=\"Community figures; setup-dependent\">2&ndash;4M/hr, or 15&ndash;25M/hr with the Elder Moss Ripper</span>"]],
+ lead:"A fish&#8217;s price is its species&#8217; base value multiplied by weight, then by whatever mutation and attributes it carries. Every one of those terms is something you can influence, which is why two players fishing the same spot can earn ten times differently.",
+ sec:[["The multipliers you control","<ul><li><strong>Where you fish</strong> &mdash; base value is the biggest single term.</li><li><strong>Weight</strong> &mdash; a bigger specimen is worth more; <a href=\"#/e/sea-overlord\">Sea Overlord</a> adds a flat 25%.</li><li><strong>Mutations</strong> &mdash; up to 12&times; on the top standard mutation, and <a href=\"#/e/quantum\">Quantum</a> manufactures them at 25%.</li><li><strong>Attributes</strong> &mdash; Shiny and Sparkling stack on top of a mutation.</li><li><strong>Appraisal</strong> &mdash; re-roll, but only on fish that are already mutated.</li></ul>"]],
+ see:["money-guide","value","appraisal","mutations-index"]});
+E("mech","boats","Boats",{t:["The map does not open until you own one"],
+ info:[["First boat","Rowboat &mdash; 400 C$, Moosewood docks"],["What they do","Travel; island names reveal as you approach"],["Upgrades","Faster hulls sold as you progress"]],
+ lead:"Boats are how Fisch does map unlocking: sail far enough from shore and island names appear above their locations, and visiting one is what unlocks it. There is no quest gate on most islands &mdash; only distance.",
+ see:["rowboat","the-ocean","moosewood","path"]});
+E("mech","enchant-system","Enchanting",{t:["Relic in, random enchant out &mdash; at one altar, at night"],
+ info:[["Where","<a href=\"#/e/keepers-altar\">Keepers Altar</a>, under the Statue of Sovereignty"],["Entry","400 C$ bribe, once"],["Input","<a href=\"#/e/enchant-relic\">Enchant Relic</a> or <a href=\"#/e/exalted-relic\">Exalted Relic</a>"],["Result","A random enchant, replacing the current one"]],
+ lead:"Fisch&#8217;s only rod-upgrade system that is not a purchase. You offer a relic at the Keepers Altar and get a random enchant, overwriting whatever the rod carried before.",
+ see:["enchanting","keepers-altar","exalted-relic","quantum"]});
+E("mech","bonuses","Gamepasses &amp; party bonuses",{t:["Permanent multipliers that sit outside your gear"],
+ info:[["Double XP","Gamepass &mdash; flat permanent XP multiplier"],["Friends","<b>+10% XP each</b>, up to <b>+50%</b> with five"],["Stacks with","Everything else in the XP stack"]],
+ lead:"Two multipliers that have nothing to do with fishing: the Double XP gamepass, and simply having friends in your party. Five friends is +50% XP for no gear, no grinding and no cost.",
+ see:["xp","xp-guide"]});
+
+/* ═══════════════════ THE PROGRESSION ENGINE ═══════════════════
+   One ordered milestone list drives both the roadmap checklist and the
+   "where am I" planner, so the two can never drift apart.
+   State s = {lvl, ord (rod power index), cash, f:{...flags}}          */
+
+const RODORD = {}; RODS.forEach((r, i) => { RODORD[r[0]] = i; });
+const ordOf = id => (RODORD[id] === undefined ? 0 : RODORD[id]);
+
+const MILESTONES = [
+{id:"m-boat", ph:0, t:"Buy the Rowboat", cost:400, where:"Shipwright, Moosewood docks",
+ body:"<b>400 C$</b> to the Shipwright. Until you own a boat, Fisch is one island; after it, island names reveal themselves as you sail near them and every location in this wiki becomes reachable.",
+ done:s => s.f.boat},
+{id:"m-carbon", ph:0, t:"Buy the Carbon Rod", cost:2000, where:"Marc&#8217;s shop, Moosewood",
+ body:"Fish the Moosewood dock with the Flimsy Rod until you have <b>2,000 C$</b> and buy the <a href=\"#/e/carbon-rod\">Carbon Rod</a>. Do not buy the Plastic or Training rods on the way &mdash; that is 900 C$ you then have to earn again.",
+ done:s => s.ord >= ordOf("carbon-rod")},
+{id:"m-easybest", ph:0, t:"Clear the four easy bestiary blocks", cost:0, where:"Moosewood, Roslit Bay, Terrapin, the Ocean",
+ body:"Fill the <a href=\"#/e/bestiary\">bestiary</a> for Moosewood, Roslit Bay, Terrapin Island and the Ocean. These four are the largest, easiest blocks in the game and they are what carries you toward the <b>70%</b> total that unlocks the Destiny Rod later. Doing them now costs nothing you were not already doing.",
+ done:s => s.f.easybest},
+{id:"m-steady", ph:1, t:"Buy the Steady Rod", cost:7000, where:"Blacksmith, Roslit Bay",
+ body:"The <a href=\"#/e/steady-rod\">Steady Rod</a> widens the shake window and adds enough resilience that you stop losing fish to the minigame. This is the rod that ends the early game.",
+ done:s => s.ord >= ordOf("steady-rod")},
+{id:"m-altar", ph:1, t:"Open the Keepers Altar", cost:400, where:"Mines, Statue of Sovereignty",
+ body:"Sail to the <a href=\"#/e/statue-of-sovereignty\">Statue of Sovereignty</a>, go into the mines, and pay the NPC by the elevator <b>400 C$</b>. That is the entire cost of permanently unlocking <a href=\"#/g/enchanting\">enchanting</a>. There is no reason to still have this closed at level 200.",
+ done:s => s.f.altar},
+{id:"m-fungal", ph:1, t:"Take Agaric&#8217;s free Fungal Rod", cost:0, where:"Mushgrove Swamp",
+ body:"Sail to <a href=\"#/e/mushgrove-swamp\">Mushgrove Swamp</a>, talk to <a href=\"#/e/agaric\">Agaric</a>, catch one <b>Alligator</b>, and he hands over the <a href=\"#/e/fungal-rod\">Fungal Rod</a> for free. Its luck passive beats anything you could buy at this point, and it costs nothing.",
+ done:s => s.ord >= ordOf("fungal-rod")},
+{id:"m-relics", ph:2, t:"Farm relics and enchant your rod", cost:0, where:"Ancient Isle, or the Roslit Bay shallows",
+ body:"Fish <a href=\"#/e/enchant-relic\">Enchant Relics</a> in bulk &mdash; <a href=\"#/e/ancient-isle\">Ancient Isle</a> if you can reach it, the Nurse Shark shallows in <a href=\"#/e/roslit-bay\">Roslit Bay</a> if you cannot &mdash; then spend the whole stack at the altar in one sitting. Each roll <b>overwrites</b> the last, so stop the moment you land something worth keeping.",
+ done:s => s.f.enchanted},
+{id:"m-money1", ph:2, t:"Set up a real money farm", cost:0, where:"Forsaken Shores &mdash; the waterfall pond",
+ body:"<a href=\"#/e/forsaken-shores\">Forsaken Shores</a> is the mid-game answer to both money and XP, which is unusual &mdash; normally those are different places. Fish the waterfall pond, not the open shore. This is where the 150,000 C$ for the Trident Rod comes from.",
+ done:s => s.ord >= ordOf("trident-rod") || s.cash >= 150000},
+{id:"m-trident", ph:3, t:"Buy the Trident Rod", cost:150000, where:"Trident&#8217;s Temple",
+ body:"The <a href=\"#/e/trident-rod\">Trident Rod</a> is the correct target for any mid-game player who does not know what to save for. Its ~30% <a href=\"#/e/atlantean\">Atlantean</a> passive multiplies catch value by 3, so it earns a good share of its own price back.",
+ done:s => s.ord >= ordOf("trident-rod")},
+{id:"m-best70", ph:3, t:"Reach 70% bestiary &rarr; Destiny Rod", cost:190000, where:"Caleia, The Arch",
+ body:"At <b>70% total bestiary</b>, <a href=\"#/e/caleia\">Caleia</a> at <a href=\"#/e/the-arch\">The Arch</a> sells the <a href=\"#/e/destiny-rod\">Destiny Rod</a> for 190,000 C$ &mdash; cheap for its tier. Finish whole easy locations to get there; percentage is percentage.",
+ done:s => s.f.best70 || s.ord >= ordOf("destiny-rod")},
+{id:"m-vertigo", ph:4, t:"Complete the Vertigo bestiary to 100%", cost:0, where:"Vertigo",
+ body:"A hard gate with no shortcut. <a href=\"#/e/vertigo\">Vertigo</a> must be at <b>100%</b> before The Depths Key can drop at all. Treat it as its own project rather than something that happens by accident.",
+ done:s => s.f.vertigo},
+{id:"m-depthskey", ph:4, t:"Fish The Depths Key from the Strange Whirlpool", cost:0, where:"Vertigo &mdash; the Strange Whirlpool",
+ body:"With Vertigo at 100%, fish the <b>Strange Whirlpool</b> until you catch <a href=\"#/e/depths-key\">The Depths Key</a>. It cannot be bought or traded around.",
+ done:s => s.f.depths},
+{id:"m-depthsrod", ph:4, t:"Buy the Rod of the Depths", cost:750000, where:"Inside The Depths",
+ body:"<b>750,000 C$</b> for the <a href=\"#/e/rod-of-the-depths\">Rod of the Depths</a>. Bank the money <em>before</em> you go down &mdash; nothing in The Depths helps you earn it and the trip back out is long.",
+ done:s => s.ord >= ordOf("rod-of-the-depths")},
+{id:"m-level180", ph:5, t:"Reach level 180 for Atlantis", cost:0, lvl:180, where:"Wherever your XP stack is best",
+ body:"<a href=\"#/e/atlantis\">Atlantis</a> gates on character level as well as money &mdash; around <b>180</b>. If your level is short, money will not substitute; go stack XP bonuses and level deliberately (see <a href=\"#/g/xp-guide\">XP &amp; levelling</a>).",
+ done:s => s.lvl >= 180},
+{id:"m-kraken", ph:5, t:"Atlantis: five levers, then the Kraken Rod", cost:1333333, where:"Atlantis",
+ body:"Flick the five hidden levers &mdash; behind the Merchant, under the Cannon Hut, behind the Waterfall, on the Mountain Bridge, inside the Skull Cave &mdash; to open the Kraken Pool, and buy the <a href=\"#/e/kraken-rod\">Kraken Rod</a> on the same trip. Budget the higher of the two published prices.",
+ done:s => s.ord >= ordOf("kraken-rod")},
+{id:"m-dreamer", ph:6, t:"Buy the Great Dreamer Rod", cost:500000, where:"Cursed Isle",
+ body:"<b>500,000 C$</b> at <a href=\"#/e/cursed-isle\">Cursed Isle</a> for high lure speed, high luck and a duplication passive. Cheaper than the Rod of the Depths and arguably stronger &mdash; if you can reach Cursed Isle, this is the better buy.",
+ done:s => s.ord >= ordOf("great-dreamer-rod")},
+{id:"m-exalted", ph:6, t:"Land an exalted enchant", cost:0, where:"Keepers Altar",
+ body:"<a href=\"#/e/exalted-relic\">Exalted Relics</a> roll from a small pool of much stronger enchants: <a href=\"#/e/quantum\">Quantum</a> (25% Subspace mutations), <a href=\"#/e/sea-overlord\">Sea Overlord</a> (+25% weight, so +25% money forever) and <a href=\"#/e/invincible\">Invincible</a> (fish the hazard pools with any rod). Spend them on the rod you intend to keep.",
+ done:s => s.f.exalted},
+{id:"m-venue", ph:7, t:"Finish the ladder: Wingripper or Chrysalis", cost:0, where:"Underground Music Venue",
+ body:"The <a href=\"#/e/underground-music-venue\">Underground Music Venue</a> holds the two rods that mainstream progression guides finish on. Owning one makes the other a sidegrade &mdash; put the effort into enchanting instead.",
+ done:s => s.ord >= ordOf("wingripper-rod")},
+{id:"m-moneymeta", ph:7, t:"Move to the endgame money meta", cost:0, where:"Castaway Cliffs, or the Calm Zone",
+ body:"Two farms: <a href=\"#/e/castaway-cliffs\">Castaway Cliffs</a> with the <a href=\"#/e/elder-moss-ripper\">Elder Moss Ripper</a> (15&ndash;25M C$/hr, because its Mossjaw passive is a two-minute timer rather than a luck roll), or the <a href=\"#/e/calm-zone\">Calm Zone</a> for the Crystallized Seadragon at ~26,100 C$ average with whatever rod you already own.",
+ done:s => s.f.moneymeta || s.ord >= ordOf("elder-moss-ripper")}
+];
+
+const PHASES = [
+ {n:"Phase 0 — The first hour", lv:"Level 1–10", note:"Everything here happens on or next to the Moosewood dock."},
+ {n:"Phase 1 — Getting off the starter island", lv:"Level 10–40", note:"One shop rod, one free rod, one permanent unlock."},
+ {n:"Phase 2 — Income and enchants", lv:"Level 40–80", note:"Stop fishing wherever you happen to be and start farming on purpose."},
+ {n:"Phase 3 — The mid-game rod", lv:"Level 80–150", note:"The Trident Rod is the point of this phase; the Destiny Rod is the bonus."},
+ {n:"Phase 4 — Vertigo and The Depths", lv:"Level 150–180", note:"The hardest gate in the base game, and the one with no shortcut."},
+ {n:"Phase 5 — Atlantis", lv:"Level 180+", note:"The first content gated on your level rather than your wallet."},
+ {n:"Phase 6 — Endgame gear", lv:"Endgame", note:"Rods stop being upgrades and start being choices."},
+ {n:"Phase 7 — The money meta", lv:"Endgame", note:"Where the account stops progressing and starts printing."}
+];
+
+/* what to farm, given how far along you are */
+function farmFor(stage) {
+  if (stage <= 1) return ["the Moosewood dock and Roslit Bay", "#/e/roslit-bay", "a few thousand C$/hr"];
+  if (stage <= 3) return ["the Forsaken Shores waterfall pond", "#/e/forsaken-shores", "100K–500K C$/hr"];
+  if (stage <= 5) return ["Forsaken Shores, with a luck bait on", "#/e/forsaken-shores", "100K–500K C$/hr"];
+  if (stage <= 7) return ["the Calm Zone", "#/e/calm-zone", "Crystallized Seadragon, ~26,100 C$ a catch"];
+  return ["Castaway Cliffs", "#/e/castaway-cliffs", "2–4M C$/hr, or 15–25M with the Elder Moss Ripper"];
+}
+
+const GUIDES = {
+  beginner:   {n:"Beginner&#8217;s guide"},
+  progression:{n:"Progression roadmap"},
+  mistakes:   {n:"12 beginner mistakes"},
+  "money-guide":{n:"Making money"},
+  "xp-guide": {n:"XP &amp; levelling"},
+  enchanting: {n:"Enchanting"},
+  codes:      {n:"Codes"},
+  sources:    {n:"Accuracy &amp; sources"}
+};
+const TOOLS = {
+  path:  {n:"Where am I? &mdash; path planner"},
+  budget:{n:"Rod budget planner"},
+  odds:  {n:"Drop &amp; catch odds"},
+  value: {n:"Fish value calculator"}
+};
+const INDEXES = {"locations-index":"loc","npcs-index":"npc","hunts-index":"hunt","rods-index":"rod",
+ "baits-index":"bait","enchants-index":"ench","items-index":"item","fish-index":"fish",
+ "mutations-index":"mut","mechanics-index":"mech"};
+
+/* ═══════════════════════ APP ═══════════════════════ */
+const $ = (s, r) => (r || document).querySelector(s);
+const view = $("#view");
+const BY = {}; DB.forEach(e => BY[e.id] = e);
+const strip = h => String(h).replace(/<[^>]+>/g, "").replace(/&[a-z]+;/g, " ");
+const commas = n => Math.round(n).toLocaleString("en-US");
+const count = t => DB.filter(e => e.type === t).length;
+const cash = n => commas(n) + " C$";
+
+const CATNOTE = {
+  rod:  "Fisch has well over two hundred rods and only about half of them carry a published price. This is the <strong>progression spine</strong> &mdash; the rods that actually decide what you do next &mdash; not a complete list.",
+  fish: "Fisch has more than a thousand species. These are the ones that <strong>change a decision</strong>: quest fish, farm targets, weather-gated bestiary holes and trophies.",
+  ench: "Only the enchants the sources agree on are listed. The regular relic pool is documented inconsistently across community wikis, so rather than reproduce a list that might be wrong, this page covers the exalted enchants and the <a href=\"#/g/enchanting\">enchanting guide</a> covers the process.",
+  bait: "The commonly-quoted bait roster runs past sixty entries and changes with patches. These are the archetypes &mdash; once you can tell preferred luck from universal luck, any bait in the game reads clearly.",
+  mut:  "Multipliers as published by community mutation tables. Attributes (Shiny, Sparkling) are listed alongside mutations because they stack with them."
+};
+
+/* This page is deployed at both /fisch.html and /fisch/, so the path back to the
+   sibling wiki depends on which one the visitor landed on. */
+function siblingHref() {
+  return /\/fisch\/(index\.html)?$/.test(location.pathname) ? "../" : "index.html";
+}
+
+/* link resolution: entries, category indexes, guides and tools are all addressable by id */
+function link(id) {
+  if (BY[id]) return ["#/e/" + id, BY[id].name];
+  if (INDEXES[id]) return ["#/c/" + INDEXES[id], CATS[INDEXES[id]].n];
+  if (GUIDES[id]) return ["#/g/" + id, GUIDES[id].n];
+  if (TOOLS[id]) return ["#/t/" + id, TOOLS[id].n];
+  return null;
+}
+
+/* ── sidebar ── */
+(function sidebar() {
+  const groups = {};
+  Object.keys(CATS).forEach(t => { (groups[CATS[t].g] = groups[CATS[t].g] || []).push(["#/c/" + t, CATS[t].n, count(t)]); });
+  Object.keys(GUIDES).forEach(k => { (groups.Guides = groups.Guides || []).push(["#/g/" + k, GUIDES[k].n, ""]); });
+  Object.keys(TOOLS).forEach(k => { (groups.Tools = groups.Tools || []).push(["#/t/" + k, TOOLS[k].n, ""]); });
+  let h = '<a href="#/" data-nav="#/" style="font-weight:600">Main page</a>';
+  Object.keys(groups).forEach(g => {
+    h += '<div class="sgroup">' + g + "</div>";
+    groups[g].forEach(r => { h += '<a href="' + r[0] + '">' + r[1] + (r[2] ? "<em>" + r[2] + "</em>" : "") + "</a>"; });
+  });
+  $("#side").innerHTML = h;
+})();
+
+/* ── home ── */
+function home() {
+  const tiles = [
+    ["#/t/path","Where am I? &mdash; path planner","Put in your level, rod and bank balance. Get the next five things to do, in order, with what they cost.","Start here"],
+    ["#/g/beginner","Beginner&#8217;s guide","The first hour, the three-part minigame, and the purchases that are worth making.","Guide"],
+    ["#/g/progression","Progression roadmap","Eight phases from the Moosewood dock to the money meta, with a checklist that saves.","Guide"],
+    ["#/g/money-guide","Making money","What each stage of the game can actually earn per hour, and where.","Guide"]];
+  view.innerHTML = '<div class="page full"><div class="hero"><h1>The Fisch <em>field guide</em>.</h1>'
+    + "<p>" + DB.length + " pages on Roblox&#8217;s fishing game &mdash; every location on the progression route, the rods that matter, baits, enchants, mutations, bosses and systems &mdash; plus a planner that takes your level, rod and C$ and tells you what to do next.</p></div>"
+    + '<div class="tiles">' + tiles.map((t, i) => '<a class="tile' + (i ? "" : " hi") + '" href="' + t[0] + '"><em>' + t[3] + "</em><b>" + t[1] + "</b><span>" + t[2] + "</span></a>").join("") + "</div>"
+    + '<h2 class="sh">Browse the database</h2><div class="catgrid">'
+    + Object.keys(CATS).map(t => '<a class="cat" href="#/c/' + t + '"><b>' + CATS[t].n + "</b><span>" + count(t) + " pages</span></a>").join("") + "</div>"
+    + '<h2 class="sh">The route, in one table</h2>'
+    + '<div class="tablewrap"><table><thead><tr><th>Phase</th><th>Level</th><th>The one thing that matters</th></tr></thead><tbody>'
+    + [["Phase 0","1&ndash;10","Rowboat (400 C$), then the Carbon Rod (2,000 C$). Nothing else."],
+       ["Phase 1","10&ndash;40","Steady Rod, then Agaric&#8217;s <strong>free</strong> Fungal Rod. Open the Keepers Altar for 400 C$."],
+       ["Phase 2","40&ndash;80","Farm Forsaken Shores. Bank relics, enchant once, properly."],
+       ["Phase 3","80&ndash;150","Trident Rod, 150,000 C$. Its 30% Atlantean passive pays part of itself back."],
+       ["Phase 4","150&ndash;180","Vertigo to 100%, The Depths Key, Rod of the Depths at 750,000 C$."],
+       ["Phase 5","180+","Atlantis: five levers, the Kraken, the Kraken Rod."],
+       ["Phase 6","Endgame","Great Dreamer at 500,000 C$; an exalted enchant on the rod you keep."],
+       ["Phase 7","Endgame","Castaway Cliffs or the Calm Zone, and the money stops being a constraint."]]
+      .map(r => "<tr><td><strong>" + r[0] + "</strong></td><td class='num'>" + r[1] + "</td><td>" + r[2] + "</td></tr>").join("")
+    + "</tbody></table></div>"
+    + '<h2 class="sh">Quick facts</h2><div class="tablewrap"><table><tbody>'
+    + [["Game","Fisch &mdash; Roblox fishing RPG"],["You start with","A Flimsy Rod, no bait and no money, on the Moosewood dock"],
+       ["First purchase","Carbon Rod &mdash; 2,000 C$"],["Cheapest important purchase","Rowboat &mdash; 400 C$"],
+       ["Best free item in the game","Fungal Rod, from Agaric, for catching one Alligator"],
+       ["XP per level","190 &times; your current level"],["Max level","2,000 &mdash; about 997 million XP"],
+       ["Bestiary gate","70% total unlocks the Destiny Rod at 190,000 C$"],
+       ["Hardest base-game gate","100% Vertigo bestiary, for The Depths Key"],
+       ["Top mutation multiplier","Aether, 12&times;"],
+       ["Endgame income","<span class=\"flag\" title=\"Community figures; the high number is specific to the Elder Moss Ripper setup\">2&ndash;4M C$/hr, or 15&ndash;25M with the Elder Moss Ripper</span>"]]
+      .map(r => "<tr><td><strong>" + r[0] + "</strong></td><td>" + r[1] + "</td></tr>").join("")
+    + "</tbody></table></div>"
+    + '<p class="note">Sister wiki in this repo: <a href="' + siblingHref() + '">the Lineage Piece Field Manual</a>.</p>'
+    + '<div class="warnbox"><strong>On accuracy:</strong> Fisch patches constantly and shop prices, drop rates and event islands move with it. Figures that community sources disagree on are marked <span class="flag" title="Like this">like this</span> and collected on the <a href="#/g/sources">Accuracy &amp; sources</a> page. Verify anything expensive at the merchant before you commit to it.</div></div>';
+}
+
+/* ── category index ── */
+let sortState = {};
+function category(type) {
+  const cat = CATS[type], rows = DB.filter(e => e.type === type);
+  const facets = {}; rows.forEach(e => { const k = e.tier || e.rar; if (k) facets[k] = 1; });
+  const keys = Object.keys(facets);
+  const st = sortState[type] || {i: -1, dir: 1};
+  view.innerHTML = '<div class="page full"><div class="crumb"><a href="#/">Main page</a> &rsaquo; <span>' + cat.n + "</span></div>"
+    + '<h1 class="pt">' + cat.n + '</h1><div class="chips"><span class="chip">' + rows.length + " pages</span>"
+    + '<span class="chip">Click a column to sort</span></div>'
+    + (CATNOTE[type] ? '<div class="note" style="margin-top:14px">' + CATNOTE[type] + "</div>" : "")
+    + (keys.length ? '<div class="filters"><button class="fbtn on" data-f="">All</button>' + keys.map(k => '<button class="fbtn" data-f="' + k + '">' + k + "</button>").join("") + "</div>" : "")
+    + '<div class="tablewrap"><table><thead><tr>' + cat.cols.map((c, i) => '<th class="s' + (st.i === i ? (st.dir > 0 ? " asc" : " desc") : "") + '" data-i="' + i + '">' + c + "</th>").join("") + '</tr></thead><tbody id="rows"></tbody></table></div>'
+    + '<p class="note">Every row links to its own page. Search from the bar above to jump straight to one.</p></div>';
+
+  let filter = "";
+  function draw() {
+    let list = rows.filter(e => !filter || e.tier === filter || e.rar === filter);
+    if (st.i >= 0) {
+      list = list.slice().sort((a, b) => {
+        const av = st.i === 0 ? a.name : a.t[st.i - 1], bv = st.i === 0 ? b.name : b.t[st.i - 1];
+        const an = parseFloat(strip(av).replace(/,/g, "")), bn = parseFloat(strip(bv).replace(/,/g, ""));
+        const cmp = (!isNaN(an) && !isNaN(bn)) ? an - bn : strip(av).localeCompare(strip(bv));
+        return cmp * st.dir;
+      });
+    }
+    $("#rows").innerHTML = list.map(e => "<tr><td><a href='#/e/" + e.id + "'>" + e.name + "</a></td>"
+      + e.t.map(c => "<td>" + c + "</td>").join("") + "</tr>").join("")
+      || '<tr><td colspan="' + cat.cols.length + '" style="padding:20px;text-align:center;color:var(--muted)">Nothing matches that filter.</td></tr>';
+  }
+  draw();
+  view.querySelectorAll("th.s").forEach(th => th.addEventListener("click", () => {
+    const i = +th.dataset.i;
+    st.dir = (st.i === i) ? -st.dir : 1; st.i = i; sortState[type] = st;
+    view.querySelectorAll("th.s").forEach(x => x.classList.remove("asc", "desc"));
+    th.classList.add(st.dir > 0 ? "asc" : "desc");
+    draw();
+  }));
+  view.querySelectorAll(".fbtn").forEach(b => b.addEventListener("click", () => {
+    view.querySelectorAll(".fbtn").forEach(x => x.classList.remove("on"));
+    b.classList.add("on"); filter = b.dataset.f; draw();
+  }));
+}
+
+/* ── entry page ── */
+function entry(id) {
+  const e = BY[id];
+  if (!e) return notfound(id);
+  const cat = CATS[e.type], sibs = DB.filter(x => x.type === e.type), i = sibs.indexOf(e);
+  const chips = ['<span class="chip">' + cat.n + "</span>"]
+    .concat(e.rar ? ['<span class="chip t rar-' + e.rar + '">' + e.rar + "</span>"] : [])
+    .concat(e.tier ? ['<span class="chip t" style="color:var(--r-' + (e.tier === "S" ? "mythical" : e.tier === "A" ? "legendary" : e.tier === "B" ? "rare" : "common") + ')">Tier ' + e.tier + "</span>"] : [])
+    .concat(e.stage !== undefined ? ['<span class="chip">Stage ' + e.stage + " &middot; " + STAGES[e.stage] + "</span>"] : []);
+  const see = (e.see || []).map(link).filter(Boolean)
+    .filter(l => l[0] !== "#/e/" + id)
+    .filter((l, idx, arr) => arr.findIndex(x => x[0] === l[0]) === idx)
+    .map(l => '<a href="' + l[0] + '">' + l[1] + "</a>").join("");
+  view.innerHTML = '<div class="page"><article><div class="crumb"><a href="#/">Main page</a> &rsaquo; <a href="#/c/' + e.type + '">' + cat.n + "</a> &rsaquo; <span>" + e.name + "</span></div>"
+    + '<h1 class="pt">' + e.name + '</h1><div class="chips">' + chips.join("") + "</div>"
+    + '<p class="lead">' + e.lead + "</p>"
+    + (e.sec || []).map(s => '<h2 class="sh">' + s[0] + '</h2><div class="prose">' + s[1] + "</div>").join("")
+    + (see ? '<h2 class="sh">See also</h2><div class="seealso">' + see + "</div>" : "")
+    + '<div class="pagefoot"><span>Data: September 2026</span><span>'
+    + (i > 0 ? '<a href="#/e/' + sibs[i - 1].id + '">&larr; ' + sibs[i - 1].name + "</a>" : "")
+    + (i > 0 && i < sibs.length - 1 ? " &nbsp;&middot;&nbsp; " : "")
+    + (i < sibs.length - 1 ? '<a href="#/e/' + sibs[i + 1].id + '">' + sibs[i + 1].name + " &rarr;</a>" : "") + "</span></div></article>"
+    + '<aside class="infobox"><div class="ibhead"><span>' + cat.n + "</span><b>" + e.name + "</b></div>"
+    + (e.info || []).map(r => '<dl class="ibrow"><dt>' + r[0] + "</dt><dd>" + r[1] + "</dd></dl>").join("")
+    + "</aside></div>";
+}
+
+function notfound(id) {
+  view.innerHTML = '<div class="page full"><h1 class="pt">No such page</h1><p class="lead">Nothing in the database is filed under &ldquo;' + strip(id) + '&rdquo;. Try the search bar, or <a href="#/">start from the main page</a>.</p></div>';
+}
+
+/* ── guides ── */
+const KEY = "fisch-field-guide.progress.v1";
+let done = {}; try { done = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) {}
+const saveProg = () => { try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (e) {} };
+
+function ghead(name, lede) {
+  return '<div class="crumb"><a href="#/">Main page</a> &rsaquo; <span>' + name + "</span></div>"
+    + '<h1 class="pt">' + name + '</h1><p class="lead">' + lede + "</p>";
+}
+
+const GUIDEVIEW = {
+ "progression": function () {
+   let h = '<div class="page full">' + ghead("Progression roadmap",
+     "Eight phases from the Moosewood dock to the endgame money meta. Every step is one of the milestones the <a href=\"#/t/path\">path planner</a> reads, so ticking things here and answering the planner honestly should tell you the same story. The checklist saves in this browser.")
+     + '<div class="progline"><b id="pcount"></b><div class="progtrack"><div class="progfill" id="pfill"></div></div><button class="ghost" id="reset" type="button">Reset</button></div>';
+   PHASES.forEach((p, pi) => {
+     const ms = MILESTONES.filter(m => m.ph === pi);
+     h += '<div class="phase"><div class="phasehead"><h3>' + p.n + '</h3><span class="lv">' + p.lv + "</span></div>"
+       + '<div class="note" style="margin:8px 12px 0;border:0;padding-left:0">' + p.note + "</div><ul class=\"tasks\">"
+       + ms.map(m => '<li class="task' + (done[m.id] ? " done" : "") + '" data-k="' + m.id + '"><input type="checkbox" tabindex="-1"'
+           + (done[m.id] ? " checked" : "") + '><span><strong>' + m.t + "</strong>"
+           + (m.cost ? ' <span class="num">&mdash; ' + cash(m.cost) + "</span>" : "")
+           + (m.lvl ? ' <span class="num">&mdash; level ' + m.lvl + "</span>" : "")
+           + "<br>" + m.body + "</span></li>").join("")
+       + "</ul></div>";
+   });
+   view.innerHTML = h + "</div>";
+   const total = MILESTONES.length;
+   const paint = () => {
+     const n = MILESTONES.filter(m => done[m.id]).length;
+     $("#pcount").textContent = n + " / " + total + " done";
+     $("#pfill").style.width = (n / total * 100) + "%";
+   };
+   paint();
+   view.querySelectorAll(".task").forEach(li => li.addEventListener("click", ev => {
+     if (ev.target.tagName === "A") return;
+     const k = li.dataset.k;
+     done[k] = !done[k]; saveProg();
+     li.classList.toggle("done", !!done[k]);
+     $("input", li).checked = !!done[k];
+     paint();
+   }));
+   $("#reset").addEventListener("click", () => { done = {}; saveProg(); GUIDEVIEW.progression(); });
+ },
+
+ "beginner": function () {
+   view.innerHTML = '<div class="page full">' + ghead("Beginner&#8217;s guide",
+     "Fisch drops you on a dock with a Flimsy Rod, no bait and no money, and explains almost none of itself. This is the first hour: how the three-part minigame actually works, what to buy, what to ignore, and where to go once you can leave.")
+     + '<div class="prose">'
+     + "<h2 class='sh'>1. The minigame is three checks, not one</h2>"
+     + "<p>Almost everything a new player loses is lost in the middle step.</p>"
+     + "<ul><li><strong>Cast.</strong> Equip the rod, hold the mouse button to fill the power meter, release. Distance matters &mdash; some species do not live where a short cast lands.</li>"
+     + "<li><strong>Shake.</strong> Prompts appear over the line; click them fast. <strong>Missing one restarts the cast.</strong> This is the single biggest time sink in the early game, and it is exactly what the <a href=\"#/e/steady-rod\">Steady Rod</a>&#8217;s wider shake window fixes.</li>"
+     + "<li><strong>Reel.</strong> A bar with a fish marker inside it. <strong>Hold</strong> to slide right, <strong>release</strong> to drift left. Tap in small corrections rather than gripping the button &mdash; overshoot is what loses the fish.</li></ul>"
+     + "<h2 class='sh'>2. The first hour, in order</h2>"
+     + "<ol><li>Talk to <a href=\"#/e/pierre\">Pierre</a> on the Moosewood beach and finish the tutorial. He sells nothing; he is onboarding.</li>"
+     + "<li>Fish the dock. Sell everything to the Merchant in the village centre. Yes, including the trash.</li>"
+     + "<li>At <strong>400 C$</strong>, buy the <a href=\"#/e/rowboat\">Rowboat</a> from the Shipwright at the docks.</li>"
+     + "<li>At <strong>2,000 C$</strong>, buy the <a href=\"#/e/carbon-rod\">Carbon Rod</a> from Marc. This is your first real purchase.</li>"
+     + "<li>Fill the Moosewood <a href=\"#/e/bestiary\">bestiary</a> before you sail. It is free percentage toward the 70% that unlocks a 190,000 C$ rod later.</li>"
+     + "<li>Sail to <a href=\"#/e/roslit-bay\">Roslit Bay</a>, then <a href=\"#/e/mushgrove-swamp\">Mushgrove Swamp</a>. Catch one Alligator, and <a href=\"#/e/agaric\">Agaric</a> gives you the <a href=\"#/e/fungal-rod\">Fungal Rod</a> free.</li></ol>"
+     + "<h2 class='sh'>3. The four stats, and what they are for</h2>"
+     + "<ul><li><strong><a href=\"#/e/lure-speed\">Lure speed</a></strong> &mdash; how fast fish bite. Throughput. Best when you are farming money.</li>"
+     + "<li><strong><a href=\"#/e/luck\">Luck</a></strong> &mdash; and there are two kinds. <em>Universal</em> luck biases the whole rarity table; <em>preferred</em> luck boosts specific species. Stacking the wrong one is the most common gear mistake in Fisch.</li>"
+     + "<li><strong><a href=\"#/e/control\">Control</a></strong> &mdash; how precisely your bar tracks in the reel.</li>"
+     + "<li><strong><a href=\"#/e/resilience\">Resilience</a></strong> &mdash; how much error the line absorbs before you lose the fish.</li>"
+     + "<li>And a hard limit: <strong><a href=\"#/e/max-weight\">max weight</a></strong>. Over it, you simply do not land the fish. &ldquo;Why can I never catch anything here&rdquo; is usually this.</li></ul>"
+     + "<h2 class='sh'>4. Things worth knowing on day one</h2>"
+     + "<ul><li><strong>Weather is buyable.</strong> A fish that only appears in fog is not a waiting game &mdash; it is a <a href=\"#/e/smokescreen-totem\">Smokescreen Totem</a>.</li>"
+     + "<li><strong>Enchanting costs 400 C$ to unlock,</strong> once, forever: bribe the guard by the mine elevator at the <a href=\"#/e/statue-of-sovereignty\">Statue of Sovereignty</a>.</li>"
+     + "<li><strong>Friends are +10% XP each,</strong> up to +50%. Free.</li>"
+     + "<li><strong>Redeem the <a href=\"#/g/codes\">codes</a></strong> before they expire. Event codes die with their event.</li></ul>"
+     + "<h2 class='sh'>5. Then what?</h2>"
+     + "<p>Put your level, rod and bank balance into the <a href=\"#/t/path\">path planner</a> and it will give you the next five things to do in order, with what each one costs and where to earn it. Or read the <a href=\"#/g/progression\">roadmap</a> end to end.</p>"
+     + "</div></div>";
+ },
+
+ "mistakes": function () {
+   const M = [
+    ["Buying the Plastic or Training rod","They cost 900 C$ and a few hundred; the <a href=\"#/e/carbon-rod\">Carbon Rod</a> costs 2,000 and outclasses both. Buying them means earning the 2,000 anyway, later."],
+    ["Not buying the boat first","400 C$ opens the entire map. Nothing else you can buy at that price does anything comparable."],
+    ["Skipping Agaric","The <a href=\"#/e/fungal-rod\">Fungal Rod</a> is <em>free</em> and beats the rods on sale at that stage. One Alligator in <a href=\"#/e/mushgrove-swamp\">Mushgrove Swamp</a>."],
+    ["Leaving the Keepers Altar unopened","A one-time 400 C$ bribe gates the whole <a href=\"#/g/enchanting\">enchanting</a> system. Players reach the late game with it still closed."],
+    ["Re-rolling an enchant you liked","Every roll <strong>overwrites</strong> the last one. Farm a stack of relics, roll until something good lands, then stop."],
+    ["Stacking preferred luck for general farming","A +300% preferred bait does nothing measurable if you are not hunting the species it prefers. Use universal luck for sweeps."],
+    ["Fishing wherever you happen to be","Base species value is the biggest term in what a fish sells for. Where you fish matters more than what you fish with."],
+    ["Waiting for weather","Fog, rain, wind and time of day are all purchasable as <a href=\"#/e/totems\">totems</a>. Waiting is a choice."],
+    ["Appraising everything","<a href=\"#/e/appraisal\">Appraisal</a> re-rolls mutation too, so it can make a fish worse. Appraise fish that already show a mutation."],
+    ["Ignoring the bestiary until it is asked for","70% total unlocks the <a href=\"#/e/destiny-rod\">Destiny Rod</a> and 100% of Vertigo is the only route to The Depths. Both are far more painful retroactively."],
+    ["Buying a rod you cannot get to the shop for","The <a href=\"#/e/rod-of-the-depths\">Rod of the Depths</a> is a 750,000 C$ purchase behind a bestiary gate. Bank the money before you make the trip."],
+    ["Assuming a guide&#8217;s price is current","Fisch patches often. Every figure on this site &mdash; including the ones without a warning mark &mdash; is worth a glance at the merchant before you commit."]];
+   view.innerHTML = '<div class="page full">' + ghead("12 beginner mistakes",
+     "Ranked roughly by how much time each one costs. Most of them are not skill problems &mdash; they are ordering problems.")
+     + '<div class="tablewrap"><table><thead><tr><th style="width:34px">#</th><th>Mistake</th><th>Why it costs you</th></tr></thead><tbody>'
+     + M.map((m, i) => "<tr><td class='num'>" + (i + 1) + "</td><td><strong>" + m[0] + "</strong></td><td>" + m[1] + "</td></tr>").join("")
+     + "</tbody></table></div></div>";
+ },
+
+ "money-guide": function () {
+   view.innerHTML = '<div class="page full">' + ghead("Making money",
+     "What a fish is worth is its species&#8217; base value multiplied by weight, then by mutations and attributes. Every one of those is something you can raise on purpose &mdash; which is why two players at the same spot can earn ten times differently.")
+     + '<div class="prose"><h2 class="sh">The formula, and what you control</h2>'
+     + "<ul><li><strong>Base value &mdash; where you fish.</strong> The single biggest term. Moving location beats any gear change.</li>"
+     + "<li><strong>Weight.</strong> Scales value directly. <a href=\"#/e/sea-overlord\">Sea Overlord</a> adds a flat +25% to every fish you will ever catch.</li>"
+     + "<li><strong>Mutations.</strong> Up to <b>12&times;</b> at the top. <a href=\"#/e/quantum\">Quantum</a> manufactures them at 25%; the <a href=\"#/e/trident-rod\">Trident Rod</a> at ~30%; the <a href=\"#/e/midas-rod\">Midas Rod</a> at ~60% for Golden.</li>"
+     + "<li><strong>Attributes.</strong> Shiny and Sparkling stack on top of a mutation, and are safe to appraise around.</li>"
+     + "<li><strong>Throughput.</strong> All the multipliers in the world do nothing while you are idle &mdash; which is why <a href=\"#/e/lure-speed\">lure speed</a> is a money stat.</li></ul>"
+     + "</div>"
+     + '<h2 class="sh">Farms by stage</h2><div class="tablewrap"><table><thead><tr><th>Stage</th><th>Where</th><th>Roughly</th><th>What makes it work</th></tr></thead><tbody>'
+     + [["0&ndash;1","Moosewood dock, Roslit Bay","A few thousand C$/hr","Volume. Sell the trash too."],
+        ["2&ndash;3","<a href=\"#/e/forsaken-shores\">Forsaken Shores</a> waterfall pond","<span class=\"flag\" title=\"Community estimate; depends heavily on rod, bait and luck\">100K&ndash;500K C$/hr</span>","The best money <em>and</em> XP spot of the mid-game, which is rare."],
+        ["4&ndash;5","Forsaken Shores with the <a href=\"#/e/trident-rod\">Trident Rod</a>","Same spot, better rate","30% Atlantean at 3&times; value is roughly a 60% raise on the average sale."],
+        ["6&ndash;7","<a href=\"#/e/calm-zone\">The Calm Zone</a>","~26,100 C$ per Crystallized Seadragon","Rewards whatever rod you already own &mdash; no specific drop required."],
+        ["8","<a href=\"#/e/castaway-cliffs\">Castaway Cliffs</a>","<span class=\"flag\" title=\"2-4M without the rod; 15-25M is the Elder Moss Ripper figure\">2&ndash;4M C$/hr, or 15&ndash;25M</span>","The <a href=\"#/e/elder-moss-ripper\">Elder Moss Ripper</a>&#8217;s Mossjaw passive is a two-minute <em>timer</em>, not a roll."]]
+       .map(r => "<tr><td class='num'>" + r[0] + "</td><td>" + r[1] + "</td><td class='num'>" + r[2] + "</td><td>" + r[3] + "</td></tr>").join("")
+     + "</tbody></table></div>"
+     + '<div class="goodbox"><strong>The one rule:</strong> a timed passive rewards lure speed and short fights; a luck-based one rewards luck stacking. Find out which kind your rod has before you pick a bait, because the two loadouts are opposites.</div>'
+     + '<p class="note">Rates are community figures and swing hard on rod, bait, enchant and server conditions. Use them to rank spots, not to predict an evening.</p></div>';
+ },
+
+ "xp-guide": function () {
+   view.innerHTML = '<div class="page full">' + ghead("XP &amp; levelling",
+     "Each level costs <b>190 &times; your current level</b>, so the curve is arithmetic rather than exponential for the first thousand levels &mdash; and still adds up to about 997 million XP for the 2,000 cap. Levelling in Fisch is a stacking problem, not a grinding problem.")
+     + '<div class="tool"><div class="controls">'
+     + '<div class="field"><label for="x-from">Current level</label><input id="x-from" type="number" min="1" max="2000" value="50"></div>'
+     + '<div class="field"><label for="x-to">Target level</label><input id="x-to" type="number" min="2" max="2000" value="180"></div>'
+     + '<div class="field"><label for="x-per">XP per catch</label><input id="x-per" type="number" min="1" value="400"></div>'
+     + '<div class="field"><label for="x-mult">XP stack</label><select id="x-mult">'
+     + '<option value="1">No bonuses</option><option value="1.45">Potion +20% &amp; Shell +25%</option>'
+     + '<option value="1.95">Those, plus 5 friends (+50%)</option><option value="2.9" selected>All of the above, doubled (gamepass)</option>'
+     + '<option value="8.7">Stacked, in a 3&times; night-multiplier spot</option></select></div></div>'
+     + '<div class="readout" id="x-out"></div>'
+     + '<p class="note">XP to go from level L to L+1 is 190 &times; L, so the total between two levels is 190 &times; the sum of the levels in between. Past level 1001 the cost is reported to double every 500 levels &mdash; this calculator does not model that, so treat targets above 1000 as a floor.</p></div>'
+     + '<div class="prose"><h2 class="sh">The stack</h2>'
+     + "<p>XP bonuses come from unrelated systems and multiply together, which is why a properly stacked catch can be worth tens of thousands of XP and an unstacked one a few hundred.</p>"
+     + "<ul><li>An XP-flavoured rod and its mutations</li><li><a href=\"#/e/merlin\">Merlin&#8217;s</a> temporary XP boost &mdash; <b>+20%</b></li>"
+     + "<li><a href=\"#/e/shell-of-wrath\">Shell of Wrath</a> &mdash; <b>+25%</b></li><li>A <a href=\"#/e/companions\">companion</a> with an XP passive</li>"
+     + "<li>Location and night multipliers &mdash; up to <b>3&times;</b> in specific spots</li><li>The <strong>Double XP</strong> gamepass</li>"
+     + "<li><strong>+10% per friend</strong> in your party, up to <b>+50%</b></li></ul>"
+     + "<p>The friend bonus is the one people leave on the table: five friends is +50% XP for nothing.</p>"
+     + '<h2 class="sh">Why you would bother</h2><p>Levels gate content. The clearest example is <a href=\"#/e/atlantis\">Atlantis</a> at around level 180 &mdash; no amount of C$ substitutes. If the <a href=\"#/t/path\">planner</a> tells you your level is the blocker, this page is the fix.</p></div></div>';
+
+   const xpBetween = (a, b) => { if (b <= a) return 0; a = Math.max(1, a); return 190 * ((b - 1) * b / 2 - (a - 1) * a / 2); };
+   function calc() {
+     const a = Math.max(1, +$("#x-from").value || 1), b = Math.max(a + 1, +$("#x-to").value || a + 1);
+     const per = Math.max(1, +$("#x-per").value || 1), m = +$("#x-mult").value;
+     const need = xpBetween(a, b), effective = per * m, catches = need / effective;
+     $("#x-out").innerHTML =
+        '<div class="ro"><b>' + commas(190 * a) + '</b><small>XP for your next level</small></div>'
+      + '<div class="ro"><b>' + commas(need) + '</b><small>XP from ' + a + " to " + b + "</small></div>"
+      + '<div class="ro"><b>' + commas(effective) + '</b><small>XP per catch, stacked</small></div>'
+      + '<div class="ro"><b>' + commas(catches) + '</b><small>catches needed</small></div>'
+      + '<div class="ro"><b>' + commas(need / per) + '</b><small>catches with no stack at all</small></div>';
+   }
+   ["#x-from", "#x-to", "#x-per", "#x-mult"].forEach(s => $(s).addEventListener("input", calc));
+   calc();
+ },
+
+ "enchanting": function () {
+   view.innerHTML = '<div class="page full">' + ghead("Enchanting",
+     "The only way to make a rod better without buying a new one. You offer a relic at the <a href=\"#/e/keepers-altar\">Keepers Altar</a> and get a random enchant, which replaces whatever the rod had. It is a gamble, so treat it like one: farm the stack first, then spend it in one sitting.")
+     + '<div class="prose"><h2 class="sh">Unlocking the altar</h2>'
+     + "<ol><li>Sail to the <a href=\"#/e/statue-of-sovereignty\">Statue of Sovereignty</a>.</li>"
+     + "<li>Go into the mines and find the NPC beside the elevator.</li>"
+     + "<li>Pay him <strong>400 C$</strong>. The elevator takes you down to the <a href=\"#/e/keepers-altar\">Keepers Altar</a>.</li>"
+     + "<li>Offer relics <span class=\"flag\" title=\"Widely reported as night-only; a few write-ups omit the restriction\">at night</span>.</li></ol>"
+     + "<h2 class='sh'>Where relics come from</h2>"
+     + "<ul><li><strong><a href=\"#/e/ancient-isle\">Ancient Isle</a></strong> &mdash; the best <a href=\"#/e/enchant-relic\">Enchant Relic</a> farm players have compared head-to-head.</li>"
+     + "<li><strong><a href=\"#/e/roslit-bay\">Roslit Bay</a></strong>, in the Nurse Shark shallows &mdash; noticeably better than fishing at random, and reachable far earlier.</li>"
+     + "<li><a href=\"#/e/exalted-relic\">Exalted Relics</a> are far rarer and roll from a much stronger pool.</li></ul>"
+     + "<h2 class='sh'>The three rules</h2>"
+     + "<ol><li><strong>Bank relics before you roll.</strong> One relic is one roll and rolls are independent &mdash; a dry streak does not owe you anything.</li>"
+     + "<li><strong>A roll overwrites the previous enchant.</strong> Stop when you land something you would be annoyed to lose.</li>"
+     + "<li><strong>Spend exalted relics on a rod you will keep.</strong> Not the rod you are holding &mdash; the rod you will still be using in fifty hours.</li></ol>"
+     + "<h2 class='sh'>What to hope for</h2>"
+     + "<ul><li><a href=\"#/e/quantum\">Quantum</a> &mdash; 25% of catches gain a mutation. The money enchant.</li>"
+     + "<li><a href=\"#/e/sea-overlord\">Sea Overlord</a> &mdash; +25% weight, which is +25% value on everything, unconditionally.</li>"
+     + "<li><a href=\"#/e/invincible\">Invincible</a> &mdash; fish the <a href=\"#/e/brine-pool\">Brine Pool</a> and Roslit Volcano with any rod. Access, not power.</li>"
+     + "<li><a href=\"#/e/immortal\">Immortal</a> &mdash; the balanced pick if you carry one rod for everything.</li></ul>"
+     + '<p>Use the <a href="#/t/odds">odds calculator</a> to sanity-check a relic grind before you commit an evening to it.</p></div></div>';
+ },
+
+ "codes": function () {
+   const CODES = [
+    ["SkycrestIsInTheSky","1,000 coins, Banana boat, 5&times; Icy Fisch&#8217;n Dots, 5&times; Coral Pearl, 5&times; Cotton Candy Pieces, 5&times; Tropical Fruit mix, random totem"],
+    ["Shady","1,000 coins, Neongrinder skin, Chainsaw skin, 5&times; Golden Tentacles, 20&times; Shady Scrip, random totem"],
+    ["HumpbackAndMegamouth","1,000 coins, 5&times; Golden Tentacles, random totem"],
+    ["Sovereign","1,000 coins, Shiny Flopping Salmon companion, 5&times; Golden Tentacles"]];
+   view.innerHTML = '<div class="page full">' + ghead("Codes",
+     "Codes in Fisch are short-lived &mdash; most are tied to an update or an event and stop working within weeks. These were reported active in early September 2026. Redeem them the day you read about them.")
+     + '<div class="codegrid">' + CODES.map(c => '<div class="code"><span class="c">' + c[0] + "<small>" + c[1] + "</small></span>"
+       + '<button class="copy" type="button" data-c="' + c[0] + '">Copy</button></div>').join("") + "</div>"
+     + '<div class="prose"><h2 class="sh">Redeeming</h2><ol><li>Open Fisch on Roblox.</li><li>Tap the <strong>Menu</strong> button.</li>'
+     + "<li>Go to <strong>Rewards</strong>.</li><li>Type the code exactly &mdash; they are case-sensitive &mdash; and press <strong>Redeem</strong>.</li></ol>"
+     + '<p>Rewards land instantly. A code that fails has almost certainly expired rather than been typed wrong &mdash; one tracker counted 36 working out of 139 ever issued.</p></div>'
+     + '<div class="warnbox"><strong>These expire.</strong> This list is a snapshot from September 2026, not a live feed. If a code fails, it is dead &mdash; check the game&#8217;s own social channels for current ones.</div></div>';
+   view.querySelectorAll(".copy").forEach(b => b.addEventListener("click", () => {
+     navigator.clipboard.writeText(b.dataset.c).then(() => {
+       b.textContent = "Copied"; b.classList.add("ok");
+       setTimeout(() => { b.textContent = "Copy"; b.classList.remove("ok"); }, 1400);
+     }).catch(() => { b.textContent = "Select it"; });
+   }));
+ },
+
+ "sources": function () {
+   const D = [
+    ["Kraken Rod price","<b>950,000 C$</b> in one widely-cited progression guide; <b>1,333,333 C$</b> in another. Both agree on Atlantis and on a level gate around 180."],
+    ["The every-third-catch passive","Credited to the <a href=\"#/e/rod-of-the-depths\">Rod of the Depths</a> in one source and to the <a href=\"#/e/great-dreamer-rod\">Great Dreamer Rod</a> in another. It may well be both."],
+    ["Rarity tier count","12, 17 and 18 tiers all appear in circulation, plus separate Limited / Special / Extinct categories. The ordering is stable; the count is not."],
+    ["100% bestiary reward","Named as the <b>Aurora Bobber</b>, the <b>Aurora Glow Lantern</b>, and (in one source) the <b>Masterline Rod</b>. The 70% Destiny Rod gate is agreed everywhere."],
+    ["Totem count","20 in some guides, 26 in others &mdash; almost certainly a patch-date difference rather than a disagreement."],
+    ["Bait roster size","Quoted at 25, 62 and 65 baits by different databases in 2026."],
+    ["Shop prices generally","Rod and item prices move between patches. Early Moosewood prices (900 / 2,000 / 4,500 / 5,250 C$) are consistently reported; mid and late prices are not."],
+    ["Money rates per hour","Every figure on this site is a community estimate under an unstated setup. Use them to rank spots against each other, never as a prediction."],
+    ["Enchant pool contents","The exalted enchants are consistently described. The regular relic pool is not, so this wiki does not reproduce a list of it."]];
+   view.innerHTML = '<div class="page full">' + ghead("Accuracy &amp; sources",
+     "Fisch has an official wiki and a large community of unofficial ones, and they disagree in exactly the places you would expect: prices, drop rates, and anything a patch has touched recently. This page says where.")
+     + '<div class="prose"><h2 class="sh">How this wiki treats disagreement</h2>'
+     + "<p>Where sources conflict, both readings are shown and the figure is marked <span class=\"flag\" title=\"Like this\">like this</span> rather than smoothed into one confident number. Where sources are simply thin &mdash; the regular enchant pool, several shop prices &mdash; this wiki says so instead of filling the gap.</p>"
+     + "<p>Data was compiled in <strong>September 2026</strong>, immediately after the Skycrest update. Event content on this site (Skycrest, Fischfest 2026) has since closed on its published schedule; the systems those events introduced are treated as live.</p></div>"
+     + '<h2 class="sh">Known disputes</h2><div class="tablewrap"><table><thead><tr><th>Figure</th><th>Readings in circulation</th></tr></thead><tbody>'
+     + D.map(d => "<tr><td><strong>" + d[0] + "</strong></td><td>" + d[1] + "</td></tr>").join("") + "</tbody></table></div>"
+     + '<h2 class="sh">Source families</h2><div class="prose"><ul class="srclist">'
+     + ["The official Fisch wiki (fischipedia.org)","The Fisch Fandom wiki","BloxGuidesGG&#8217;s Fisch database","Fisch Calculator&#8217;s rod database","Bloxodes&#8217; totem and bait lists","Pro Game Guides","Destructoid","Beebom","PCGamesN","Sportskeeda","Droid Gamers","allthings.how&#8217;s progression guides","VideoGamesChronicle","GameRant","TechWiser","Roonby","howtofisch.wiki","Try Hard Guides","TheGamer"].map(s => "<li>" + s + "</li>").join("")
+     + "</ul></div>"
+     + '<div class="warnbox"><strong>Before you spend anything large:</strong> check the price at the merchant, and check the drop you are farming against the in-game bestiary. A 750,000 C$ rod is not the place to trust a community figure &mdash; including one on this page.</div>'
+     + '<p class="note">Unofficial fan documentation. Not affiliated with Fisch&#8217;s developers or Roblox Corporation.</p></div>';
+ }
+};
+
+/* ── tools ── */
+const SKEY = "fisch-field-guide.state.v1";
+const DEFSTATE = {lvl:25, rod:"carbon-rod", cash:5000, goal:"route",
+  f:{boat:false, altar:false, easybest:false, enchanted:false, best70:false, vertigo:false, depths:false, exalted:false, moneymeta:false}};
+let PSTATE = JSON.parse(JSON.stringify(DEFSTATE));
+try { const raw = localStorage.getItem(SKEY); if (raw) PSTATE = Object.assign(PSTATE, JSON.parse(raw), {f: Object.assign({}, DEFSTATE.f, (JSON.parse(raw) || {}).f)}); } catch (e) {}
+const saveState = () => { try { localStorage.setItem(SKEY, JSON.stringify(PSTATE)); } catch (e) {} };
+
+const FLAGS = [
+  ["boat","I own a boat"],
+  ["altar","Keepers Altar unlocked (the 400 C$ bribe)"],
+  ["easybest","Moosewood / Roslit / Terrapin / Ocean bestiary filled"],
+  ["enchanted","My rod carries an enchant"],
+  ["best70","Total bestiary is at 70% or more"],
+  ["vertigo","Vertigo bestiary is at 100%"],
+  ["depths","I have The Depths Key"],
+  ["exalted","I&#8217;ve landed an exalted enchant"],
+  ["moneymeta","I&#8217;m farming Castaway Cliffs or the Calm Zone"]
+];
+const GOALS = {
+  route:  ["Just progress",       "Following the main route is the fastest way to everything else, so this is the right default."],
+  money:  ["Make money",          "Money is location-first. The fastest raise available to you is almost always moving to a better farm, not buying a better rod &mdash; and the rod you are saving for gets cheaper in hours once you do."],
+  level:  ["Level up",            "Levels come from stacking multipliers, not from fishing longer. Before another session, get the friend bonus (+10% each, up to +50%), an XP potion and a shell on. See <a href=\"#/g/xp-guide\">XP &amp; levelling</a>."],
+  dex:    ["Fill the bestiary",   "Percentage is percentage: finish whole easy locations before chasing hard species. And a stuck bestiary is usually a <em>condition</em> problem &mdash; buy the <a href=\"#/e/totems\">totem</a> for the weather the fish wants rather than waiting for it."],
+  gear:   ["Chase endgame gear",  "Endgame gear is gated by bestiary work and level far more than by C$. If a milestone below is blocked on level or on Vertigo, no amount of farming moves it."]
+};
+const HOURLY = s => (s <= 1 ? 5000 : s <= 3 ? 250000 : s <= 5 ? 400000 : s <= 7 ? 1500000 : 3000000);
+const xpBetweenLv = (a, b) => (b <= a ? 0 : 190 * ((b - 1) * b / 2 - (Math.max(1, a) - 1) * Math.max(1, a) / 2));
+
+const TOOLVIEW = {
+ "path": function () {
+   view.innerHTML = '<div class="page full">' + ghead("Where am I? &mdash; path planner",
+     "Tell it your level, your best rod, your bank balance and what you have already unlocked. It walks the same milestone list the <a href=\"#/g/progression\">roadmap</a> uses, works out where you actually are, and gives you the next five things to do &mdash; in order, with what each one costs and where to earn it. Your answers save in this browser.")
+     + '<div class="tool"><div class="controls">'
+     + '<div class="field"><label for="p-lvl">Your level</label><input id="p-lvl" type="number" min="1" max="2000" value="' + PSTATE.lvl + '"></div>'
+     + '<div class="field"><label for="p-rod">Your best rod</label><select id="p-rod">'
+       + RODS.map(r => '<option value="' + r[0] + '"' + (PSTATE.rod === r[0] ? " selected" : "") + ">" + r[1] + "</option>").join("") + "</select></div>"
+     + '<div class="field"><label for="p-cash">C$ on hand</label><input id="p-cash" type="number" min="0" value="' + PSTATE.cash + '"></div>'
+     + '<div class="field"><label for="p-goal">What you want right now</label><select id="p-goal">'
+       + Object.keys(GOALS).map(k => '<option value="' + k + '"' + (PSTATE.goal === k ? " selected" : "") + ">" + GOALS[k][0] + "</option>").join("") + "</select></div></div>"
+     + '<div><label style="font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px">Already done</label>'
+     + '<div class="checkgrid">' + FLAGS.map(f => '<label><input type="checkbox" data-f="' + f[0] + '"' + (PSTATE.f[f[0]] ? " checked" : "") + "> " + f[1] + "</label>").join("") + "</div></div>"
+     + '<button class="ghost" id="p-reset" type="button" style="justify-self:start">Reset answers</button></div>'
+     + '<div id="p-out"></div></div>';
+
+   function read() {
+     PSTATE.lvl = Math.max(1, +$("#p-lvl").value || 1);
+     PSTATE.rod = $("#p-rod").value;
+     PSTATE.cash = Math.max(0, +$("#p-cash").value || 0);
+     PSTATE.goal = $("#p-goal").value;
+     view.querySelectorAll(".checkgrid input").forEach(c => { PSTATE.f[c.dataset.f] = c.checked; });
+     saveState();
+     const ord = ordOf(PSTATE.rod);
+     /* some flags are proved by the rod you are carrying: you cannot own a Steady Rod
+        without having sailed, or a Rod of the Depths without having cleared Vertigo.
+        Infer those rather than making a returning player re-tick them. */
+     const f = Object.assign({}, PSTATE.f);
+     if (ord >= ordOf("steady-rod")) f.boat = true;
+     if (ord >= ordOf("destiny-rod")) f.best70 = true;
+     if (ord >= ordOf("rod-of-the-depths")) { f.vertigo = true; f.depths = true; }
+     return {lvl: PSTATE.lvl, ord: ord, cash: PSTATE.cash, f: f};
+   }
+
+   function plan() {
+     const s = read();
+     const rod = RODS[s.ord];
+     const stage = rod[2];
+     const doneList = MILESTONES.filter(m => m.done(s));
+     const todo = MILESTONES.filter(m => !m.done(s));
+     const next = todo.slice(0, 5);
+     /* where you are is the furthest phase you have reached — anything unfinished
+        behind it is catch-up work, and the step list surfaces it first anyway */
+     const phIdx = doneList.length ? Math.max.apply(null, doneList.map(m => m.ph)) : (next.length ? next[0].ph : 0);
+     const phase = PHASES[phIdx];
+     const farm = farmFor(stage);
+     const rate = HOURLY(stage);
+
+     /* the "you are here" summary */
+     let where = '<div class="youare"><span>You are here</span><b>' + phase.n + "</b><p>"
+       + "Level <strong>" + commas(s.lvl) + "</strong>, carrying the <a href=\"#/e/" + rod[0] + "\">" + rod[1] + "</a> (stage " + stage + " &mdash; " + STAGES[stage] + "), "
+       + "with <strong>" + cash(s.cash) + "</strong> banked. "
+       + doneList.length + " of " + MILESTONES.length + " milestones behind you."
+       + (next.length ? " Next up: <strong>" + strip(next[0].t) + "</strong>." : " You have cleared the whole route &mdash; from here it is mutations, enchants and money.")
+       + "</p>"
+       + '<div class="gapgrid">'
+       + '<div class="gap"><b>' + commas(190 * s.lvl) + '</b><small>XP to your next level</small></div>'
+       + '<div class="gap"><b>' + (s.lvl >= 180 ? "cleared" : commas(180 - s.lvl)) + '</b><small>levels to the Atlantis gate</small></div>'
+       + '<div class="gap"><b>' + cash(rate) + '</b><small>roughly earnable per hour now</small></div>'
+       + '<div class="gap"><b>' + doneList.length + " / " + MILESTONES.length + '</b><small>route milestones done</small></div>'
+       + "</div></div>";
+
+     /* the steps */
+     let steps = "";
+     next.forEach((m, i) => {
+       const shortCash = m.cost ? Math.max(0, m.cost - s.cash) : 0;
+       const shortLvl = m.lvl ? Math.max(0, m.lvl - s.lvl) : 0;
+       const blocked = shortCash > 0 || shortLvl > 0;
+       let extra = "";
+       if (shortCash > 0) {
+         extra += "<p><strong>You are " + cash(shortCash) + " short.</strong> At your stage that is roughly <strong>"
+           + (shortCash / rate < 1 ? "under an hour" : (shortCash / rate).toFixed(1) + " hours") + "</strong> at <a href=\"" + farm[1] + "\">" + farm[0] + "</a> (" + farm[2] + ").</p>";
+       }
+       if (shortLvl > 0) {
+         extra += "<p><strong>You are " + shortLvl + " levels short</strong> &mdash; " + commas(xpBetweenLv(s.lvl, m.lvl))
+           + " XP. Stack your XP bonuses before grinding it (see <a href=\"#/g/xp-guide\">XP &amp; levelling</a>).</p>";
+       }
+       steps += '<div class="stepcard' + (blocked ? " block" : "") + '"><div class="n">' + (i + 1) + "</div><div>"
+         + "<h4>" + m.t + "</h4><p>" + m.body + "</p>" + extra
+         + '<div class="meta">' + (m.ph < phIdx ? '<span style="color:var(--violet);border-color:var(--violet)">Skipped &mdash; catch-up</span>' : "")
+         + (m.cost ? "<span>" + cash(m.cost) + "</span>" : "<span>No cost</span>")
+         + (m.lvl ? "<span>Level " + m.lvl + "</span>" : "")
+         + "<span>" + m.where + "</span>"
+         + (blocked ? "<span style=\"color:var(--warn);border-color:var(--warn)\">Blocked</span>" : "<span style=\"color:var(--good);border-color:var(--good)\">Do it now</span>")
+         + "</div></div></div>";
+     });
+
+     /* warnings that are not milestones */
+     const warn = [];
+     if (s.lvl >= 60 && stage <= 1) warn.push("You are level " + s.lvl + " on a stage-" + stage + " rod. The rod is your bottleneck, not your level &mdash; the free <a href=\"#/e/fungal-rod\">Fungal Rod</a> from Agaric costs nothing and would fix most of it today.");
+     if (s.cash >= 200000 && stage <= 3) warn.push("You are sitting on " + cash(s.cash) + " with a stage-" + stage + " rod. Money that is not spent is not doing anything &mdash; the <a href=\"#/e/trident-rod\">Trident Rod</a> at 150,000 C$ starts paying itself back the moment you buy it.");
+     if (!s.f.altar && s.lvl > 30) warn.push("The <a href=\"#/e/keepers-altar\">Keepers Altar</a> is still closed. It is a one-time <strong>400 C$</strong> bribe and it gates every enchant in the game.");
+     if (!s.f.boat && s.lvl > 10) warn.push("Still no boat. The <a href=\"#/e/rowboat\">Rowboat</a> is 400 C$ and it is the difference between one island and the whole map.");
+     if (s.f.vertigo && !s.f.depths) warn.push("Vertigo is done but you have no key &mdash; go fish the <strong>Strange Whirlpool</strong>. That is the only thing standing between you and a 750,000 C$ rod shop.");
+     if (stage >= 6 && !s.f.enchanted) warn.push("An endgame rod with no enchant is leaving a quarter of its value on the table. Go farm relics at <a href=\"#/e/ancient-isle\">Ancient Isle</a>.");
+
+     const goal = GOALS[PSTATE.goal];
+     $("#p-out").innerHTML = where
+       + '<h2 class="sh">Do these next</h2>'
+       + (steps ? '<div class="steps">' + steps + "</div>" : '<div class="goodbox">Nothing left on the route. Pick a farm from <a href="#/g/money-guide">Making money</a> and start chasing mutations and exalted enchants instead.</div>')
+       + '<div class="goodbox"><strong>Because you picked &ldquo;' + goal[0] + '&rdquo;:</strong> ' + goal[1] + "</div>"
+       + (warn.length ? '<h2 class="sh">Worth fixing</h2>' + warn.map(w => '<div class="warnbox">' + w + "</div>").join("") : "")
+       + (doneList.length ? '<h2 class="sh">Already behind you</h2><div class="tablewrap"><table><tbody>'
+           + doneList.map(m => "<tr><td style=\"width:1%;white-space:nowrap;color:var(--good)\">&#10003;</td><td><strong>" + m.t + "</strong></td><td>" + m.where + "</td></tr>").join("")
+           + "</tbody></table></div>" : "")
+       + '<p class="note">The planner reads what you tell it, so tell it the truth &mdash; especially the checkboxes. Costs are the community figures from this wiki and hourly rates are rough; use them to sequence decisions, not to budget an evening precisely.</p>';
+   }
+   ["#p-lvl", "#p-rod", "#p-cash", "#p-goal"].forEach(sel => { $(sel).addEventListener("input", plan); $(sel).addEventListener("change", plan); });
+   view.querySelectorAll(".checkgrid input").forEach(c => c.addEventListener("change", plan));
+   $("#p-reset").addEventListener("click", () => { PSTATE = JSON.parse(JSON.stringify(DEFSTATE)); saveState(); TOOLVIEW.path(); });
+   plan();
+ },
+
+ "budget": function () {
+   view.innerHTML = '<div class="page full">' + ghead("Rod budget planner",
+     "Every rod in this wiki that carries a published price, sorted against what you have in the bank &mdash; what you can buy right now, and how long the next ones are away at your current earning rate.")
+     + '<div class="tool"><div class="controls">'
+     + '<div class="field"><label for="b-cash">C$ on hand</label><input id="b-cash" type="number" min="0" value="' + PSTATE.cash + '"></div>'
+     + '<div class="field"><label for="b-stage">Where you fish now</label><select id="b-stage">'
+     + [[1,"Moosewood / Roslit Bay"],[3,"Forsaken Shores"],[5,"Forsaken Shores, with a mid-game rod"],[7,"The Calm Zone"],[8,"Castaway Cliffs"]]
+        .map(o => '<option value="' + o[0] + '"' + (o[0] === 3 ? " selected" : "") + ">" + o[1] + "</option>").join("") + "</select></div></div>"
+     + '<div id="b-out"></div>'
+     + '<p class="note">Hourly rates are rough community figures, and rods without a published price are left out entirely rather than guessed at. Prices marked in the rod pages with a dotted underline are disputed between sources &mdash; budget the higher one.</p></div></div>';
+   function draw() {
+     const c = Math.max(0, +$("#b-cash").value || 0), st = +$("#b-stage").value, rate = HOURLY(st);
+     const priced = RODS.filter(r => r[3]).sort((a, b) => a[3] - b[3]);
+     const afford = priced.filter(r => r[3] <= c), later = priced.filter(r => r[3] > c);
+     $("#b-out").innerHTML =
+       '<div class="readout"><div class="ro"><b>' + afford.length + '</b><small>rods you can buy now</small></div>'
+       + '<div class="ro"><b>' + cash(rate) + '</b><small>roughly per hour</small></div>'
+       + '<div class="ro"><b>' + (later.length ? (later[0][3] - c < rate ? "< 1 hr" : ((later[0][3] - c) / rate).toFixed(1) + " hrs") : "&mdash;") + '</b><small>to the next one up</small></div></div>'
+       + '<div class="tablewrap"><table><thead><tr><th>Rod</th><th>Price</th><th>Where</th><th>Status</th></tr></thead><tbody>'
+       + priced.map(r => {
+           const ok = r[3] <= c, gap = r[3] - c;
+           return "<tr><td><a href='#/e/" + r[0] + "'>" + r[1] + "</a></td><td class='num'>" + commas(r[3]) + "</td><td>" + r[5] + "</td>"
+             + "<td>" + (ok ? '<span style="color:var(--good)">Affordable now</span>'
+                 : '<span style="color:var(--warn)">' + commas(gap) + " C$ short &mdash; " + (gap / rate < 1 ? "under an hour" : (gap / rate).toFixed(1) + " hrs") + "</span>") + "</td></tr>";
+         }).join("") + "</tbody></table></div>";
+   }
+   ["#b-cash", "#b-stage"].forEach(s => $(s).addEventListener("input", draw));
+   draw();
+ },
+
+ "odds": function () {
+   const TARGETS = [
+     {n:"Trident Rod &mdash; Atlantean proc", p:0.30, note:"A published rod passive, so this rate is about as solid as Fisch rates get."},
+     {n:"Quantum enchant &mdash; Subspace mutation", p:0.25, note:"25% per catch, per the exalted enchant&#8217;s description."},
+     {n:"Midas Rod &mdash; Golden catch", p:0.60, note:"Roughly 60% for double value."},
+     {n:"Fungal Rod &mdash; luck window", p:0.60, note:"Roughly 60% after each catch, for about 45 seconds."},
+     {n:"A 5% drop", p:0.05, note:"Use this shape for anything a guide calls &ldquo;uncommon&rdquo;."},
+     {n:"A 1% drop", p:0.01, note:"The shape most relic and key grinds feel like."},
+     {n:"A 0.1% drop", p:0.001, note:"Secret-tier territory. Bring a podcast."}
+   ];
+   view.innerHTML = '<div class="page full">' + ghead("Drop &amp; catch odds",
+     "Fisch does not publish most of its drop rates, so this tool does not pretend to know them. Pick one of the rates that <em>is</em> published &mdash; the rod and enchant passives &mdash; or type in the rate you believe, and it will tell you what a given number of attempts actually buys.")
+     + '<div class="tool"><div class="controls">'
+     + '<div class="field"><label for="o-t">Rate</label><select id="o-t">' + TARGETS.map((t, i) => '<option value="' + i + '">' + t.n + " &mdash; " + (t.p * 100) + "%</option>").join("") + '<option value="-1">Custom&hellip;</option></select></div>'
+     + '<div class="field"><label for="o-p">Rate, %</label><input id="o-p" type="number" min="0.001" max="100" step="0.001" value="30"></div>'
+     + '<div class="field"><label for="o-n">Attempts</label><input id="o-n" type="number" min="1" value="20"></div></div>'
+     + '<input id="o-slide" type="range" min="1" max="200" value="20">'
+     + '<div class="readout" id="o-out"></div><div class="chartbox"><svg id="o-chart" viewBox="0 0 620 150" width="100%" height="150" role="img" aria-label="Cumulative probability curve"></svg></div>'
+     + '<p class="note" id="o-note"></p>'
+     + '<div class="warnbox"><strong>The gambler&#8217;s fallacy, stated plainly:</strong> every cast is independent. Forty dry attempts at 1% does not make the forty-first likelier. What the numbers below tell you is how much patience a grind needs on average &mdash; not what you are owed.</div></div></div>';
+   const attemptsFor = (p, conf) => Math.ceil(Math.log(1 - conf) / Math.log(1 - p));
+   function chart(p, n) {
+     const w = 620, h = 150, pad = 26, max = Math.max(n, attemptsFor(p, 0.97));
+     let d = "";
+     for (let i = 0; i <= 100; i++) {
+       const x = pad + (w - pad - 8) * i / 100, y = h - 18 - (h - 34) * (1 - Math.pow(1 - p, max * i / 100));
+       d += (i ? "L" : "M") + x.toFixed(1) + " " + y.toFixed(1);
+     }
+     let g = "";
+     [0, .25, .5, .75, 1].forEach(v => {
+       const y = h - 18 - (h - 34) * v;
+       g += '<line x1="' + pad + '" y1="' + y + '" x2="' + (w - 8) + '" y2="' + y + '" stroke="var(--line2)"/>'
+         + '<text x="2" y="' + (y + 3) + '" font-size="9" fill="var(--muted)" font-family="monospace">' + (v * 100) + "%</text>";
+     });
+     const cx = pad + (w - pad - 8) * Math.min(1, n / max);
+     const cy = h - 18 - (h - 34) * (1 - Math.pow(1 - p, n));
+     $("#o-chart").innerHTML = g + '<path d="' + d + '" fill="none" stroke="var(--teal)" stroke-width="2"/>'
+       + '<line x1="' + cx + '" y1="16" x2="' + cx + '" y2="' + (h - 18) + '" stroke="var(--gold)" stroke-dasharray="3 3"/>'
+       + '<circle cx="' + cx + '" cy="' + cy + '" r="4" fill="var(--gold)"/>'
+       + '<text x="' + (w - 8) + '" y="' + (h - 5) + '" font-size="9" fill="var(--muted)" text-anchor="end" font-family="monospace">' + max + " attempts</text>";
+   }
+   function odds() {
+     const p = Math.min(0.999, Math.max(0.00001, (+$("#o-p").value || 1) / 100)), n = Math.max(1, +$("#o-n").value || 1);
+     const cum = 1 - Math.pow(1 - p, n);
+     $("#o-out").innerHTML =
+        '<div class="ro"><b>' + (cum * 100).toFixed(1) + '%</b><small>chance in ' + commas(n) + " attempts</small></div>"
+      + '<div class="ro"><b>' + commas(attemptsFor(p, 0.5)) + '</b><small>coin-toss point</small></div>'
+      + '<div class="ro"><b>' + commas(attemptsFor(p, 0.95)) + '</b><small>for 95% confidence</small></div>'
+      + '<div class="ro"><b>' + commas(1 / p) + '</b><small>attempts per success, on average</small></div>';
+     chart(p, n);
+   }
+   $("#o-t").addEventListener("change", () => {
+     const i = +$("#o-t").value;
+     if (i >= 0) { $("#o-p").value = TARGETS[i].p * 100; $("#o-note").innerHTML = TARGETS[i].note; }
+     else $("#o-note").innerHTML = "Custom rate &mdash; whatever you believe the drop is. If a guide gives you a number, remember it is a community estimate too.";
+     odds();
+   });
+   ["#o-p", "#o-n"].forEach(s => $(s).addEventListener("input", () => { $("#o-slide").value = Math.min(200, +$("#o-n").value || 1); odds(); }));
+   $("#o-slide").addEventListener("input", () => { $("#o-n").value = $("#o-slide").value; odds(); });
+   $("#o-note").innerHTML = TARGETS[0].note;
+   odds();
+ },
+
+ "value": function () {
+   const withMult = MUTS.filter(m => m[2]);
+   view.innerHTML = '<div class="page full">' + ghead("Fish value calculator",
+     "A fish sells for its species&#8217; base value scaled by weight and then multiplied by whatever mutation and attributes it carries. This models that structure so you can see what a mutation is actually worth before you decide whether to <a href=\"#/e/appraisal\">appraise</a> it.")
+     + '<div class="tool"><div class="controls">'
+     + '<div class="field"><label for="v-base">Plain sale value, C$</label><input id="v-base" type="number" min="1" value="8000"></div>'
+     + '<div class="field"><label for="v-mut">Mutation</label><select id="v-mut"><option value="1">None</option>'
+       + withMult.map(m => '<option value="' + m[2] + '">' + m[1] + " &mdash; " + m[2] + "&times;</option>").join("") + "</select></div>"
+     + '<div class="field"><label for="v-weight">Weight vs. average</label><select id="v-weight">'
+       + [[0.7,"Small (0.7&times;)"],[1,"Average (1&times;)"],[1.4,"Big (1.4&times;)"],[2,"Huge (2&times;)"]].map(o => '<option value="' + o[0] + '"' + (o[0] === 1 ? " selected" : "") + ">" + o[1] + "</option>").join("") + "</select></div>"
+     + '<div class="field"><label for="v-overlord">Sea Overlord enchant</label><select id="v-overlord"><option value="1">No</option><option value="1.25">Yes &mdash; +25% weight</option></select></div></div>'
+     + '<div class="checkgrid"><label><input type="checkbox" id="v-shiny"> Shiny (1.85&times;, appraisal-safe)</label>'
+     + '<label><input type="checkbox" id="v-spark"> Sparkling (1.85&times;, appraisal-safe)</label></div>'
+     + '<div class="readout" id="v-out"></div><div class="stack" id="v-stack"></div>'
+     + '<p class="note">A model of the multiplier structure, not the game&#8217;s exact arithmetic &mdash; Fisch does not publish its value formula, and weight scaling in particular is an approximation here. Use it to compare two catches, not to predict a sale.</p></div></div>';
+   function calc() {
+     const base = Math.max(1, +$("#v-base").value || 1), mut = +$("#v-mut").value, wt = +$("#v-weight").value, ov = +$("#v-overlord").value;
+     const sh = $("#v-shiny").checked ? 1.85 : 1, sp = $("#v-spark").checked ? 1.85 : 1;
+     const total = base * wt * ov * mut * sh * sp;
+     const rows = [["Plain sale value", cash(base)], ["Weight", "&times;" + wt]];
+     if (ov > 1) rows.push(["Sea Overlord", "&times;" + ov]);
+     if (mut > 1) rows.push([$("#v-mut").selectedOptions[0].text.split(" &mdash;")[0].split(" —")[0], "&times;" + mut]);
+     if (sh > 1) rows.push(["Shiny", "&times;1.85"]);
+     if (sp > 1) rows.push(["Sparkling", "&times;1.85"]);
+     $("#v-out").innerHTML = '<div class="ro"><b>' + cash(total) + '</b><small>estimated sale</small></div>'
+       + '<div class="ro"><b>&times;' + (total / base).toFixed(2) + '</b><small>total multiplier</small></div>'
+       + '<div class="ro"><b>' + cash(total - base) + '</b><small>added by the stack</small></div>';
+     $("#v-stack").innerHTML = rows.map(r => '<div class="stackrow"><span>' + r[0] + '</span><span class="amt">' + r[1] + "</span></div>").join("")
+       + '<div class="stackrow total"><span>Estimated sale</span><span class="amt">' + cash(total) + "</span></div>";
+   }
+   ["#v-base", "#v-mut", "#v-weight", "#v-overlord", "#v-shiny", "#v-spark"].forEach(s => { $(s).addEventListener("input", calc); $(s).addEventListener("change", calc); });
+   calc();
+ }
+};
+
+/* ── router ── */
+function route() {
+  const h = location.hash.replace(/^#/, "") || "/";
+  const p = h.split("/").filter(Boolean);
+  if (!p.length) home();
+  else if (p[0] === "c" && CATS[p[1]]) category(p[1]);
+  else if (p[0] === "e") entry(p[1]);
+  else if (p[0] === "g" && GUIDEVIEW[p[1]]) GUIDEVIEW[p[1]]();
+  else if (p[0] === "t" && TOOLVIEW[p[1]]) TOOLVIEW[p[1]]();
+  else notfound(p.join("/"));
+  document.querySelectorAll(".side a").forEach(a => a.classList.toggle("on", a.getAttribute("href") === "#" + h));
+  window.scrollTo(0, 0);
+  view.focus({preventScroll: true});
+}
+window.addEventListener("hashchange", route);
+
+/* ── search ── */
+const INDEX = DB.map(e => ({id: "#/e/" + e.id, n: e.name, t: CATS[e.type].n,
+  hay: (strip(e.name) + " " + CATS[e.type].n + " " + strip(e.lead || "") + " " + (e.info || []).map(r => strip(r[0]) + " " + strip(r[1])).join(" ")).toLowerCase()}))
+ .concat(Object.keys(CATS).map(t => ({id: "#/c/" + t, n: CATS[t].n, t: "Index", hay: strip(CATS[t].n).toLowerCase() + " index list all"})))
+ .concat(Object.keys(GUIDES).map(k => ({id: "#/g/" + k, n: GUIDES[k].n, t: "Guide", hay: strip(GUIDES[k].n).toLowerCase() + " guide walkthrough"})))
+ .concat(Object.keys(TOOLS).map(k => ({id: "#/t/" + k, n: TOOLS[k].n, t: "Tool", hay: strip(TOOLS[k].n).toLowerCase() + " tool calculator planner"})));
+
+const box = $("#search"), out = $("#results");
+let hits = [], cur = -1;
+box.placeholder = "Search " + DB.length + " pages — rods, baits, fish, locations, enchants…  (press /)";
+
+function search() {
+  const q = box.value.trim().toLowerCase();
+  if (!q) { out.hidden = true; return; }
+  hits = INDEX.map(r => {
+    const n = strip(r.n).toLowerCase();
+    let s = -1;
+    if (n === q) s = 0; else if (n.startsWith(q)) s = 1; else if (n.includes(q)) s = 2; else if (r.hay.includes(q)) s = 3;
+    return s < 0 ? null : {r: r, s: s};
+  }).filter(Boolean).sort((a, b) => a.s - b.s || a.r.n.length - b.r.n.length).slice(0, 12).map(x => x.r);
+  cur = -1;
+  out.innerHTML = hits.length
+    ? hits.map((r, i) => '<button type="button" data-i="' + i + '"><span class="rn">' + r.n + '</span><span class="rt">' + r.t + "</span></button>").join("")
+    : '<div class="none">No page matches &ldquo;' + strip(box.value) + "&rdquo;.</div>";
+  out.hidden = false;
+  out.querySelectorAll("button").forEach(b => b.addEventListener("mousedown", ev => { ev.preventDefault(); go(hits[+b.dataset.i]); }));
+}
+function go(r) { if (!r) return; location.hash = r.id; box.value = ""; out.hidden = true; box.blur(); }
+function mark() { out.querySelectorAll("button").forEach((b, i) => b.classList.toggle("sel", i === cur)); }
+
+box.addEventListener("input", search);
+box.addEventListener("focus", () => { if (box.value.trim()) search(); });
+box.addEventListener("blur", () => setTimeout(() => { out.hidden = true; }, 120));
+box.addEventListener("keydown", ev => {
+  if (ev.key === "Escape") { box.value = ""; out.hidden = true; box.blur(); }
+  else if (ev.key === "ArrowDown" && hits.length) { ev.preventDefault(); cur = (cur + 1) % hits.length; mark(); }
+  else if (ev.key === "ArrowUp" && hits.length) { ev.preventDefault(); cur = (cur - 1 + hits.length) % hits.length; mark(); }
+  else if (ev.key === "Enter") { ev.preventDefault(); go(hits[cur < 0 ? 0 : cur]); }
+});
+document.addEventListener("keydown", ev => {
+  if (ev.key === "/" && document.activeElement !== box && !/^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement.tagName)) {
+    ev.preventDefault(); box.focus();
+  }
+});
+
+/* ── theme, random ── */
+const modes = ["system", "light", "dark"], labels = {system: "Theme: auto", light: "Theme: light", dark: "Theme: dark"};
+let mode = "system"; try { mode = localStorage.getItem("fisch-field-guide.theme") || "system"; } catch (e) {}
+function applyTheme() {
+  if (mode === "system") document.documentElement.removeAttribute("data-theme");
+  else document.documentElement.setAttribute("data-theme", mode);
+  $("#themebtn").textContent = labels[mode];
+  try { localStorage.setItem("fisch-field-guide.theme", mode); } catch (e) {}
+}
+$("#themebtn").addEventListener("click", () => { mode = modes[(modes.indexOf(mode) + 1) % 3]; applyTheme(); });
+$("#randbtn").addEventListener("click", () => { location.hash = "#/e/" + DB[Math.floor(Math.random() * DB.length)].id; });
+applyTheme();
+route();
+</script>
