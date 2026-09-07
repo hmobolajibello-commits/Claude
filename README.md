@@ -44,15 +44,31 @@ tier lists (generated from the database) · codes · accuracy & sources.
 - **Progression checklist** — saved to `localStorage`.
 - **Random page**, light/dark/auto theme, cross-linked "See also" and prev/next within each category.
 
-## Running it
+## The website
+
+Live at **https://hmobolajibello-commits.github.io/Claude/**
+
+`.github/workflows/pages.yml` deploys on every push to the default branch. It rebuilds
+`index.html` from `src/guide.html`, fails the run if the committed `index.html` is stale,
+then publishes `index.html`, `favicon.svg`, `og.png`, `robots.txt` and `sitemap.xml` to
+GitHub Pages. Pages is enabled by the workflow itself (`actions/configure-pages` with
+`enablement: true`), so no manual repo setting is needed; if the run reports it lacks
+permission, set **Settings → Pages → Source** to **GitHub Actions** once and re-run.
+
+To point it at a different host, `SITE_URL=https://example.com/ ./build.sh` rewrites the
+canonical link and the social-card URLs.
+
+Note on search engines: the wiki routes with `#/` hashes, so crawlers index the site as a
+single page. Per-page indexing would need real paths (one HTML file per entry) — worth
+doing only if organic search traffic matters.
+
+### Running it locally
 
 ```bash
 open index.html          # macOS
 xdg-open index.html      # Linux
 python3 -m http.server   # or serve the directory
 ```
-
-`index.html` is committed, so this repo can go straight to GitHub Pages with no build step.
 
 ## Repo layout
 
