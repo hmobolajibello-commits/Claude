@@ -72,6 +72,12 @@ function seeLink(id, depth) {
   return null;
 }
 
+/* Canonical and social-card URLs need the real host, so they are emitted only
+   when SITE_URL is set (build.sh always sets it). Everything else on the page
+   is relative, so the output stays host-agnostic without them. */
+const SITE_URL = process.env.SITE_URL || "";
+const rootPath = u => u.replace(/index\.html$/, "");
+
 /* ── the page shell ───────────────────────────────────────────────────── */
 const NAVGROUPS = (() => {
   const g = {};
@@ -106,7 +112,16 @@ function shell(o) {
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Fisch Field Guide">
 <meta property="og:title" content="${o.title}">
-<meta property="og:description" content="${o.desc.replace(/"/g, "&quot;")}">
+<meta property="og:description" content="${o.desc.replace(/"/g, "&quot;")}">${SITE_URL ? `
+<meta property="og:url" content="${SITE_URL}${rootPath(o.url)}">
+<meta property="og:image" content="${SITE_URL}og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${o.title}">
+<meta name="twitter:description" content="${o.desc.replace(/"/g, "&quot;")}">
+<meta name="twitter:image" content="${SITE_URL}og.png">
+<link rel="canonical" href="${SITE_URL}${rootPath(o.url)}">` : ""}
 <link rel="icon" href="${u}favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="${u}assets/style.css">
 </head>
@@ -428,7 +443,6 @@ function buildTool(k) {
 /* ── generated client assets ──────────────────────────────────────────────
    Pages sit at different depths, so anything emitted here uses a {{B}} token
    where a path prefix belongs; site.js swaps it for window.BASE on injection. */
-const rootPath = u => u.replace(/index\.html$/, "");
 const tok = html => String(html).replace(/href="(#\/[^"]+)"/g, (all, h) => {
   const t = resolveHash(h);
   return t ? 'href="{{B}}' + rootPath(t) + '"' : 'href="{{B}}"';
@@ -473,8 +487,10 @@ function buildAssets() {
     fs.mkdirSync(path.join(OUT, "assets"), {recursive: true});
     fs.copyFileSync(path.join(SRC, "assets", f), path.join(OUT, "assets", f));
   });
-  const fav = path.resolve(__dirname, "..", "favicon.svg");
-  if (fs.existsSync(fav)) fs.copyFileSync(fav, path.join(OUT, "favicon.svg"));
+  ["favicon.svg", "og.png"].forEach(function (f) {
+    const src = path.resolve(__dirname, "..", f);
+    if (fs.existsSync(src)) fs.copyFileSync(src, path.join(OUT, f));
+  });
   /* the footer links to the sibling wiki; build.sh generates it before we run */
   const lp = path.resolve(__dirname, "..", "lineage-piece.html");
   if (fs.existsSync(lp)) fs.copyFileSync(lp, path.join(OUT, "lineage-piece.html"));

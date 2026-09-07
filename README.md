@@ -147,8 +147,8 @@ place and listed on its own *Accuracy & sources* page.
 ## Putting it online
 
 The repo is ready to deploy as-is on either host below. Both build with `./build.sh` and
-serve the generated `_site/` directory. The build needs **bash and Node** — no `npm install`,
-no packages — and Node ships in the build image of both.
+serve the generated `_site/` directory. The build needs **bash and Node 14.14+** — no `npm install`,
+no packages — and both hosts ship Node in their build image.
 
 ### Cloudflare Pages (recommended)
 

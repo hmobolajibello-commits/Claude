@@ -18,7 +18,7 @@
 #   _site/               the deploy directory: site/ at the root, plus a pretty
 #                        /lineage-piece/ URL and host-specific robots + sitemap
 #
-# Dependencies: bash and Node (any recent version; no npm install, no packages).
+# Dependencies: bash and Node 14.14 or newer (no npm install, no packages).
 # Node ships in the build image of every static host this is aimed at. If a host
 # has none, point it at the committed site/ directory with an empty build command.
 #
@@ -93,6 +93,8 @@ rm -rf _site
 cp -R site _site
 mkdir -p _site/lineage-piece
 cp lineage-piece.html _site/lineage-piece/index.html
+# the manual's <link rel="icon"> is relative, so the pretty URL needs its own copy
+cp favicon.svg _site/lineage-piece/favicon.svg
 for asset in favicon.svg og.png _headers; do
   if [ -f "$asset" ]; then cp "$asset" "_site/$asset"; fi
 done

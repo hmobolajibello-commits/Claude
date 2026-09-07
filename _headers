@@ -1,9 +1,13 @@
+# Cloudflare Pages / Netlify. Every page of the wiki is a directory URL serving
+# an index.html, so caching is keyed off the default rule rather than a
+# filename pattern — /*.html would never match /rods/.
+#
+# The stylesheet and scripts are not content-hashed, so they must revalidate
+# too; only the two images that never change get a long cache.
 /*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: SAMEORIGIN
-
-/index.html
   Cache-Control: public, max-age=0, must-revalidate
 
 /og.png
