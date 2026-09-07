@@ -1,28 +1,48 @@
 # Lineage Piece Field Manual
 
-An unofficial, self-contained web app that guides a player through **Lineage Piece**, the
-One Piece–inspired anime-crossover action RPG on Roblox by *Prlz's Den*
+An unofficial, self-contained **wiki app** for **Lineage Piece**, the One Piece–inspired
+anime-crossover action RPG on Roblox by *Prlz's Den*
 ([game page](https://www.roblox.com/games/104761395312874/Lineage-Piece)).
 
-It is one HTML file with no build dependencies, no framework and no network calls beyond
-Google Fonts — open it and it works, online or off.
+Built in the shape of a game database — like the Fisch or Sailor Piece community wikis:
+a category sidebar, sortable index tables, and a routed page for every single thing in
+the game, each with its own infobox and cross-links.
 
-## What's in it
+One HTML file. No framework, no build dependencies, no network calls beyond Google Fonts.
 
-**Reference**
-- **Island route** — all 13 zones in order, what each one exists to give you, and what not to leave without.
-- **Devil fruits** — the four fruits with their published roll rates (Bomb 61% / Flame 24% / Quake 10% / Light 2%) and why Light tops every list.
-- **Races** — the seven rarity bands, the six Mythicals that share one 0.25% bucket, and the Exclusive hand-in races that gate style masteries.
-- **Traits, weapons, fighting styles, Haki, accessories** — including full crafting recipes (Excalibur Morgan, Solemn Lament, Player's Dagger, Tensa Zangetsu) and every mastery requirement found in the sources.
-- **Bosses & keys** — the summon/portal chain that is the real endgame progression, with key drop rates.
-- **Simulated Sea, artifact sets, skill tree, rank buffs, stats and currencies.**
+## 164 pages
 
-**Tools**
-- **Progression checklist** — six phases, ~30 steps, with a progress bar. Saved to `localStorage`, so the page remembers where you were on that device.
-- **Reroll & drop odds calculator** — pick a target (Light fruit, mythic race bucket, Haki Book, Shrine Key, a 2% outfit…), set an attempt count, and get the cumulative chance, the coin-toss point, the 95%-confidence attempt count, the currency cost, and a plotted probability curve.
-- **Build planner** — choose a damage channel (Weapon / Strength / Power) plus race, artifact 4-piece and Haki, and it stacks only the bonuses that actually apply to that channel — then names the ones you'd be wasting.
-- **Live filter** — one search box filters every table on the page.
-- **Codes** — current list with one-click copy and level requirements.
+| Category | Pages | What's on each page |
+| --- | --- | --- |
+| Islands | 13 | Level band, role, key NPCs, collectibles, what not to leave without |
+| Bosses | 19 | Location, access (field / summon / portal key), drops, respawn |
+| NPCs | 28 | Which island, what they sell, craft or gate |
+| Devil fruits | 4 | Roll chance, tier, reroll cost, and the odds math for that rate |
+| Races | 8 | Rarity, exact buff list, best channel, roll vs. hand-in |
+| Traits | 6 | Tier and standing |
+| Weapons | 10 | Tier, crafting NPC, full ingredient list |
+| Fighting styles | 11 | Purchase cost and the full mastery requirement |
+| Haki | 2 | Effect, gates, and the whole Observation questline in order |
+| Accessories | 11 | Drop rate, best channel |
+| Artifact sets | 6 | 2-piece, 4-piece, channel, trial difficulty odds |
+| Items & keys | 33 | All 9 dungeon keys, materials, collectibles, sources and uses |
+| Systems | 13 | Stats, ranks, chests, quests, currencies, Simulated Sea, skill tree, mastery, titles |
+
+**Guides:** progression roadmap (6 phases, 33 steps, persisted checklist) · the first hour ·
+tier lists (generated from the database) · codes · accuracy & sources.
+
+**Tools:** reroll & drop odds calculator · build planner.
+
+## The app parts
+
+- **Hash router** — every page has its own URL (`#/e/solemn-lament`, `#/c/boss`, `#/t/odds`), so pages are linkable and the back button works.
+- **Search** — instant, ranked over names, categories and infobox contents; `/` focuses it, arrows and Enter navigate. Searching `shrine` finds the key, the NPC, the boss that needs it and the island it drops on.
+- **Sortable index tables** — click any column; numeric columns sort numerically, so you can rank drop rates or level bands directly.
+- **Rarity / tier facet filters** on category pages.
+- **Reroll & drop odds calculator** — pick a target (Light fruit 2%, mythic race bucket 0.25%, Haki Book 0.1%, Shrine Key 1%…), set attempts, get cumulative chance, the coin-toss point, 95%-confidence count, currency cost, and a plotted probability curve.
+- **Build planner** — choose a damage channel, race, artifact 4-piece and Haki; it stacks only what applies to that channel and names what you'd be wasting.
+- **Progression checklist** — saved to `localStorage`.
+- **Random page**, light/dark/auto theme, cross-linked "See also" and prev/next within each category.
 
 ## Running it
 
@@ -32,39 +52,44 @@ xdg-open index.html      # Linux
 python3 -m http.server   # or serve the directory
 ```
 
-`index.html` is committed, so the repo can be published straight to GitHub Pages
-with no build step.
+`index.html` is committed, so this repo can go straight to GitHub Pages with no build step.
 
 ## Repo layout
 
 ```
-src/guide.html   the app: markup, CSS and JS in one fragment (no <html>/<head>/<body>)
-build.sh         lifts the fragment's <title>/<link>/<style> into a <head> and wraps
-                 the rest in a document -> index.html
+src/guide.html   the app: markup, CSS, data and router in one fragment
+                 (no <html>/<head>/<body> — it publishes directly as a Claude Artifact)
+build.sh         lifts the fragment's <title>/<link>/<style> into a <head>, wraps the
+                 rest in a document -> index.html
 index.html       generated standalone page (committed)
 ```
 
-Edit `src/guide.html`, then run `./build.sh`. The fragment shape is deliberate: the same
-file publishes directly as a Claude Artifact, where the document skeleton is supplied by
-the host.
+Edit `src/guide.html`, then run `./build.sh`.
+
+To add a page, call the `E()` helper with a category, id, name and an object holding its
+table row (`t`), infobox rows (`info`), lead paragraph, optional `sec` sections and `see`
+links. Everything else — sidebar counts, index table, search index, tier lists, prev/next
+— derives from that.
 
 ## About the data
 
 Lineage Piece has **no official public database** — the developer posts to a Trello and a
-Discord, and everything else is community-maintained. This app cross-checks several
-community wikis and guides (Fandom, Bloxodes, Gamezebo, Gamepur, Pro Game Guides,
-Kongbakpao, Roonby, Destructoid, Nerdschalk, Deltia's Gaming, PCGamesN, Pocket Tactics,
-Rolimon's) and **marks the places they disagree** rather than picking one and sounding
-certain. Known conflicts, all flagged in the app's *Accuracy & sources* section:
+Discord, and everything else is community-maintained. This app cross-checks community
+wikis and guides (Fandom, Bloxodes, Gamezebo, Gamepur, Pro Game Guides, Kongbakpao,
+Roonby, Destructoid, Nerdschalk, Deltia's Gaming, Lineage Piece Site, PCGamesN, Pocket
+Tactics, Rolimon's) and **marks the places they disagree** rather than picking one and
+sounding certain. Every disputed figure carries a dotted underline in the app and is
+listed on the *Accuracy & sources* page:
 
 | Disputed | Readings in circulation |
 | --- | --- |
-| Max level | 6,000 in most guides, 7,000 in newer ones |
-| Island level bands | 1–25–75–150 vs 250–600–1000 |
-| Observation Haki level gate | 1,500 in questline write-ups, 500+ in one overview |
+| Max level | 6,000 in most guides, 7,000 in newer ones (level-5000 mobs exist, so the cap is above 5,000) |
+| Island level bands | 1–25–75–150 vs 250–600–1000; both are shown on every island page |
+| Observation Haki gate | 1,500 in questline write-ups, 500+ in one overview |
 | Devil fruit rates | published figures total 97%, not 100% |
 | Trait magnitudes | rankings agree, percentages don't |
 | Best weapon-build outfit | Solemn's vs Player's |
+| RedStone / Lapis ranks | in later patch notes, buffs undocumented |
 
 Data compiled **September 2026 (Frieren patch)**. Recipes, rates and level gates change
 with updates — verify anything load-bearing against the in-game Trello before spending a
