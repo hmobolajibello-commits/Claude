@@ -154,3 +154,12 @@ with updates — verify anything load-bearing against the in-game Trello before 
 30-million-coin recipe on it. Codes expire fastest of all.
 
 Not affiliated with Prlz's Den or Roblox Corporation.
+
+---
+
+## Also in this repo
+
+**[Study Planner](study-planner/)** — an unrelated single-file web app for students: enter
+your subjects, exam date and free hours, get a day-by-day study plan with a Today view and
+tick-off progress, all stored in `localStorage`. It deploys alongside this site at
+`/study-planner/`. See [study-planner/README.md](study-planner/README.md).

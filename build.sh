@@ -81,6 +81,13 @@ cp index.html _site/index.html
 for asset in favicon.svg og.png _headers; do
   if [ -f "$asset" ]; then cp "$asset" "_site/$asset"; fi
 done
+
+# The study planner is a separate standalone page in this repo; it needs no build
+# step of its own, so it just ships alongside the wiki at /study-planner/.
+if [ -f study-planner/index.html ]; then
+  mkdir -p _site/study-planner
+  cp study-planner/index.html _site/study-planner/index.html
+fi
 : > _site/.nojekyll
 
 # robots and sitemap carry the real host, so they are generated per deploy
@@ -89,6 +96,9 @@ printf 'User-agent: *\nAllow: /\nSitemap: %ssitemap.xml\n' "$SITE_URL" > _site/r
   printf '<?xml version="1.0" encoding="UTF-8"?>\n'
   printf '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
   printf '  <url>\n    <loc>%s</loc>\n    <changefreq>monthly</changefreq>\n    <priority>1.0</priority>\n  </url>\n' "$SITE_URL"
+  if [ -f study-planner/index.html ]; then
+    printf '  <url>\n    <loc>%sstudy-planner/</loc>\n    <changefreq>monthly</changefreq>\n    <priority>0.8</priority>\n  </url>\n' "$SITE_URL"
+  fi
   printf '</urlset>\n'
 } > _site/sitemap.xml
 
