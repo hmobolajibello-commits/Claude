@@ -2,13 +2,20 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Study Planner</title>
 <meta name="description" content="Turn your subjects, exam date and free hours into a day-by-day study plan. Works offline, stores everything on your own device.">
 <meta name="color-scheme" content="light dark">
 <meta name="theme-color" content="#f4f6f8" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#10151b" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232f6f5e'/%3E%3Cpath d='M8 10h16M8 16h16M8 22h10' stroke='%23fff' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Study Planner">
 <style>
 :root{
   --bg:#f4f6f8; --card:#ffffff; --card-2:#f7f9fa; --ink:#161b22; --muted:#5c6874;
@@ -120,6 +127,11 @@ button{font:inherit}
 .btn.link{border:0; background:none; color:var(--muted); text-decoration:underline; padding:8px 0; min-height:0}
 .btn.danger{color:var(--danger)}
 .btn.small{min-height:38px; padding:8px 12px; font-size:14px}
+.btn.go{background:var(--accent); border-color:var(--accent); color:var(--accent-ink)}
+.install{display:flex; flex-wrap:wrap; gap:10px 14px; align-items:center; justify-content:space-between}
+.install .install-text{min-width:200px; flex:1}
+.install strong{display:block}
+.install .install-actions{display:flex; gap:8px; align-items:center; flex:none}
 .error{margin-top:12px; color:var(--danger); font-size:14px; font-weight:600}
 .actions{display:flex; flex-wrap:wrap; gap:10px; justify-content:space-between; align-items:center; margin-top:16px}
 [hidden]{display:none !important}
@@ -138,6 +150,17 @@ button{font:inherit}
     <button role="tab" id="tab-all" aria-controls="view-all" aria-selected="false" data-view="all">All days</button>
     <button role="tab" id="tab-setup" aria-controls="view-setup" aria-selected="false" data-view="setup">Setup</button>
   </nav>
+
+  <div class="card install" id="installBar" hidden>
+    <div class="install-text">
+      <strong>Add to your home screen</strong>
+      <span class="small muted" id="installHint">Opens full screen like a normal app, and works with no connection.</span>
+    </div>
+    <div class="install-actions">
+      <button type="button" class="btn small go" id="installBtn">Install</button>
+      <button type="button" class="btn link small" id="installDismiss">Not now</button>
+    </div>
+  </div>
 
   <main>
     <!-- TODAY -->
@@ -581,8 +604,22 @@ button{font:inherit}
     Object.keys(el.views).forEach(function (k) { el.views[k].hidden = k !== state.view; });
   }
 
+  // The view lives in the URL hash so the manifest's app shortcuts (#today,
+  // #all) can open straight into a view. replaceState keeps tab switching out
+  // of the back stack; on file:// it throws, so fall back to setting the hash.
+  function viewFromHash() {
+    var h = (window.location.hash || "").replace("#", "");
+    return el.views[h] ? h : null;
+  }
   function show(view) {
     state.view = view;
+    if (viewFromHash() !== view) {
+      try {
+        history.replaceState(null, "", window.location.pathname + window.location.search + "#" + view);
+      } catch (e) {
+        window.location.hash = view;
+      }
+    }
     render();
     window.scrollTo(0, 0);
   }
@@ -726,8 +763,13 @@ button{font:inherit}
   if (!state.settings) state.settings = defaults();
   if (!Array.isArray(state.settings.subjects)) state.settings.subjects = [];
   if (!Array.isArray(state.settings.busyDays)) state.settings.busyDays = [];
-  state.view = state.plan ? "today" : "setup";
+  state.view = viewFromHash() || (state.plan ? "today" : "setup");
   render();
+
+  window.addEventListener("hashchange", function () {
+    var v = viewFromHash();
+    if (v && v !== state.view) show(v);
+  });
 
   // Coming back to the tab on a new day should show that day, not a stale one.
   var renderedOn = today();
@@ -736,5 +778,84 @@ button{font:inherit}
   });
 })();
 </script>
+<script>
+/* Progressive web app plumbing: home-screen install and offline support.
+   Kept separate from the planner itself — if any of it is unavailable (an old
+   browser, a page opened from file://, storage blocked), the app still runs. */
+(function () {
+  "use strict";
+
+  var DISMISS_KEY = "study-planner.install-dismissed";
+  var bar = document.getElementById("installBar");
+  var installBtn = document.getElementById("installBtn");
+  var dismissBtn = document.getElementById("installDismiss");
+  var hint = document.getElementById("installHint");
+  var deferredPrompt = null;
+
+  function standalone() {
+    return (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches) ||
+      window.navigator.standalone === true;
+  }
+  function dismissed() {
+    try { return localStorage.getItem(DISMISS_KEY) === "1"; } catch (e) { return false; }
+  }
+  function remember() {
+    try { localStorage.setItem(DISMISS_KEY, "1"); } catch (e) {}
+  }
+  function hide() { bar.hidden = true; }
+
+  // Chromium-based browsers: hold on to the event and offer a real install button.
+  window.addEventListener("beforeinstallprompt", function (e) {
+    e.preventDefault();
+    deferredPrompt = e;
+    if (!standalone() && !dismissed()) bar.hidden = false;
+  });
+
+  installBtn.addEventListener("click", function () {
+    if (!deferredPrompt) { hide(); return; }
+    var prompt = deferredPrompt;
+    deferredPrompt = null;
+    prompt.prompt();
+    var choice = prompt.userChoice;
+    if (choice && choice.then) {
+      choice.then(function (result) {
+        if (result && result.outcome === "dismissed") remember();
+        hide();
+      })["catch"](hide);
+    } else {
+      hide();
+    }
+  });
+
+  dismissBtn.addEventListener("click", function () {
+    remember();
+    hide();
+  });
+
+  window.addEventListener("appinstalled", function () {
+    deferredPrompt = null;
+    hide();
+  });
+
+  // iOS Safari has no install event, so it gets the manual instructions instead.
+  var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  var isSafari = /Safari/.test(navigator.userAgent) && !/CriOS|FxiOS|EdgiOS|Chrome/.test(navigator.userAgent);
+  if (isIOS && isSafari && !standalone() && !dismissed()) {
+    installBtn.hidden = true;
+    hint.textContent = "Tap the Share button, then “Add to Home Screen”. It then opens full screen and works offline.";
+    bar.hidden = false;
+  }
+
+  // The service worker needs http(s); opened straight from disk the app simply
+  // runs without it (it has no network dependencies anyway).
+  if ("serviceWorker" in navigator && /^https?:$/.test(window.location.protocol)) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("sw.js", { scope: "./" })["catch"](function () {});
+    });
+  }
+})();
+</script>
+
 </body>
 </html>

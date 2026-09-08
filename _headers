@@ -11,3 +11,17 @@
 
 /favicon.svg
   Cache-Control: public, max-age=604800
+
+/study-planner/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Must never be served stale, or a deploy can be pinned to an old app shell.
+/study-planner/sw.js
+  Cache-Control: public, max-age=0, must-revalidate
+  Service-Worker-Allowed: /study-planner/
+
+/study-planner/manifest.webmanifest
+  Cache-Control: public, max-age=0, must-revalidate
+
+/study-planner/icons/*
+  Cache-Control: public, max-age=604800

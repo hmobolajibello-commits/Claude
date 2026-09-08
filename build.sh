@@ -82,11 +82,13 @@ for asset in favicon.svg og.png _headers; do
   if [ -f "$asset" ]; then cp "$asset" "_site/$asset"; fi
 done
 
-# The study planner is a separate standalone page in this repo; it needs no build
-# step of its own, so it just ships alongside the wiki at /study-planner/.
+# The study planner is a separate standalone app in this repo; it needs no build
+# step of its own, so it just ships alongside the wiki at /study-planner/. It is a
+# PWA, so the manifest, service worker and icons have to travel with the page.
 if [ -f study-planner/index.html ]; then
-  mkdir -p _site/study-planner
-  cp study-planner/index.html _site/study-planner/index.html
+  mkdir -p _site/study-planner/icons
+  cp study-planner/index.html study-planner/manifest.webmanifest study-planner/sw.js _site/study-planner/
+  cp study-planner/icons/*.png _site/study-planner/icons/
 fi
 : > _site/.nojekyll
 
