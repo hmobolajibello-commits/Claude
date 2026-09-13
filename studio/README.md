@@ -125,8 +125,9 @@ connections across restarts.
 ### Render — no CLI needed
 
 Push this repo to GitHub, then **New → Blueprint** in the Render dashboard and
-point it at the repo. `render.yaml` is already here; Render will prompt you for
-`STUDIO_PASSWORD` and `STUDIO_API_KEY` rather than reading them from git.
+point it at the repo. `render.yaml` at the repository root is already set up for
+this; Render will prompt you for `STUDIO_PASSWORD` and `STUDIO_API_KEY` rather
+than reading them from git.
 
 The free plan has **no persistent disk**, so account connections have to be
 re-added after the service restarts, and it sleeps after inactivity (the first
@@ -224,8 +225,8 @@ lib/auth.js          Password sign-in, sessions, brute-force limits
 public/              The app: index.html, app.css, app.js, voice.js, login.html
 test/                71 tests, run with `npm test`
 Dockerfile           Self-contained image
-render.yaml          Render blueprint
 fly.toml             Fly.io config, with a volume for persistence
+../render.yaml       Render blueprint (must live at the repository root)
 ```
 
 `npm test` runs everything with `node --test` — no test framework, no install.
