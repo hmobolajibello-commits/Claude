@@ -1,0 +1,29 @@
+# Render blueprint. Push this repo, then in the Render dashboard:
+#   New → Blueprint → pick this repo.
+#
+# STUDIO_PASSWORD is marked sync:false, so Render prompts you for it instead of
+# storing it in git. Pick something long — it is the only thing between the
+# internet and your API keys.
+#
+# Note the free plan has no persistent disk: account connections have to be
+# re-added after a restart. Set the model settings as environment variables
+# below and the app still comes up ready to use.
+services:
+  - type: web
+    name: voice-studio
+    runtime: docker
+    dockerfilePath: ./studio/Dockerfile
+    dockerContext: ./studio
+    plan: free
+    healthCheckPath: /login
+    envVars:
+      - key: STUDIO_PASSWORD
+        sync: false
+      - key: STUDIO_SECRET
+        generateValue: true
+      - key: STUDIO_PROVIDER
+        value: google
+      - key: STUDIO_MODEL
+        value: gemini-2.0-flash
+      - key: STUDIO_API_KEY
+        sync: false

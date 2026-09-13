@@ -1,0 +1,6 @@
+.studio/
+workspace/
+test/
+node_modules/
+.git/
+*.md

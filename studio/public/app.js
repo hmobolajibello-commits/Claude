@@ -13,6 +13,7 @@ const el = {
   saveFile: $('saveFile'), workspacePath: $('workspacePath'), preview: $('preview'),
   settings: $('settingsDialog'), accounts: $('accountsDialog'),
   connectionList: $('connectionList'), serviceSelect: $('serviceSelect'), serviceHelp: $('serviceHelp'),
+  signOut: $('signOut'),
 };
 
 const state = {
@@ -159,6 +160,12 @@ async function api(path, options = {}) {
     headers: options.body ? { 'content-type': 'application/json' } : {},
     body: options.body ? JSON.stringify(options.body) : undefined,
   });
+  if (res.status === 401 && !path.startsWith('/api/log')) {
+    // The session expired underneath us; start over rather than showing
+    // a wall of failures.
+    window.location.replace('/login');
+    throw new Error('signed out');
+  }
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.error || `request failed with HTTP ${res.status}`);
   return data;
@@ -473,6 +480,14 @@ function fillSettings() {
   $('voiceLang').value = config.voice.language || 'en-US';
   $('maxSteps').value = config.maxSteps;
   $('stepsOut').value = config.maxSteps;
+  const locked = config.envLocked || [];
+  const lockNote = $('envNote');
+  if (lockNote) {
+    lockNote.hidden = locked.length === 0;
+    lockNote.textContent = locked.length
+      ? `Set by this deployment's environment variables and not editable here: ${locked.join(', ')}.`
+      : '';
+  }
   $('shellState').textContent = config.allowCommands
     ? 'Shell commands are enabled: the AI can run builds, installs and tests inside the workspace.'
     : 'Shell commands are off. Restart the server with --allow-commands to let the AI run builds and tests.';
@@ -662,6 +677,11 @@ function wireUi() {
     if (example) send(example.textContent);
   });
 
+  el.signOut.addEventListener('click', async () => {
+    await api('/api/logout', { method: 'POST' }).catch(() => {});
+    window.location.replace('/login');
+  });
+
   $('openSettings').addEventListener('click', () => { fillSettings(); el.settings.showModal(); });
   $('openAccounts').addEventListener('click', () => { fillAccounts(); el.accounts.showModal(); });
   $('saveSettings').addEventListener('click', saveSettings);
@@ -760,6 +780,9 @@ async function boot() {
   wireUi();
   setupVoice();
   try {
+    const session = await api('/api/session').catch(() => ({ authRequired: false }));
+    el.signOut.hidden = !session.authRequired;
+
     const data = await api('/api/state');
     state.config = data.config;
     state.presets = data.presets;

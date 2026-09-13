@@ -1,9 +1,10 @@
 #!/usr/bin/env node
-// Voice Studio — a local server for a voice-driven AI coding agent.
+// Voice Studio — a server for a voice-driven AI coding agent.
 //
-// Binds to 127.0.0.1 by default: the process holds API keys and account tokens,
-// so it is not something to expose to a network without thinking about it. Pass
-// --host 0.0.0.0 deliberately (and it will warn you).
+// Binds to 127.0.0.1 by default: the process holds API keys and account tokens.
+// Exposing it to a network requires a password, and the server refuses to start
+// on a public interface without one rather than quietly serving your keys to
+// anyone who finds the port.
 //
 // Zero dependencies — Node 18+ only.
 
@@ -16,12 +17,21 @@ import { Workspace } from './lib/workspace.js';
 import { Connections, REGISTRY } from './lib/connections.js';
 import { chat, listModels, PRESETS } from './lib/providers.js';
 import { buildTools, runAgent, systemPrompt } from './lib/tools.js';
+import { Auth, hashPassword, passwordHashFromEnv } from './lib/auth.js';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const PUBLIC_DIR = path.join(HERE, 'public');
 
 function parseArgs(argv) {
-  const args = { port: 4173, host: '127.0.0.1', allowCommands: false, open: false };
+  const args = {
+    port: Number(process.env.PORT) || 4173,
+    host: process.env.HOST || '127.0.0.1',
+    allowCommands: process.env.STUDIO_ALLOW_COMMANDS === '1',
+    open: false,
+    trustProxy: process.env.STUDIO_TRUST_PROXY === '1',
+    workspace: process.env.STUDIO_WORKSPACE || undefined,
+    dataDir: process.env.STUDIO_DATA_DIR || undefined,
+  };
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
     if (arg === '--port' || arg === '-p') args.port = Number(argv[++i]);
@@ -29,6 +39,9 @@ function parseArgs(argv) {
     else if (arg === '--workspace' || arg === '-w') args.workspace = argv[++i];
     else if (arg === '--allow-commands') args.allowCommands = true;
     else if (arg === '--open') args.open = true;
+    else if (arg === '--data-dir') args.dataDir = argv[++i];
+    else if (arg === '--trust-proxy') args.trustProxy = true;
+    else if (arg === '--hash') args.hash = argv[++i];
     else if (arg === '--help' || arg === '-h') args.help = true;
   }
   return args;
@@ -43,16 +56,57 @@ if (argv.help) {
   -p, --port <n>        Port to listen on (default 4173)
       --host <addr>     Address to bind (default 127.0.0.1)
   -w, --workspace <dir> Where the AI writes code (default ./workspace)
+      --data-dir <dir>  Where settings and account tokens live (default ./.studio)
       --allow-commands  Let the AI run shell commands in the workspace
+      --trust-proxy     Read the client IP from X-Forwarded-For (hosted deploys)
       --open            Open a browser once the server is up
+      --hash <password> Print a password hash for STUDIO_PASSWORD_HASH and exit
 
   Environment:
-    STUDIO_SECRET       Passphrase used to encrypt stored account tokens
+    STUDIO_PASSWORD       Password to require. Enables the sign-in page.
+    STUDIO_PASSWORD_HASH  A scrypt hash from --hash, preferred over the above.
+    STUDIO_SECRET         Passphrase used to encrypt stored account tokens
+    PORT, HOST            Honoured so hosting platforms work without flags
+
+  Binding to anything other than 127.0.0.1 requires a password.
 `);
   process.exit(0);
 }
 
-const CONFIG_DIR = path.join(HERE, '.studio');
+if (argv.hash) {
+  console.log(hashPassword(argv.hash));
+  process.exit(0);
+}
+
+let auth;
+try {
+  auth = new Auth({ passwordHash: passwordHashFromEnv() });
+} catch (err) {
+  console.error(`\n  Configuration error: ${err.message}\n`);
+  process.exit(1);
+}
+auth.trustProxy = argv.trustProxy;
+
+// Fail closed. Reaching the network without a password would publish the user's
+// API keys and every connected account to whoever finds the port.
+const LOOPBACK = new Set(['127.0.0.1', '::1', 'localhost']);
+if (!LOOPBACK.has(argv.host) && !auth.enabled) {
+  console.error(`
+  Refusing to start.
+
+  --host ${argv.host} would expose this server beyond your own machine, and it
+  holds your API keys and any accounts you connect. Set a password first:
+
+      STUDIO_PASSWORD='something long' node server.js --host ${argv.host}
+
+  Or generate a hash and set STUDIO_PASSWORD_HASH instead:
+
+      node server.js --hash 'something long'
+`);
+  process.exit(1);
+}
+
+const CONFIG_DIR = argv.dataDir ? path.resolve(argv.dataDir) : path.join(HERE, '.studio');
 const CONFIG_FILE = path.join(CONFIG_DIR, 'config.json');
 const workspace = new Workspace(argv.workspace || path.join(HERE, 'workspace'));
 const connections = new Connections(path.join(CONFIG_DIR, 'connections.json'));
@@ -67,26 +121,61 @@ const DEFAULT_CONFIG = {
   voice: { autoSend: true, silenceMs: 1400, speakReplies: false, wakeWord: '', requireWakeWord: false, language: 'en-US' },
 };
 
-let config = { ...DEFAULT_CONFIG };
+/**
+ * Model settings can come from the environment, which is how a hosted deploy
+ * stays usable: free tiers have ephemeral disks, so a saved config file does
+ * not survive a restart. When one of these is set it wins over the saved file,
+ * because the host dashboard is then the obvious source of truth.
+ */
+function configFromEnv(env = process.env) {
+  const fromEnv = {};
+  if (env.STUDIO_PROVIDER) fromEnv.provider = env.STUDIO_PROVIDER;
+  if (env.STUDIO_MODEL) fromEnv.model = env.STUDIO_MODEL;
+  if (env.STUDIO_BASE_URL) fromEnv.baseUrl = env.STUDIO_BASE_URL;
+  if (env.STUDIO_API_KEY) fromEnv.apiKey = env.STUDIO_API_KEY;
+  return fromEnv;
+}
+
+const ENV_CONFIG = configFromEnv();
+const ENV_LOCKED = Object.keys(ENV_CONFIG);
+
+let config = { ...DEFAULT_CONFIG, ...ENV_CONFIG };
 
 async function loadConfig() {
+  let saved = {};
   try {
-    const saved = JSON.parse(await fs.readFile(CONFIG_FILE, 'utf8'));
-    config = { ...DEFAULT_CONFIG, ...saved, voice: { ...DEFAULT_CONFIG.voice, ...(saved.voice || {}) } };
+    saved = JSON.parse(await fs.readFile(CONFIG_FILE, 'utf8'));
   } catch (err) {
     if (err.code !== 'ENOENT') console.warn(`could not read config: ${err.message}`);
   }
+  config = {
+    ...DEFAULT_CONFIG,
+    ...saved,
+    ...ENV_CONFIG,
+    voice: { ...DEFAULT_CONFIG.voice, ...(saved.voice || {}) },
+  };
 }
 
 async function saveConfig() {
   await fs.mkdir(CONFIG_DIR, { recursive: true });
-  await fs.writeFile(CONFIG_FILE, JSON.stringify(config, null, 2), { encoding: 'utf8', mode: 0o600 });
+  // Leave environment-provided values out of the file: they belong to the host
+  // config, and writing a key from the environment onto disk would spread a
+  // secret the operator deliberately kept in one place.
+  const toSave = { ...config };
+  for (const key of ENV_LOCKED) delete toSave[key];
+  await fs.writeFile(CONFIG_FILE, JSON.stringify(toSave, null, 2), { encoding: 'utf8', mode: 0o600 });
 }
 
 /** The API key never goes back to the browser — only whether one is set. */
 function publicConfig() {
   const { apiKey, ...rest } = config;
-  return { ...rest, hasApiKey: !!apiKey, allowCommands: argv.allowCommands, workspace: workspace.root };
+  return {
+    ...rest,
+    hasApiKey: !!apiKey,
+    envLocked: ENV_LOCKED,
+    allowCommands: argv.allowCommands,
+    workspace: workspace.root,
+  };
 }
 
 /* ---------- HTTP helpers ---------- */
@@ -144,6 +233,31 @@ async function serveFile(res, absPath, { cache = 'no-store' } = {}) {
 async function handleApi(req, res, url) {
   const route = url.pathname;
 
+  if (route === '/api/session' && req.method === 'GET') {
+    return sendJson(res, 200, { authRequired: auth.enabled, signedIn: auth.isAuthenticated(req) });
+  }
+
+  if (route === '/api/login' && req.method === 'POST') {
+    if (!auth.enabled) return sendJson(res, 400, { error: 'no password is configured' });
+    const { password } = await readBody(req, 4096);
+    const result = auth.login(password, auth.clientIp(req));
+    if (!result.ok) {
+      const status = result.retryAfter ? 429 : 401;
+      const message = result.retryAfter
+        ? `Too many attempts. Try again in ${Math.ceil(result.retryAfter / 60)} minute(s).`
+        : 'Wrong password.';
+      return sendJson(res, status, { error: message });
+    }
+    res.setHeader('set-cookie', auth.cookieHeader(result.token, req));
+    return sendJson(res, 200, { ok: true });
+  }
+
+  if (route === '/api/logout' && req.method === 'POST') {
+    auth.logout(req);
+    res.setHeader('set-cookie', auth.clearCookieHeader());
+    return sendJson(res, 200, { ok: true });
+  }
+
   if (route === '/api/state' && req.method === 'GET') {
     return sendJson(res, 200, {
       config: publicConfig(),
@@ -155,7 +269,7 @@ async function handleApi(req, res, url) {
 
   if (route === '/api/config' && req.method === 'POST') {
     const body = await readBody(req);
-    const next = { ...config, ...body, voice: { ...config.voice, ...(body.voice || {}) } };
+    const next = { ...config, ...body, ...ENV_CONFIG, voice: { ...config.voice, ...(body.voice || {}) } };
     // An empty apiKey from the UI means "leave it alone", not "clear it".
     if (body.apiKey === '' || body.apiKey === undefined) next.apiKey = config.apiKey;
     if (body.clearApiKey) next.apiKey = '';
@@ -281,7 +395,28 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
+  // Everything below serves the user's own data — settings, workspace files,
+  // the agent itself — so it all sits behind the same gate. Only the sign-in
+  // page and what it needs to render are public.
+  const PUBLIC_PATHS = new Set(['/login', '/login.html', '/app.css']);
+  const isAuthRoute = url.pathname === '/api/login' || url.pathname === '/api/session';
+  if (!isAuthRoute && !PUBLIC_PATHS.has(url.pathname) && !auth.isAuthenticated(req)) {
+    if (url.pathname.startsWith('/api/')) {
+      return sendJson(res, 401, { error: 'not signed in' });
+    }
+    res.writeHead(302, { location: '/login', 'cache-control': 'no-store' });
+    return res.end();
+  }
+
   try {
+    if (url.pathname === '/login') {
+      if (auth.isAuthenticated(req)) {
+        res.writeHead(302, { location: '/' });
+        return res.end();
+      }
+      if (await serveFile(res, path.join(PUBLIC_DIR, 'login.html'))) return;
+    }
+
     if (url.pathname.startsWith('/api/')) return await handleApi(req, res, url);
 
     // The workspace served raw, so the preview pane can render what the AI built.
@@ -328,10 +463,14 @@ server.listen(argv.port, argv.host, () => {
   console.log(`\n  Voice Studio  →  http://${shown}:${argv.port}`);
   console.log(`  workspace     →  ${workspace.root}`);
   console.log(`  provider      →  ${config.provider}${config.model ? ` / ${config.model}` : ' (pick a model in Settings)'}`);
+  console.log(`  sign-in       →  ${auth.enabled ? 'password required' : 'off (loopback only)'}`);
   if (argv.allowCommands) console.log('  shell         →  enabled (--allow-commands)');
-  if (argv.host === '0.0.0.0') {
-    console.log('\n  ! Bound to all interfaces. Anyone who can reach this port can use your');
-    console.log('    API keys and connected accounts. Only do this on a network you trust.');
+  if (!LOOPBACK.has(argv.host) && auth.enabled) {
+    console.log('\n  Reachable beyond this machine. Anyone with the password has your');
+    console.log('  API keys and connected accounts, so make it a good one.');
+    if (!argv.trustProxy) {
+      console.log('  Behind a host\'s proxy? Add --trust-proxy so rate limiting sees real IPs.');
+    }
   }
   console.log('');
   if (argv.open) openBrowser(`http://127.0.0.1:${argv.port}`);

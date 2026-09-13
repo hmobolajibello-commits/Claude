@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<meta name="robots" content="noindex, nofollow">
+<title>Sign in · Voice Studio</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>🎙️</text></svg>">
+<link rel="stylesheet" href="app.css">
+<style>
+  body { display: grid; place-items: center; min-height: 100vh; padding: 24px; }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 28px;
+    width: min(380px, 100%);
+  }
+  .card h1 { margin: 0 0 6px; font-size: 21px; letter-spacing: -0.02em; }
+  .card p.sub { margin: 0 0 22px; color: var(--muted); font-size: 13.5px; }
+  .card label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+  .card input {
+    display: block; width: 100%; margin-top: 6px;
+    background: var(--bg); color: var(--text);
+    border: 1px solid var(--line); border-radius: 8px;
+    padding: 10px 12px; font: inherit; font-size: 15px;
+  }
+  .card input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+  .card button { width: 100%; margin-top: 14px; padding: 11px; }
+  .error {
+    margin-top: 14px; font-size: 13.5px; color: var(--live);
+    background: rgba(255, 77, 109, 0.1);
+    border: 1px solid var(--live); border-radius: 8px; padding: 9px 11px;
+  }
+</style>
+</head>
+<body>
+
+<main class="card">
+  <h1>🎙️ Voice Studio</h1>
+  <p class="sub">This studio is private. Sign in to continue.</p>
+
+  <form id="form">
+    <label for="password">Password
+      <input id="password" name="password" type="password" autocomplete="current-password" required autofocus>
+    </label>
+    <button type="submit" class="primary" id="submit">Sign in</button>
+  </form>
+
+  <p class="error" id="error" hidden></p>
+</main>
+
+<script type="module">
+  const form = document.getElementById('form');
+  const password = document.getElementById('password');
+  const submit = document.getElementById('submit');
+  const error = document.getElementById('error');
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    error.hidden = true;
+    submit.disabled = true;
+    submit.textContent = 'Checking…';
+
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ password: password.value }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok) {
+        // Replace, so Back does not land on the sign-in page.
+        window.location.replace('/');
+        return;
+      }
+      error.textContent = data.error || `Sign-in failed (HTTP ${res.status}).`;
+      error.hidden = false;
+    } catch (err) {
+      error.textContent = `Could not reach the server: ${err.message}`;
+      error.hidden = false;
+    }
+
+    password.value = '';
+    password.focus();
+    submit.disabled = false;
+    submit.textContent = 'Sign in';
+  });
+</script>
+
+</body>
+</html>
