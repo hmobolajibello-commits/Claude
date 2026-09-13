@@ -1,3 +1,7 @@
 node_modules/
 .DS_Store
 _site/
+
+# Voice Studio: generated code and stored credentials never belong in git
+studio/workspace/
+studio/.studio/

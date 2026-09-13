@@ -1,0 +1,13 @@
+{
+  "name": "voice-studio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A voice-driven AI coding agent that runs on your own machine.",
+  "type": "module",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js --open",
+    "test": "node --test"
+  }
+}

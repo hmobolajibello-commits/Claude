@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<title>Voice Studio</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>🎙️</text></svg>">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand"><span class="dot" id="statusDot"></span> Voice Studio</div>
+
+  <button id="micButton" class="mic" aria-pressed="false" title="Start listening (hold Space to talk)">
+    <span class="mic-glyph" aria-hidden="true">🎙️</span>
+    <span id="micLabel">Start listening</span>
+  </button>
+
+  <div class="topbar-meta">
+    <span id="modelBadge" class="badge">no model</span>
+    <button class="ghost" id="openAccounts">Accounts</button>
+    <button class="ghost" id="openSettings">Settings</button>
+  </div>
+</header>
+
+<div id="heard" class="heard" hidden><span class="heard-label">Heard</span> <span id="heardText"></span></div>
+
+<nav class="tabs" role="tablist">
+  <button class="tab active" data-pane="chatPane" role="tab">Chat</button>
+  <button class="tab" data-pane="filesPane" role="tab">Code</button>
+  <button class="tab" data-pane="previewPane" role="tab">Preview</button>
+</nav>
+
+<main class="layout">
+
+  <section class="pane" id="chatPane">
+    <div class="messages" id="messages">
+      <div class="welcome">
+        <h1>Talk. It builds.</h1>
+        <p>Press <b>Start listening</b> and describe what you want. It writes real files into your
+           workspace, searches and reads the web when it needs to, and can use accounts you connect.</p>
+        <ul class="examples">
+          <li>Build a tip calculator with a dark theme</li>
+          <li>Look up the current Fetch API spec and write me a retry wrapper</li>
+          <li>List my GitHub repos and make a page showing the ten newest</li>
+        </ul>
+        <p class="setup-hint" id="setupHint" hidden></p>
+      </div>
+    </div>
+
+    <form class="composer" id="composer">
+      <textarea id="input" rows="1" placeholder="Say it or type it…" autocomplete="off"></textarea>
+      <button type="submit" id="sendButton" title="Send (Enter)">Send</button>
+      <button type="button" id="stopButton" class="stop" hidden title="Stop the current run">Stop</button>
+    </form>
+  </section>
+
+  <section class="pane" id="filesPane" hidden>
+    <div class="pane-head">
+      <strong>Workspace</strong>
+      <span class="path" id="workspacePath"></span>
+      <button class="ghost small" id="refreshFiles">Refresh</button>
+    </div>
+    <div class="split">
+      <ul class="filetree" id="fileTree"></ul>
+      <div class="editor">
+        <div class="editor-head">
+          <span id="openFileName">No file open</span>
+          <button class="ghost small" id="saveFile" hidden>Save</button>
+        </div>
+        <textarea id="editor" spellcheck="false" placeholder="Select a file to view or edit it."></textarea>
+      </div>
+    </div>
+  </section>
+
+  <section class="pane" id="previewPane" hidden>
+    <div class="pane-head">
+      <strong>Live preview</strong>
+      <span class="path">/preview</span>
+      <button class="ghost small" id="reloadPreview">Reload</button>
+      <button class="ghost small" id="popPreview">Open in tab</button>
+    </div>
+    <iframe id="preview" src="/preview/" title="Live preview of the workspace"></iframe>
+  </section>
+
+</main>
+
+<!-- Settings -->
+<dialog id="settingsDialog" class="sheet">
+  <form method="dialog" class="sheet-head"><h2>Settings</h2><button class="ghost small">Close</button></form>
+  <div class="sheet-body">
+
+    <h3>Model</h3>
+    <label>Provider
+      <select id="providerSelect"></select>
+    </label>
+    <p class="hint" id="providerHelp"></p>
+
+    <label>Model
+      <span class="row">
+        <input id="modelInput" list="modelList" placeholder="model name" autocomplete="off">
+        <datalist id="modelList"></datalist>
+        <button type="button" class="ghost small" id="fetchModels">Fetch</button>
+      </span>
+    </label>
+
+    <label id="keyRow">API key
+      <input id="apiKeyInput" type="password" placeholder="stored on this machine only" autocomplete="off">
+    </label>
+    <p class="hint" id="keyState"></p>
+
+    <label>Base URL <span class="muted">(override)</span>
+      <input id="baseUrlInput" placeholder="leave blank for the provider default" autocomplete="off">
+    </label>
+
+    <h3>Voice</h3>
+    <label class="check"><input type="checkbox" id="autoSend"> Send automatically when I stop talking</label>
+    <label>Pause before sending
+      <span class="row"><input type="range" id="silenceMs" min="600" max="4000" step="100"><output id="silenceOut"></output></span>
+    </label>
+    <label class="check"><input type="checkbox" id="speakReplies"> Read replies out loud</label>
+    <label class="check"><input type="checkbox" id="requireWakeWord"> Only act after a wake word</label>
+    <label>Wake word
+      <input id="wakeWord" placeholder="e.g. studio" autocomplete="off">
+    </label>
+    <label>Recognition language
+      <input id="voiceLang" placeholder="en-US" autocomplete="off">
+    </label>
+
+    <h3>Agent</h3>
+    <label>Tool steps per turn
+      <span class="row"><input type="range" id="maxSteps" min="4" max="60" step="1"><output id="stepsOut"></output></span>
+    </label>
+    <p class="hint" id="shellState"></p>
+
+    <div class="sheet-actions">
+      <button type="button" id="saveSettings" class="primary">Save</button>
+      <span class="saved" id="settingsSaved" hidden>Saved</span>
+    </div>
+  </div>
+</dialog>
+
+<!-- Accounts -->
+<dialog id="accountsDialog" class="sheet">
+  <form method="dialog" class="sheet-head"><h2>Accounts</h2><button class="ghost small">Close</button></form>
+  <div class="sheet-body">
+    <p class="hint">
+      Connect one service at a time. Tokens stay on this machine and are attached to
+      requests by the server — the AI can use a connection without ever seeing the credential.
+      Connections are read-only unless you tick write access.
+    </p>
+
+    <ul class="connections" id="connectionList"></ul>
+
+    <h3>Connect a service</h3>
+    <label>Service <select id="serviceSelect"></select></label>
+    <p class="hint" id="serviceHelp"></p>
+    <label id="usernameRow" hidden>Username / email <input id="connUsername" autocomplete="off"></label>
+    <label>Token <input id="connToken" type="password" autocomplete="off" placeholder="paste the token"></label>
+    <label id="baseRow" hidden>Base URL <input id="connBaseUrl" placeholder="https://api.example.com/v1" autocomplete="off"></label>
+    <label>Label <span class="muted">(optional)</span> <input id="connLabel" autocomplete="off"></label>
+    <label class="check"><input type="checkbox" id="connWrites"> Allow this connection to make changes (POST, PUT, PATCH, DELETE)</label>
+    <div class="sheet-actions">
+      <button type="button" id="addConnection" class="primary">Connect</button>
+      <span class="saved error" id="connError" hidden></span>
+    </div>
+  </div>
+</dialog>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
