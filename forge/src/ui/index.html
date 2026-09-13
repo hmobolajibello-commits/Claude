@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>forge</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f6f7f9;
+    --panel: #ffffff;
+    --panel-2: #f0f2f5;
+    --line: #dfe3e9;
+    --ink: #14181f;
+    --ink-dim: #5c6675;
+    --accent: #2f6fd0;
+    --good: #1f8a4c;
+    --warn: #9a6300;
+    --bad: #c0392b;
+    --radius: 10px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0e1116;
+      --panel: #161a21;
+      --panel-2: #1d222b;
+      --line: #2a313c;
+      --ink: #e8ecf3;
+      --ink-dim: #93a0b3;
+      --accent: #6ba4f8;
+      --good: #4fd68f;
+      --warn: #f0b429;
+      --bad: #ff7a6b;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 14px/1.5 ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  code, pre, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 24px 16px 64px; }
+
+  header { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
+  h1 { font-size: 22px; margin: 0; letter-spacing: -0.01em; }
+  h1 span { color: var(--ink-dim); font-weight: 400; }
+  .sub { color: var(--ink-dim); margin: 0 0 20px; max-width: 62ch; }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .panel h2 { font-size: 14px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-dim); margin: 0 0 12px; }
+
+  .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .grow { flex: 1 1 200px; min-width: 0; }
+
+  input, select, textarea, button {
+    font: inherit;
+    color: var(--ink);
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 10px;
+  }
+  textarea { width: 100%; resize: vertical; min-height: 74px; }
+  button { cursor: pointer; background: var(--panel-2); }
+  button:hover:not(:disabled) { border-color: var(--accent); }
+  button:disabled { opacity: 0.5; cursor: progress; }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+  button.small { padding: 5px 9px; font-size: 13px; }
+
+  .pill { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--ink-dim); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ink-dim); }
+  .dot.on { background: var(--good); }
+  .dot.off { background: var(--bad); }
+
+  .grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+  .card { background: var(--panel-2); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; }
+  .card h3 { margin: 0 0 2px; font-size: 15px; }
+  .card .meta { color: var(--ink-dim); font-size: 13px; margin-bottom: 10px; }
+  .card .stats { display: flex; gap: 12px; font-size: 13px; color: var(--ink-dim); margin-bottom: 10px; flex-wrap: wrap; }
+  .card .stats b { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+  .problems { margin: 8px 0 0; padding-left: 18px; color: var(--warn); font-size: 13px; }
+
+  #log {
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 12px;
+    max-height: 260px;
+    overflow-y: auto;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12.5px;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  #log .t { color: var(--ink-dim); }
+  #log .ok { color: var(--good); }
+  #log .err { color: var(--bad); }
+  #log .warn { color: var(--warn); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--ink-dim); font-weight: 600; }
+  td.mono { white-space: nowrap; }
+
+  details summary { cursor: pointer; color: var(--ink-dim); }
+  .hint { color: var(--ink-dim); font-size: 13px; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>forge <span>-- Roblox games, built and shipped from here</span></h1>
+  </header>
+  <p class="sub">
+    Link a place through Roblox Open Cloud, describe a game, and publish it. The API key stays
+    on this machine; this page only ever sees whether the link works.
+  </p>
+
+  <div class="panel">
+    <h2>Connection</h2>
+    <div class="row" id="statusRow"><span class="pill"><span class="dot"></span> checking...</span></div>
+    <div id="linkForm" hidden>
+      <p class="hint" style="margin-top:14px">
+        Create a key at <a href="https://create.roblox.com/dashboard/credentials" target="_blank" rel="noreferrer">create.roblox.com/dashboard/credentials</a>,
+        add your experience, and enable <code>universe-places:write</code>, <code>universe:read</code> and
+        (for <em>Verify</em>) <code>universe.place.luau-execution-session:write</code>.
+      </p>
+      <div class="row" style="margin-top:10px">
+        <input class="grow" id="apiKey" type="password" placeholder="Open Cloud API key" autocomplete="off">
+        <input id="universeId" style="width:150px" placeholder="Universe ID" inputmode="numeric">
+        <input id="placeId" style="width:150px" placeholder="Place ID" inputmode="numeric">
+        <button class="primary" id="linkBtn">Link</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Have Claude design a game</h2>
+    <textarea id="prompt" placeholder="A neon rooftop parkour course through a rainy city: eight stages, moving platforms, coins on the hard routes, and a shop selling speed and jump upgrades."></textarea>
+    <div class="row" style="margin-top:10px">
+      <button class="primary" id="generateBtn">Generate</button>
+      <span class="hint" id="genHint">Writes a new project, then you deploy it.</span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Or start from a template</h2>
+    <div class="row">
+      <select id="template"></select>
+      <input class="grow" id="newName" placeholder="Game name (optional)">
+      <input id="seed" style="width:110px" placeholder="Seed" inputmode="numeric">
+      <button id="newBtn">Create</button>
+    </div>
+    <p class="hint" id="templateBlurb" style="margin:10px 0 0"></p>
+  </div>
+
+  <div class="panel">
+    <h2>Games <span class="hint" id="workspacePath"></span></h2>
+    <div class="grid" id="projects"><p class="hint">Loading...</p></div>
+  </div>
+
+  <div class="panel">
+    <h2>Activity</h2>
+    <div id="log"></div>
+  </div>
+
+  <div class="panel">
+    <details>
+      <summary>Map tag reference -- what a brick can be</summary>
+      <table id="tagTable" style="margin-top:12px"></table>
+    </details>
+  </div>
+</div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+let state = { status: null, projects: [], templates: [] };
+
+function log(message, kind = '') {
+  const line = document.createElement('div');
+  const time = new Date().toLocaleTimeString();
+  line.innerHTML = `<span class="t">${time}</span> <span class="${kind}"></span>`;
+  line.lastElementChild.textContent = message;
+  $('log').append(line);
+  $('log').scrollTop = $('log').scrollHeight;
+}
+
+async function api(path, body) {
+  const response = await fetch(path, body
+    ? { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }
+    : undefined);
+  const payload = await response.json().catch(() => ({ error: 'Bad response from forge' }));
+  if (!response.ok) throw new Error(payload.error || `HTTP ${response.status}`);
+  return payload;
+}
+
+async function withBusy(button, label, work) {
+  const original = button.textContent;
+  button.disabled = true;
+  button.textContent = label;
+  try {
+    return await work();
+  } catch (error) {
+    log(error.message, 'err');
+    throw error;
+  } finally {
+    button.disabled = false;
+    button.textContent = original;
+  }
+}
+
+function renderStatus() {
+  const s = state.status;
+  const parts = [];
+  const chip = (on, text) => `<span class="pill"><span class="dot ${on ? 'on' : 'off'}"></span>${text}</span>`;
+
+  if (s.linked && !s.reachError) {
+    parts.push(chip(true, `Roblox: ${s.universe?.name ?? 'linked'}`));
+    parts.push(`<span class="pill mono">place ${s.placeId}</span>`);
+    parts.push(`<span class="pill mono">key ${s.apiKey}</span>`);
+    if (s.lastPublishedVersion) parts.push(`<span class="pill">published v${s.lastPublishedVersion}</span>`);
+    parts.push('<button class="small" id="verifyBtn">Verify live</button>');
+    parts.push('<button class="small" id="unlinkBtn">Unlink</button>');
+  } else if (s.linked) {
+    parts.push(chip(false, `Roblox: ${s.reachError}`));
+    parts.push('<button class="small" id="unlinkBtn">Unlink</button>');
+  } else {
+    parts.push(chip(false, 'Roblox: not linked'));
+  }
+  parts.push(chip(s.sdk, s.sdk ? 'Claude: ready' : 'Claude: run npm install'));
+
+  $('statusRow').innerHTML = parts.join(' ');
+  $('linkForm').hidden = Boolean(s.linked && !s.reachError);
+  $('workspacePath').textContent = s.workspace ?? '';
+  $('generateBtn').disabled = !s.sdk;
+  if (!s.sdk) $('genHint').textContent = 'Needs the Anthropic SDK: run npm install in the forge directory.';
+
+  $('verifyBtn')?.addEventListener('click', (event) => withBusy(event.target, 'Checking...', async () => {
+    const result = await api('/api/verify', {});
+    (result.logs ?? []).forEach((line) => log(line));
+    if (result.payload?.ok) {
+      log(`live: ${result.payload.game} -- ${result.payload.bricks} bricks, ${result.payload.tagged} interactive`, 'ok');
+    } else {
+      log(`verify failed (${result.state}): ${result.payload?.reason ?? result.error?.message ?? 'see logs'}`, 'err');
+    }
+  }));
+
+  $('unlinkBtn')?.addEventListener('click', async () => {
+    await api('/api/unlink', {});
+    log('unlinked', 'warn');
+    refresh();
+  });
+}
+
+function renderProjects() {
+  const host = $('projects');
+  if (!state.projects.length) {
+    host.innerHTML = '<p class="hint">No games yet. Generate one above, or start from a template.</p>';
+    return;
+  }
+  host.innerHTML = '';
+  for (const project of state.projects) {
+    const card = document.createElement('div');
+    card.className = 'card';
+    if (project.error) {
+      card.innerHTML = `<h3></h3><p class="meta err">${project.error}</p>`;
+      card.querySelector('h3').textContent = project.id;
+      host.append(card);
+      continue;
+    }
+    card.innerHTML = `
+      <h3></h3>
+      <div class="meta"></div>
+      <div class="stats">
+        <span><b>${project.stats.parts}</b> bricks</span>
+        <span><b>${project.stats.tagged}</b> interactive</span>
+        <span><b>${project.stats.scripts}</b> scripts</span>
+        <span><b>${(project.stats.bytes / 1024).toFixed(0)}</b> KB</span>
+      </div>
+      <div class="row">
+        <button class="small build">Build</button>
+        <button class="small primary deploy">Deploy</button>
+        <button class="small iterate">Change...</button>
+      </div>
+      <div class="iterateBox" hidden style="margin-top:10px">
+        <textarea placeholder="Make the last stage harder and add a checkpoint before it"></textarea>
+        <div class="row" style="margin-top:8px"><button class="small primary apply">Apply change</button></div>
+      </div>`;
+    card.querySelector('h3').textContent = project.name;
+    card.querySelector('.meta').textContent = `${project.template} -- ${project.description}`;
+
+    if (project.problems?.length) {
+      const list = document.createElement('ul');
+      list.className = 'problems';
+      for (const problem of project.problems) {
+        const item = document.createElement('li');
+        item.textContent = problem;
+        list.append(item);
+      }
+      card.append(list);
+    }
+
+    card.querySelector('.build').addEventListener('click', (event) => withBusy(event.target, 'Building', async () => {
+      const result = await api('/api/build', { id: project.id });
+      log(`built ${project.name}: ${result.stats.parts} bricks -> ${result.out}`, 'ok');
+      (result.problems ?? []).forEach((problem) => log(problem, 'warn'));
+    }));
+
+    card.querySelector('.deploy').addEventListener('click', (event) => withBusy(event.target, 'Deploying', async () => {
+      let result = await api('/api/deploy', { id: project.id });
+      if (!result.published) {
+        (result.problems ?? []).forEach((problem) => log(problem, 'warn'));
+        if (!confirm(`${result.problems.length} problem(s) found:\n\n${result.problems.join('\n')}\n\nDeploy anyway?`)) {
+          log('deploy cancelled', 'warn');
+          return;
+        }
+        result = await api('/api/deploy', { id: project.id, force: true });
+      }
+      log(`published ${project.name} as version ${result.version} -- ${result.url}`, 'ok');
+      refresh();
+    }));
+
+    const box = card.querySelector('.iterateBox');
+    card.querySelector('.iterate').addEventListener('click', () => {
+      box.hidden = !box.hidden;
+      if (!box.hidden) box.querySelector('textarea').focus();
+    });
+    card.querySelector('.apply').addEventListener('click', (event) => withBusy(event.target, 'Thinking', async () => {
+      const instruction = box.querySelector('textarea').value.trim();
+      if (!instruction) return;
+      log(`asking Claude to change ${project.name}...`);
+      const result = await api('/api/iterate', { id: project.id, instruction });
+      log(result.notes, 'ok');
+      log(`now ${result.stats.parts} bricks (${result.stats.tagged} interactive)`);
+      (result.written ?? []).forEach((file) => log(`wrote ${file}`));
+      (result.problems ?? []).forEach((problem) => log(problem, 'warn'));
+      box.querySelector('textarea').value = '';
+      box.hidden = true;
+      refresh();
+    }));
+
+    host.append(card);
+  }
+}
+
+function renderCatalog(catalog) {
+  state.templates = catalog.templates;
+  $('template').innerHTML = catalog.templates.map((t) => `<option value="${t.id}">${t.label}</option>`).join('');
+  const showBlurb = () => {
+    const chosen = catalog.templates.find((t) => t.id === $('template').value);
+    $('templateBlurb').textContent = chosen?.blurb ?? '';
+  };
+  $('template').addEventListener('change', showBlurb);
+  showBlurb();
+
+  $('tagTable').innerHTML =
+    '<tr><th>Tag</th><th>Behaviour</th><th>data</th></tr>' +
+    catalog.tags.map((tag) => {
+      const data = Object.keys(tag.data).length ? JSON.stringify(tag.data) : '';
+      return `<tr><td class="mono">${tag.tag}</td><td>${tag.what}</td><td class="mono">${data}</td></tr>`;
+    }).join('');
+}
+
+async function refresh() {
+  const [status, projects] = await Promise.all([api('/api/status'), api('/api/projects')]);
+  state.status = status;
+  state.projects = projects.projects;
+  renderStatus();
+  renderProjects();
+}
+
+$('linkBtn').addEventListener('click', (event) => withBusy(event.target, 'Checking', async () => {
+  const result = await api('/api/link', {
+    apiKey: $('apiKey').value.trim(),
+    universeId: $('universeId').value.trim(),
+    placeId: $('placeId').value.trim(),
+  });
+  $('apiKey').value = '';
+  log(`linked to ${result.universe.name ?? 'universe'}`, 'ok');
+  if (result.placeError) log(`place check: ${result.placeError}`, 'warn');
+  refresh();
+}));
+
+$('newBtn').addEventListener('click', (event) => withBusy(event.target, 'Creating', async () => {
+  const result = await api('/api/new', {
+    template: $('template').value,
+    name: $('newName').value.trim(),
+    seed: $('seed').value.trim() || undefined,
+  });
+  log(`created ${result.name}: ${result.stats.parts} bricks, ${result.stats.tagged} interactive`, 'ok');
+  $('newName').value = '';
+  refresh();
+}));
+
+$('generateBtn').addEventListener('click', (event) => withBusy(event.target, 'Designing...', async () => {
+  const prompt = $('prompt').value.trim();
+  if (!prompt) { log('describe the game first', 'warn'); return; }
+  log('asking Claude to design the game -- this takes a minute...');
+  const result = await api('/api/generate', { prompt });
+  log(`designed ${result.name}: ${result.stats.parts} bricks, ${result.stats.tagged} interactive`, 'ok');
+  if (result.notes) log(result.notes);
+  (result.extras ?? []).forEach((file) => log(`custom module: ${file}`));
+  (result.warnings ?? []).forEach((warning) => log(warning, 'warn'));
+  refresh();
+}));
+
+api('/api/catalog').then(renderCatalog).catch((error) => log(error.message, 'err'));
+refresh().catch((error) => log(error.message, 'err'));
+log('forge dashboard ready');
+</script>
+</body>
+</html>

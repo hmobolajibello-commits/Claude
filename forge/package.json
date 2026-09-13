@@ -1,0 +1,18 @@
+{
+  "name": "roblox-forge",
+  "version": "1.0.0",
+  "description": "Link a Roblox Open Cloud place and have Claude build, publish and iterate on games in it.",
+  "type": "module",
+  "bin": { "forge": "./bin/forge.js" },
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "forge": "node bin/forge.js",
+    "ui": "node bin/forge.js ui",
+    "test": "node test/run.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.70.0"
+  },
+  "license": "MIT",
+  "private": true
+}

@@ -154,3 +154,23 @@ with updates — verify anything load-bearing against the in-game Trello before 
 30-million-coin recipe on it. Codes expire fastest of all.
 
 Not affiliated with Prlz's Den or Roblox Corporation.
+
+---
+
+## Also in this repo: `forge/`
+
+[`forge/`](forge/) is a separate app — a command-line tool and localhost dashboard
+that links a Roblox place through **Open Cloud** and builds games in it.
+
+```sh
+cd forge && npm install
+node bin/forge.js link                       # connect your place (API key, universe, place)
+node bin/forge.js generate "a neon rooftop parkour course with a shop"
+node bin/forge.js deploy games/neon-rooftops # compile to .rbxlx and publish
+node bin/forge.js verify                     # run a probe in a live cloud server
+```
+
+It ships four playable templates (obby, tycoon, simulator, arena) and a tested Luau
+runtime — DataStore saves, economy, shop, tag-driven gameplay, tycoon plots, arena
+rounds — so Claude designs the game as data and never has to write an engine.
+See [forge/README.md](forge/README.md).
