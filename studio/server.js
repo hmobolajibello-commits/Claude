@@ -12,6 +12,7 @@ import http from 'node:http';
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
+import net from 'node:net';
 import { fileURLToPath } from 'node:url';
 import { Workspace } from './lib/workspace.js';
 import { Connections, REGISTRY } from './lib/connections.js';
@@ -90,12 +91,47 @@ auth.trustProxy = argv.trustProxy;
 // Fail closed. Reaching the network without a password would publish the user's
 // API keys and every connected account to whoever finds the port.
 const LOOPBACK = new Set(['127.0.0.1', '::1', 'localhost']);
+
+/**
+ * A --host value has to look like an address.
+ *
+ * This is checked separately from the password rule because the usual cause of
+ * a bad host is two commands pasted onto one line, where the newline was eaten
+ * and left something like "0.0.0.0node". Telling that person their password is
+ * missing sends them off fixing entirely the wrong thing.
+ */
+function hostLooksValid(host) {
+  if (net.isIP(host.replace(/^\[|\]$/g, ''))) return true;
+  // A hostname: dot-separated labels of letters, digits and hyphens.
+  return /^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i.test(host);
+}
+
+// A complete IPv4 with anything stuck on the end is the glued-command case.
+const gluedCommand = /^\d{1,3}(\.\d{1,3}){3}./.test(argv.host) && !net.isIP(argv.host);
+
+if (!hostLooksValid(argv.host) || gluedCommand) {
+  console.error(`
+  That is not a valid address: --host ${argv.host}
+${gluedCommand ? '\n  It looks like two commands ran together on one line.\n' : ''}
+  On your own machine you need neither a host nor a password. Run just:
+
+      node server.js --open
+`);
+  process.exit(1);
+}
+
 if (!LOOPBACK.has(argv.host) && !auth.enabled) {
   console.error(`
   Refusing to start.
 
-  --host ${argv.host} would expose this server beyond your own machine, and it
-  holds your API keys and any accounts you connect. Set a password first:
+  Binding to ${argv.host} would expose this server beyond your own machine, and
+  it holds your API keys and any accounts you connect.
+
+  If you only meant to run it here, drop the --host and use:
+
+      node server.js --open
+
+  To reach it from elsewhere on purpose, set a password first:
 
       STUDIO_PASSWORD='something long' node server.js --host ${argv.host}
 

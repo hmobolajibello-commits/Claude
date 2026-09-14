@@ -59,9 +59,14 @@ Every provider marked *free* in Settings costs nothing to use:
 Anthropic and OpenAI are there too, and cost money. Web search costs nothing on any
 of them.
 
-For real work, pick a model that is good at tool calling — `qwen2.5-coder` locally, or
-`llama-3.3-70b-versatile` on Groq. Small models often ignore tools and just describe
-code instead of writing it.
+Pick the model from the dropdown in Settings rather than typing one: the app asks the
+provider for its live list, because hosted providers rename and retire models often
+enough that any name written down here will eventually be wrong.
+
+From that list, choose a **large** model — something with `70b`, `120b` or `32b` in the
+name, or `coder`. This app works by having the model call tools, and small models tend
+to ignore tools and describe code instead of writing it. Avoid anything named
+`instant`, `mini`, `8b` or `guard`.
 
 ---
 

@@ -1,5 +1,10 @@
 // Model providers, normalised behind one chat() call.
 //
+// The `models` arrays below are fallback suggestions for the Settings dropdown,
+// nothing more. Providers rename and retire models on their own schedule, so
+// the app asks each provider for its live list (listModels) and only falls back
+// to these when that call fails. Do not treat them as current.
+//
 // Two wire formats cover everything: the OpenAI chat-completions shape (which
 // Groq, OpenRouter, Google, Together, LM Studio and llama.cpp all speak) and
 // Anthropic's messages shape. Ollama gets its own adapter because its native

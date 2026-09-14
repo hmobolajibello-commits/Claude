@@ -503,12 +503,54 @@ function syncProviderHelp() {
     ? 'A key is already saved. Leave this blank to keep it.'
     : preset?.needsKey ? 'Required for this provider.' : '';
 
+  // Seed the dropdown with built-in suggestions, then immediately try to
+  // replace them with the provider's live list. Providers rename and retire
+  // models, so a hardcoded name is a guess with a shelf life.
+  setModelOptions(preset?.models || [], { live: false });
+  refreshModels({ silent: true });
+}
+
+function setModelOptions(models, { live }) {
   const list = $('modelList');
   list.innerHTML = '';
-  for (const model of preset?.models || []) {
+  for (const model of models) {
     const option = document.createElement('option');
     option.value = model;
     list.append(option);
+  }
+  const note = $('modelNote');
+  if (!note) return;
+  if (live) {
+    note.textContent = models.length
+      ? `${models.length} models offered by this provider right now — click the box to choose.`
+      : 'This provider returned no models. Check the API key.';
+  } else {
+    note.textContent = 'Suggestions only; these names go out of date. Click Fetch for the current list.';
+  }
+}
+
+/**
+ * Ask the provider what it actually offers.
+ * Silent mode is for the automatic attempt when the provider changes, where a
+ * failure just means no key yet and should not look like an error.
+ */
+async function refreshModels({ silent = false } = {}) {
+  const button = $('fetchModels');
+  if (!silent) button.textContent = '…';
+  try {
+    const query = new URLSearchParams({
+      provider: $('providerSelect').value,
+      baseUrl: $('baseUrlInput').value.trim(),
+    });
+    const { models } = await api(`/api/models?${query}`);
+    if (models.length) setModelOptions(models, { live: true });
+    if (!silent) button.textContent = models.length ? `${models.length} found` : 'none found';
+    return models;
+  } catch {
+    if (!silent) button.textContent = 'failed';
+    return [];
+  } finally {
+    if (!silent) setTimeout(() => { button.textContent = 'Fetch'; }, 2400);
   }
 }
 
@@ -538,6 +580,7 @@ async function saveSettings() {
     applyVoiceConfig();
     updateBadge();
     updateStatusDot();
+    refreshModels({ silent: true });
     saved.classList.remove('error');
     saved.textContent = 'Saved';
   } catch (err) {
@@ -692,28 +735,7 @@ function wireUi() {
   });
   $('maxSteps').addEventListener('input', (event) => { $('stepsOut').value = event.target.value; });
 
-  $('fetchModels').addEventListener('click', async (event) => {
-    const button = event.target;
-    button.textContent = '…';
-    try {
-      const query = new URLSearchParams({
-        provider: $('providerSelect').value,
-        baseUrl: $('baseUrlInput').value.trim(),
-      });
-      const { models } = await api(`/api/models?${query}`);
-      const list = $('modelList');
-      list.innerHTML = '';
-      for (const model of models) {
-        const option = document.createElement('option');
-        option.value = model;
-        list.append(option);
-      }
-      button.textContent = models.length ? `${models.length} found` : 'none found';
-    } catch {
-      button.textContent = 'failed';
-    }
-    setTimeout(() => { button.textContent = 'Fetch'; }, 2400);
-  });
+  $('fetchModels').addEventListener('click', () => refreshModels());
 
   el.editor.addEventListener('input', () => {
     state.dirty = true;
