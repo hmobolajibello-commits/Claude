@@ -165,6 +165,47 @@ export class OpenCloud {
   }
 }
 
+/**
+ * Accept a place ID, or any of the roblox.com links that contain one, so
+ * nobody has to go hunting for the number.
+ * @returns {string|null} the place ID as digits
+ */
+export function parsePlaceId(input) {
+  const text = String(input ?? '').trim();
+  if (/^\d+$/.test(text)) return text;
+  // https://www.roblox.com/games/1818/Classic-Crossroads
+  const fromPath = text.match(/\/games\/(\d+)/);
+  if (fromPath) return fromPath[1];
+  // https://www.roblox.com/games/start?placeId=1818
+  const fromQuery = text.match(/[?&]placeId=(\d+)/i);
+  if (fromQuery) return fromQuery[1];
+  return null;
+}
+
+/**
+ * Best-effort lookup of the universe that contains a place.
+ *
+ * Open Cloud has no endpoint for this and none for listing your universes, so
+ * this uses a legacy unauthenticated endpoint that Roblox may withdraw. It is
+ * a convenience only -- every caller must cope with null and ask the user.
+ *
+ * @returns {Promise<string|null>} the universe ID, or null if it can't be found
+ */
+export async function findUniverseForPlace(placeId, { fetchImpl = fetch } = {}) {
+  if (!/^\d+$/.test(String(placeId))) return null;
+  try {
+    const response = await fetchImpl(`${BASE}/universes/v1/places/${placeId}/universe`, {
+      headers: { Accept: 'application/json' },
+    });
+    if (!response.ok) return null;
+    const body = await response.json();
+    const found = body?.universeId ?? body?.UniverseId;
+    return found ? String(found) : null;
+  } catch {
+    return null;
+  }
+}
+
 /** Verify a key/universe/place triple, returning what Roblox knows about them. */
 export async function verifyCredentials({ apiKey, universeId, placeId, fetchImpl }) {
   const client = new OpenCloud({ apiKey, universeId, placeId, fetchImpl });

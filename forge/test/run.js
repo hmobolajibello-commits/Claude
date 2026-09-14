@@ -31,7 +31,7 @@ const { toLua, luaModule } = await import('../src/lua.js');
 const { normalizeMap, buildPlace, lintProject, loadProject, ProjectError } = await import('../src/project.js');
 const { createProject } = await import('../src/scaffold.js');
 const { TEMPLATES, buildTemplate } = await import('../src/templates.js');
-const { OpenCloud, OpenCloudError } = await import('../src/opencloud.js');
+const { OpenCloud, OpenCloudError, parsePlaceId, findUniverseForPlace } = await import('../src/opencloud.js');
 const { extractJson, applyMapEdits, validateDesign } = await import('../src/ai.js');
 const { createApp } = await import('../src/server.js');
 
@@ -271,6 +271,30 @@ await test('a cloud script run polls until the task finishes and returns its log
 await test('running a script without a published version explains what to do', async () => {
   const client = new OpenCloud({ apiKey: 'k', universeId: '1', placeId: '2', fetchImpl: async () => new Response('{}') });
   await assert.rejects(() => client.runLuau('return 1'), /Publish once with `forge deploy`/);
+});
+
+await test('a place ID can be pasted as any roblox.com link', () => {
+  assert.equal(parsePlaceId('1818'), '1818');
+  assert.equal(parsePlaceId('  1818  '), '1818');
+  assert.equal(parsePlaceId('https://www.roblox.com/games/1818/Classic-Crossroads'), '1818');
+  assert.equal(parsePlaceId('roblox.com/games/1818'), '1818');
+  assert.equal(parsePlaceId('https://www.roblox.com/games/start?placeId=1818'), '1818');
+  assert.equal(parsePlaceId('https://create.roblox.com/dashboard/creations'), null);
+  assert.equal(parsePlaceId(''), null);
+  assert.equal(parsePlaceId(undefined), null);
+});
+
+await test('the universe lookup returns null rather than throwing when it cannot help', async () => {
+  const found = await findUniverseForPlace('1818', {
+    fetchImpl: async () => new Response(JSON.stringify({ universeId: 42 }), { status: 200 }),
+  });
+  assert.equal(found, '42');
+
+  // Roblox may withdraw this legacy endpoint -- every failure must degrade to null.
+  assert.equal(await findUniverseForPlace('1818', { fetchImpl: async () => new Response('', { status: 404 }) }), null);
+  assert.equal(await findUniverseForPlace('1818', { fetchImpl: async () => new Response('not json', { status: 200 }) }), null);
+  assert.equal(await findUniverseForPlace('1818', { fetchImpl: async () => { throw new Error('offline'); } }), null);
+  assert.equal(await findUniverseForPlace('not-an-id', { fetchImpl: async () => { throw new Error('never called'); } }), null);
 });
 
 await test('a missing key is caught before any request', () => {

@@ -39,6 +39,11 @@ Through **Open Cloud**, with an API key you create yourself at
 Never an account password, never a `.ROBLOSECURITY` cookie -- those are both
 against Roblox's terms and a bad idea besides.
 
+**An API key is the only option, not a shortcut.** Roblox's OAuth 2.0 ("sign in
+with Roblox") does not cover place publishing -- there is no scope for it, so no
+app of any kind can publish a place on your behalf from an OAuth login. API keys
+are the only credential the publishing endpoint accepts.
+
 When you create the key, add your experience and enable:
 
 | Scope | Needed for |
@@ -47,15 +52,23 @@ When you create the key, add your experience and enable:
 | `universe:read` | `link`, `status` |
 | `universe.place.luau-execution-session:write` | `verify`, `run` |
 
-You also need the **universe ID** and **place ID**. Open your experience on
-create.roblox.com: the configure URL carries the universe ID, and each place has
-its own ID on its page (or in Studio under File -> Game Settings).
+Also set the key's **IP allowlist** to `0.0.0.0/0` (or your own address) -- an
+empty allowlist rejects every request, which is the most common reason `link`
+fails.
 
-Two things Open Cloud cannot do, so neither can forge:
+Then `forge link` asks for two things: the key, and **your game's roblox.com
+link** (the numeric place ID works too). It reads the place ID out of the link
+and looks the universe ID up for you. That lookup uses a legacy endpoint Roblox
+may withdraw, so if it fails, forge asks for the universe ID -- it is the number
+in the configure URL for your experience on create.roblox.com.
+
+Three things Open Cloud cannot do, so neither can forge:
 
 - **Create** an experience or a place. Make an empty one in Studio or on the
   website first; forge publishes *into* it.
 - Publish to a place you do not own or that the key is not scoped to.
+- **List your experiences.** There is no Open Cloud endpoint for it, which is
+  why you supply the place yourself instead of picking from a menu.
 
 Publishing **replaces the contents of that place**. Point forge at a place you
 are happy to overwrite -- not at a live game with players in it -- and note that

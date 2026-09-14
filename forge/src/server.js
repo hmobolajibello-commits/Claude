@@ -10,7 +10,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { loadConfig, saveConfig, updateConfig, maskKey, isLinked, CONFIG_PATH } from './config.js';
-import { OpenCloud, verifyCredentials } from './opencloud.js';
+import { OpenCloud, verifyCredentials, parsePlaceId, findUniverseForPlace } from './opencloud.js';
 import { loadProject, buildPlace, lintProject, MANIFEST_NAME, MAP_NAME } from './project.js';
 import { createProject, writeRuntime } from './scaffold.js';
 import { TEMPLATES } from './templates.js';
@@ -100,12 +100,31 @@ const routes = {
   'GET /api/projects': () => ({ projects: listProjects() }),
 
   'POST /api/link': async (body) => {
-    const { apiKey, universeId, placeId } = body;
-    if (!apiKey || !universeId || !placeId) throw new Error('API key, universe ID and place ID are all required.');
-    if (!/^\d+$/.test(String(universeId)) || !/^\d+$/.test(String(placeId))) throw new Error('Universe and place IDs are numbers.');
+    const apiKey = String(body.apiKey ?? '').trim();
+    if (!apiKey) throw new Error('An API key is required.');
+
+    const placeId = parsePlaceId(body.place ?? body.placeId);
+    if (!placeId) throw new Error('Paste the roblox.com link to your game, or its numeric place ID.');
+
+    // Open Cloud cannot list your universes; a place usually knows its own.
+    let universeId = String(body.universeId ?? '').trim();
+    if (!universeId) universeId = (await findUniverseForPlace(placeId)) ?? '';
+    if (!universeId) {
+      throw new Error(
+        'Could not work out the universe ID for that place. Find it in the configure URL for your experience on create.roblox.com and enter it below.',
+      );
+    }
+    if (!/^\d+$/.test(universeId)) throw new Error('Universe ID should be digits only.');
+
     const { universe, place } = await verifyCredentials({ apiKey, universeId, placeId });
-    saveConfig({ ...loadConfig(), apiKey, universeId: String(universeId), placeId: String(placeId) });
-    return { universe: { name: universe.displayName }, place: place?.displayName ?? null, placeError: place?.error ?? null };
+    saveConfig({ ...loadConfig(), apiKey, universeId, placeId });
+    return {
+      universe: { name: universe.displayName },
+      universeId,
+      placeId,
+      place: place?.displayName ?? null,
+      placeError: place?.error ?? null,
+    };
   },
 
   'POST /api/unlink': () => {

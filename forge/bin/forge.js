@@ -7,7 +7,7 @@ import readline from 'node:readline/promises';
 import { stdin, stdout } from 'node:process';
 
 import { loadConfig, saveConfig, updateConfig, maskKey, isLinked, CONFIG_PATH } from '../src/config.js';
-import { OpenCloud, OpenCloudError, verifyCredentials } from '../src/opencloud.js';
+import { OpenCloud, OpenCloudError, verifyCredentials, parsePlaceId, findUniverseForPlace } from '../src/opencloud.js';
 import { loadProject, buildPlace, lintProject, ProjectError, MANIFEST_NAME, MAP_NAME } from '../src/project.js';
 import { createProject, writeRuntime } from '../src/scaffold.js';
 import { TEMPLATES } from '../src/templates.js';
@@ -56,6 +56,14 @@ function parseArgs(argv) {
   return { positional, flags };
 }
 
+// A path the user can paste back: relative when that is shorter and inside
+// the working directory, absolute when it would otherwise be ../../../..
+function displayPath(target) {
+  const relative = path.relative(process.cwd(), target);
+  if (!relative) return '.';
+  return relative.startsWith('..') ? target : relative;
+}
+
 function projectDir(positional, flags) {
   return path.resolve(flags.project ?? positional[0] ?? '.');
 }
@@ -80,7 +88,7 @@ function clientFor(flags, config = loadConfig()) {
 const HELP = `${bold('forge')} -- build Roblox games from a project directory and ship them with Open Cloud.
 
 ${bold('Linking')}
-  forge link                       Connect a Roblox place (API key, universe, place)
+  forge link                       Connect a Roblox place (API key + your game's link)
   forge status                     Show what is linked and what is installed
   forge unlink                     Forget the stored credentials
 
@@ -104,7 +112,7 @@ ${bold('Dashboard')}
 
 ${bold('Common flags')}
   --template <name>  --name "Title"  --seed <n>  --out <dir>  --force
-  --key <api-key>    --universe <id>  --place <id>   (override the stored link)
+  --key <api-key>    --place <link|id>  --universe <id>   (override the stored link)
 
 ${dim(`Config: ${CONFIG_PATH}`)}
 `;
@@ -134,40 +142,61 @@ commands.tags = () => {
 
 commands.link = async ({ flags }) => {
   const config = loadConfig();
-  let { apiKey, universeId, placeId } = { apiKey: flags.key, universeId: flags.universe, placeId: flags.place };
+  let apiKey = flags.key;
+  let universeId = flags.universe;
+  let placeInput = flags.place;
+  let placeId = null;
 
-  if (!apiKey || !universeId || !placeId) {
-    say(`
+  const prompt = (!apiKey || !placeInput) ? readline.createInterface({ input: stdin, output: stdout }) : null;
+  try {
+    if (prompt) {
+      say(`
 ${bold('Link a Roblox place')}
 
-forge talks to Roblox through ${bold('Open Cloud')}, using an API key -- never your
-account password, and never a cookie. Create one here:
+forge reaches Roblox through ${bold('Open Cloud')}, with an API key you create --
+never your password, never a cookie. An API key is the only credential Roblox
+accepts for publishing a place; there is no "sign in with Roblox" for this.
 
-  ${cyan('https://create.roblox.com/dashboard/credentials')}
-
-When you create the key, add your experience and enable these permissions:
-
-  ${bold('universe-places:write')}                        publish the place
-  ${bold('universe:read')}                                read the experience
-  ${bold('universe.place.luau-execution-session:write')}  run test scripts (optional)
-
-Then find the IDs: open your experience on ${cyan('create.roblox.com')}. The URL
-contains the universe ID (.../configure?id=UNIVERSE), and the place ID is on the
-place's own page (or in Studio: File -> Game Settings).
+  1. Open ${cyan('https://create.roblox.com/dashboard/credentials')}
+  2. Create API Key, give it any name
+  3. Add the ${bold('Place Management')} API and pick your experience, then enable
+     ${bold('Write')} (publish) and ${bold('Read')}
+  4. Optional, for ${bold('forge verify')}: add ${bold('Luau Execution')} with Write
+  5. Set IP allowlist to ${bold('0.0.0.0/0')} -- an empty allowlist blocks everything
+  6. Save, then copy the key (Roblox shows it once)
 `);
-    const prompt = readline.createInterface({ input: stdin, output: stdout });
-    try {
       apiKey = apiKey || (await prompt.question(`${bold('API key')}: `)).trim();
-      universeId = universeId || (await prompt.question(`${bold('Universe ID')}: `)).trim();
-      placeId = placeId || (await prompt.question(`${bold('Place ID')}: `)).trim();
-    } finally {
-      prompt.close();
+      placeInput = placeInput || (await prompt.question(`${bold('Game link or place ID')}: `)).trim();
     }
-  }
 
-  if (!apiKey || !universeId || !placeId) throw new UsageError('All three of API key, universe ID and place ID are needed.');
-  if (!/^\d+$/.test(String(universeId))) throw new UsageError(`Universe ID should be digits only, got "${universeId}".`);
-  if (!/^\d+$/.test(String(placeId))) throw new UsageError(`Place ID should be digits only, got "${placeId}".`);
+    placeId = parsePlaceId(placeInput);
+    if (!apiKey) throw new UsageError('An API key is required.');
+    if (!placeId) {
+      throw new UsageError(`Could not read a place ID from "${placeInput}". Paste the roblox.com link to your game, or the numeric place ID.`);
+    }
+
+    // Open Cloud cannot list your universes, but a place usually knows which
+    // universe contains it -- try that before asking.
+    if (!universeId) {
+      say(`\n${dim('looking up which experience that place belongs to...')}`);
+      universeId = await findUniverseForPlace(placeId);
+      if (universeId) {
+        note(`universe ${universeId}`);
+      } else if (prompt) {
+        say(`
+${yellow('Could not look that up automatically.')} Open your experience on
+${cyan('create.roblox.com')} -- the configure URL ends with the universe ID
+(.../configure?id=${bold('UNIVERSE')}).
+`);
+        universeId = (await prompt.question(`${bold('Universe ID')}: `)).trim();
+      }
+    }
+
+    if (!universeId) throw new UsageError('A universe ID is required. Pass --universe <id>.');
+    if (!/^\d+$/.test(String(universeId))) throw new UsageError(`Universe ID should be digits only, got "${universeId}".`);
+  } finally {
+    prompt?.close();
+  }
 
   say(`\n${dim('checking with Roblox...')}`);
   const { universe, place } = await verifyCredentials({ apiKey, universeId, placeId });
@@ -240,7 +269,7 @@ commands.new = async ({ positional, flags }) => {
   ok(`created ${bold(created.manifest.name)} in ${created.dir}`);
   note(created.manifest.description);
   note(`${stats.parts} bricks, ${stats.tagged} interactive, ${stats.scripts} scripts`);
-  say(`\n  ${dim('next:')} forge deploy ${path.relative(process.cwd(), created.dir) || '.'}\n`);
+  say(`\n  ${dim('next:')} forge deploy ${displayPath(created.dir)}\n`);
 };
 
 commands.build = async ({ positional, flags }) => {
@@ -335,7 +364,7 @@ commands.generate = async ({ positional, flags }) => {
   note(created.dir);
   if (usage) note(`${usage.input_tokens} in / ${usage.output_tokens} out tokens`);
   for (const problem of warnings ?? []) warnLine(problem);
-  say(`\n  ${dim('next:')} forge deploy ${path.relative(process.cwd(), created.dir) || '.'}\n`);
+  say(`\n  ${dim('next:')} forge deploy ${displayPath(created.dir)}\n`);
 };
 
 commands.iterate = async ({ positional, flags }) => {
@@ -381,7 +410,7 @@ commands.iterate = async ({ positional, flags }) => {
   ok(edit.notes ?? 'applied the change');
   note(`${before} -> ${stats.parts} bricks (${stats.tagged} interactive)`);
   for (const problem of lintProject(candidate)) warnLine(problem);
-  say(`\n  ${dim('next:')} forge deploy ${path.relative(process.cwd(), dir) || '.'}\n`);
+  say(`\n  ${dim('next:')} forge deploy ${displayPath(dir)}\n`);
 };
 
 commands.run = async ({ positional, flags }) => {

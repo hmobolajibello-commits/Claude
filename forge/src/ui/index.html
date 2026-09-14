@@ -133,15 +133,21 @@
     <div class="row" id="statusRow"><span class="pill"><span class="dot"></span> checking...</span></div>
     <div id="linkForm" hidden>
       <p class="hint" style="margin-top:14px">
-        Create a key at <a href="https://create.roblox.com/dashboard/credentials" target="_blank" rel="noreferrer">create.roblox.com/dashboard/credentials</a>,
-        add your experience, and enable <code>universe-places:write</code>, <code>universe:read</code> and
-        (for <em>Verify</em>) <code>universe.place.luau-execution-session:write</code>.
+        An API key is the only credential Roblox accepts for publishing a place — there is no
+        &ldquo;sign in with Roblox&rdquo; for this. Create one at
+        <a href="https://create.roblox.com/dashboard/credentials" target="_blank" rel="noreferrer">create.roblox.com/dashboard/credentials</a>:
+        add the <b>Place Management</b> API, pick your experience, enable <b>Read</b> and <b>Write</b>
+        (plus <b>Luau Execution</b> &rarr; Write for <em>Verify live</em>), and set the IP allowlist to
+        <code>0.0.0.0/0</code> — an empty allowlist blocks everything.
       </p>
       <div class="row" style="margin-top:10px">
         <input class="grow" id="apiKey" type="password" placeholder="Open Cloud API key" autocomplete="off">
-        <input id="universeId" style="width:150px" placeholder="Universe ID" inputmode="numeric">
-        <input id="placeId" style="width:150px" placeholder="Place ID" inputmode="numeric">
+        <input class="grow" id="placeId" placeholder="Your game's roblox.com link (or place ID)">
         <button class="primary" id="linkBtn">Link</button>
+      </div>
+      <div class="row" id="universeRow" hidden style="margin-top:10px">
+        <input id="universeId" style="width:170px" placeholder="Universe ID" inputmode="numeric">
+        <span class="hint">On create.roblox.com, open your experience — the configure URL ends with this number.</span>
       </div>
     </div>
   </div>
@@ -382,15 +388,25 @@ async function refresh() {
 }
 
 $('linkBtn').addEventListener('click', (event) => withBusy(event.target, 'Checking', async () => {
-  const result = await api('/api/link', {
-    apiKey: $('apiKey').value.trim(),
-    universeId: $('universeId').value.trim(),
-    placeId: $('placeId').value.trim(),
-  });
-  $('apiKey').value = '';
-  log(`linked to ${result.universe.name ?? 'universe'}`, 'ok');
-  if (result.placeError) log(`place check: ${result.placeError}`, 'warn');
-  refresh();
+  try {
+    const result = await api('/api/link', {
+      apiKey: $('apiKey').value.trim(),
+      place: $('placeId').value.trim(),
+      universeId: $('universeId').value.trim(),
+    });
+    $('apiKey').value = '';
+    $('universeRow').hidden = true;
+    log(`linked to ${result.universe.name ?? 'universe'} (universe ${result.universeId}, place ${result.placeId})`, 'ok');
+    if (result.placeError) log(`place check: ${result.placeError}`, 'warn');
+    refresh();
+  } catch (error) {
+    // The one recoverable failure: the universe could not be looked up.
+    if (/universe ID/i.test(error.message)) {
+      $('universeRow').hidden = false;
+      $('universeId').focus();
+    }
+    throw error;
+  }
 }));
 
 $('newBtn').addEventListener('click', (event) => withBusy(event.target, 'Creating', async () => {
