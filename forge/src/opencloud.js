@@ -146,9 +146,13 @@ export class OpenCloud {
    */
   async publishPlace(contents, { versionType = 'Published', universeId = this.universeId, placeId = this.placeId } = {}) {
     if (!universeId || !placeId) this.requireTarget();
+    // Send bytes, not a string: Roblox's documented client is
+    // `curl --data-binary`, and a Buffer gives a byte-exact body with a
+    // definite Content-Length rather than leaving the encoding to fetch.
+    const body = Buffer.isBuffer(contents) ? contents : Buffer.from(String(contents), 'utf8');
     const result = await this.request(
       `/universes/v1/${universeId}/places/${placeId}/versions?versionType=${versionType}`,
-      { method: 'POST', body: contents, contentType: 'application/xml' },
+      { method: 'POST', body, contentType: 'application/xml' },
     );
     return result;
   }
