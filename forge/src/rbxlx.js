@@ -217,14 +217,17 @@ export function serializePlace(roots) {
   const walk = (node, depth) => {
     const pad = '\t'.repeat(depth);
     lines.push(`${pad}<Item class="${node.className}" referent="${referentFor(referent++)}">`);
-    const props = Object.entries(node.properties ?? {}).filter(([, v]) => v !== undefined && v !== null);
-    if (props.length) {
-      lines.push(`${pad}\t<Properties>`);
-      for (const [name, value] of props) lines.push(serializeProperty(name, value, depth + 2));
-      lines.push(`${pad}\t</Properties>`);
-    } else {
-      lines.push(`${pad}\t<Properties></Properties>`);
-    }
+    // Every <Item> in a Roblox-written place carries a Name, and none has an
+    // empty <Properties> block. Default the Name to the class name (which is
+    // what a service's Name actually is) so that invariant always holds.
+    const declared = Object.entries(node.properties ?? {}).filter(([, v]) => v !== undefined && v !== null);
+    const props = declared.some(([name]) => name === 'Name')
+      ? declared
+      : [['Name', node.className], ...declared];
+
+    lines.push(`${pad}\t<Properties>`);
+    for (const [name, value] of props) lines.push(serializeProperty(name, value, depth + 2));
+    lines.push(`${pad}\t</Properties>`);
     for (const child of node.children ?? []) walk(child, depth + 1);
     lines.push(`${pad}</Item>`);
   };

@@ -54,6 +54,8 @@ function describeFailure(status, text, url) {
     // Non-JSON body (HTML error page, empty) -- keep the raw text.
   }
   const hints = {
+    400: 'Roblox rejected the file contents',
+    409: 'Roblox is busy, or the place is not part of that universe',
     401: 'the API key was rejected (check for a typo or an expired key)',
     403: 'the API key is missing a required scope, or is not allowed for this universe/place',
     404: 'not found (check the universe ID and place ID)',
@@ -79,7 +81,7 @@ export class OpenCloud {
     this.fetch = fetchImpl;
   }
 
-  async request(path, { method = 'GET', body, contentType, raw = false, attempts = 3 } = {}) {
+  async request(path, { method = 'GET', body, contentType, raw = false, attempts = 3, retriesLeft = 2 } = {}) {
     const url = path.startsWith('http') ? path : `${BASE}${path}`;
     const headers = { 'x-api-key': this.apiKey };
     if (contentType) headers['Content-Type'] = contentType;
@@ -106,6 +108,12 @@ export class OpenCloud {
 
     const text = await response.text();
     if (!response.ok) {
+      // Roblox answers a busy upload queue with 409 and asks you to retry.
+      const busy = response.status === 409 && /busy|try again/i.test(text);
+      if ((busy || response.status === 429 || response.status >= 500) && retriesLeft > 0) {
+        await new Promise((resolve) => setTimeout(resolve, busy ? 20_000 : 3_000));
+        return this.request(path, { method, body, contentType, raw, attempts, retriesLeft: retriesLeft - 1 });
+      }
       throw new OpenCloudError(describeFailure(response.status, text, url), {
         status: response.status,
         body: text,

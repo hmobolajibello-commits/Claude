@@ -106,6 +106,7 @@ ${bold('Shipping')}
   forge deploy [dir]               Build then publish, in one step
   forge run <script.lua>           Run Luau inside a real server for your place
   forge verify                     Publish-check: confirm the runtime booted in the cloud
+  forge doctor [dir]               Find which part of a place file Roblox rejects
 
 ${bold('Dashboard')}
   forge ui [--port 7171]           Local web dashboard for all of the above
@@ -470,6 +471,64 @@ commands.verify = async ({ flags }) => {
     if (result.error) say(`  ${result.error.message ?? JSON.stringify(result.error)}`);
     process.exitCode = 1;
   }
+};
+
+commands.doctor = async ({ positional, flags }) => {
+  const config = loadConfig();
+  const client = clientFor(flags, config);
+
+  let project = null;
+  const dir = positional[0] ? path.resolve(positional[0]) : null;
+  if (dir && fs.existsSync(path.join(dir, MANIFEST_NAME))) project = loadProject(dir);
+
+  const { runDoctor } = await import('../src/doctor.js');
+
+  say(`
+${bold('forge doctor')}
+
+Roblox rejects a bad place file with 400 and no detail about why. This uploads
+a sequence of places, each adding one thing to the last, and stops at the first
+one Roblox refuses -- so the failure names the feature. Every upload is a Saved
+version, so players keep seeing the current game.
+`);
+
+  const results = await runDoctor(client, {
+    project,
+    onStage: (stage) => {
+      if (stage.phase === 'start') {
+        const label = `${stage.id} `.padEnd(12, '.');
+        process.stdout.write(`  ${dim(label)} ${stage.what} ${dim(`(${(stage.bytes / 1024).toFixed(1)} KB)`)} `);
+      } else if (stage.ok) {
+        say(green('ok'));
+      } else {
+        say(red(`FAILED ${stage.status ?? ''}`));
+      }
+    },
+  });
+
+  const failure = results.find((entry) => !entry.ok);
+  say('');
+
+  if (!failure) {
+    ok('every stage uploaded, including the full place');
+    note('the place file is acceptable to Roblox -- try deploying again');
+    return;
+  }
+
+  const passed = results.filter((entry) => entry.ok);
+  say(`${red('Roblox rejects')} ${bold(failure.what)}`);
+  if (passed.length) {
+    note(`everything up to and including "${passed[passed.length - 1].what}" was accepted`);
+  }
+  say(`\n  ${failure.message}\n`);
+
+  // Keep the exact document that failed, so it can be inspected or opened in
+  // Studio without having to reproduce the run.
+  const out = path.resolve('doctor-failed.rbxlx');
+  fs.writeFileSync(out, failure.xml);
+  note(`the rejected file is saved at ${out}`);
+  note('open it in Studio (File -> Open from File) to see whether Studio accepts it too');
+  process.exitCode = 1;
 };
 
 commands.ui = async ({ flags }) => {
