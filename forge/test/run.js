@@ -31,7 +31,7 @@ const { toLua, luaModule } = await import('../src/lua.js');
 const { normalizeMap, buildPlace, lintProject, loadProject, ProjectError } = await import('../src/project.js');
 const { createProject } = await import('../src/scaffold.js');
 const { TEMPLATES, buildTemplate } = await import('../src/templates.js');
-const { OpenCloud, OpenCloudError, parsePlaceId, findUniverseForPlace } = await import('../src/opencloud.js');
+const { OpenCloud, OpenCloudError, parsePlaceId, findUniverseForPlace, verifyCredentials } = await import('../src/opencloud.js');
 const { extractJson, applyMapEdits, validateDesign } = await import('../src/ai.js');
 const { createApp } = await import('../src/server.js');
 
@@ -271,6 +271,38 @@ await test('a cloud script run polls until the task finishes and returns its log
 await test('running a script without a published version explains what to do', async () => {
   const client = new OpenCloud({ apiKey: 'k', universeId: '1', placeId: '2', fetchImpl: async () => new Response('{}') });
   await assert.rejects(() => client.runLuau('return 1'), /Publish once with `forge deploy`/);
+});
+
+await test('a publish-only key still links, but a bad key does not', async () => {
+  const reply = (status, body) => new Response(JSON.stringify(body), { status });
+
+  // Roblox refuses the universe read for a key scoped only to publishing.
+  // That must be reported, not fatal, or linking is impossible with exactly
+  // the key the place-publishing docs tell you to create.
+  const scoped = await verifyCredentials({
+    apiKey: 'k',
+    universeId: '1',
+    placeId: '2',
+    fetchImpl: async () => reply(403, { message: 'Insufficient scope' }),
+  });
+  assert.equal(scoped.universe, null);
+  assert.match(scoped.universeError, /403/);
+
+  // A key Roblox rejects outright is a different thing, and still fatal.
+  await assert.rejects(
+    () => verifyCredentials({ apiKey: 'bad', universeId: '1', placeId: '2', fetchImpl: async () => reply(401, { message: 'Invalid key' }) }),
+    /401/,
+  );
+
+  // The happy path still reports the name.
+  const full = await verifyCredentials({
+    apiKey: 'k',
+    universeId: '1',
+    placeId: '2',
+    fetchImpl: async () => reply(200, { displayName: 'My Game' }),
+  });
+  assert.equal(full.universe.displayName, 'My Game');
+  assert.equal(full.universeError, null);
 });
 
 await test('a place ID can be pasted as any roblox.com link', () => {

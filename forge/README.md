@@ -44,17 +44,21 @@ with Roblox") does not cover place publishing -- there is no scope for it, so no
 app of any kind can publish a place on your behalf from an OAuth login. API keys
 are the only credential the publishing endpoint accepts.
 
-When you create the key, add your experience and enable:
+When you create the key, under **Access Permissions** use the **Select API
+System** menu to add:
 
-| Scope | Needed for |
-| --- | --- |
-| `universe-places:write` | `deploy`, `publish` |
-| `universe:read` | `link`, `status` |
-| `universe.place.luau-execution-session:write` | `verify`, `run` |
+| API system | Operation | Needed for |
+| --- | --- | --- |
+| `universe-places` | `write` | `deploy`, `publish` -- the only one that is required |
+| `luau-execution-sessions` | `write` | `verify`, `run` |
+| `universe` | `read` | the game's name in `link` and `status` output |
 
-Also set the key's **IP allowlist** to `0.0.0.0/0` (or your own address) -- an
-empty allowlist rejects every request, which is the most common reason `link`
-fails.
+Only the first is required. A key holding just `universe-places:write` cannot
+read your experience, so `link` reports that it could not and carries on --
+publishing works regardless.
+
+Leave **Restrict IP addresses** switched off unless you have a fixed IP; an
+allowlist that does not contain your address rejects every request.
 
 Then `forge link` asks for two things: the key, and **your game's roblox.com
 link** (the numeric place ID works too). It reads the place ID out of the link

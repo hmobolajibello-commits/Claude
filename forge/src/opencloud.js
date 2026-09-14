@@ -206,13 +206,33 @@ export async function findUniverseForPlace(placeId, { fetchImpl = fetch } = {}) 
   }
 }
 
-/** Verify a key/universe/place triple, returning what Roblox knows about them. */
+/**
+ * Verify a key/universe/place triple.
+ *
+ * Reading the universe is only a courtesy -- it is how forge shows you the
+ * game's name and proves the key reaches Roblox. A key scoped tightly to
+ * `universe-places:write` (exactly what the docs tell you to create for
+ * publishing) can be refused here and still publish perfectly well, so a
+ * refusal is reported, never fatal. An outright bad key is still fatal: those
+ * fail with 401, which means the key itself, not its permissions.
+ *
+ * @returns {Promise<{universe: object|null, universeError: string|null, place: object|null}>}
+ */
 export async function verifyCredentials({ apiKey, universeId, placeId, fetchImpl }) {
   const client = new OpenCloud({ apiKey, universeId, placeId, fetchImpl });
-  const universe = await client.getUniverse();
+
+  let universe = null;
+  let universeError = null;
+  try {
+    universe = await client.getUniverse();
+  } catch (error) {
+    if (error.status === 401) throw error;
+    universeError = error.message;
+  }
+
   let place = null;
   if (placeId) {
     place = await client.getPlace().catch((error) => ({ error: error.message }));
   }
-  return { universe, place };
+  return { universe, universeError, place };
 }

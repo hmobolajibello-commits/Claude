@@ -116,14 +116,15 @@ const routes = {
     }
     if (!/^\d+$/.test(universeId)) throw new Error('Universe ID should be digits only.');
 
-    const { universe, place } = await verifyCredentials({ apiKey, universeId, placeId });
+    const { universe, universeError, place } = await verifyCredentials({ apiKey, universeId, placeId });
     saveConfig({ ...loadConfig(), apiKey, universeId, placeId });
     return {
-      universe: { name: universe.displayName },
+      universe: { name: universe?.displayName ?? `universe ${universeId}` },
       universeId,
       placeId,
       place: place?.displayName ?? null,
       placeError: place?.error ?? null,
+      universeError,
     };
   },
 

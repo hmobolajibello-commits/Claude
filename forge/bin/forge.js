@@ -159,11 +159,12 @@ accepts for publishing a place; there is no "sign in with Roblox" for this.
 
   1. Open ${cyan('https://create.roblox.com/dashboard/credentials')}
   2. Create API Key, give it any name
-  3. Add the ${bold('Place Management')} API and pick your experience, then enable
-     ${bold('Write')} (publish) and ${bold('Read')}
-  4. Optional, for ${bold('forge verify')}: add ${bold('Luau Execution')} with Write
-  5. Set IP allowlist to ${bold('0.0.0.0/0')} -- an empty allowlist blocks everything
-  6. Save, then copy the key (Roblox shows it once)
+  3. Under Access Permissions, ${bold('Select API System')} -> ${bold('universe-places')},
+     pick your experience, and tick the ${bold('write')} operation
+  4. Optional, for ${bold('forge verify')}: add ${bold('luau-execution-sessions')} the same way
+  5. Optional, so status can show the game's name: add ${bold('universe')} with ${bold('read')}
+  6. Leave ${bold('Restrict IP addresses')} switched off
+  7. Save & Generate key, then copy it (Roblox shows it once)
 `);
       apiKey = apiKey || (await prompt.question(`${bold('API key')}: `)).trim();
       placeInput = placeInput || (await prompt.question(`${bold('Game link or place ID')}: `)).trim();
@@ -199,17 +200,27 @@ ${cyan('create.roblox.com')} -- the configure URL ends with the universe ID
   }
 
   say(`\n${dim('checking with Roblox...')}`);
-  const { universe, place } = await verifyCredentials({ apiKey, universeId, placeId });
+  const { universe, universeError, place } = await verifyCredentials({ apiKey, universeId, placeId });
 
   saveConfig({ ...config, apiKey, universeId: String(universeId), placeId: String(placeId) });
-  ok(`linked to ${bold(universe.displayName ?? `universe ${universeId}`)}`);
+  ok(`linked to ${bold(universe?.displayName ?? `universe ${universeId}`)}`);
+
   if (place?.error) {
-    warnLine(`the place could not be read: ${place.error}`);
-    note('publishing may still work -- check that the place belongs to this universe.');
+    note(`could not read the place: ${place.error}`);
   } else if (place) {
     note(`place: ${place.displayName ?? placeId}`);
   }
+
+  // A key scoped only to publishing cannot read the universe. That is normal
+  // and not a failure -- say so plainly rather than looking broken.
+  if (universeError) {
+    warnLine('the key cannot read your experience details, only publish to it');
+    note('that is expected for a publish-only key -- deploying will still work');
+    note('to see the name and status, add the "universe" system with read to the key');
+  }
+
   note(`saved to ${CONFIG_PATH} (readable only by you)`);
+  say(`\n  ${dim('next:')} node bin/forge.js new games/my-obby --template obby\n`);
 };
 
 commands.unlink = () => {
