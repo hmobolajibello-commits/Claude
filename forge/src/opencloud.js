@@ -83,7 +83,14 @@ export class OpenCloud {
 
   async request(path, { method = 'GET', body, contentType, raw = false, attempts = 3, retriesLeft = 2 } = {}) {
     const url = path.startsWith('http') ? path : `${BASE}${path}`;
-    const headers = { 'x-api-key': this.apiKey };
+    // Node's fetch sends no User-Agent at all, where Roblox's documented
+    // client (curl) always does. Some gateways refuse a request without one,
+    // and an explicit Accept costs nothing either.
+    const headers = {
+      'x-api-key': this.apiKey,
+      'User-Agent': 'forge/1.0 (+https://github.com/hmobolajibello-commits/Claude)',
+      Accept: 'application/json',
+    };
     if (contentType) headers['Content-Type'] = contentType;
 
     let response;
