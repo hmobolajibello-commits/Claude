@@ -31,7 +31,7 @@ const { toLua, luaModule } = await import('../src/lua.js');
 const { normalizeMap, buildPlace, lintProject, loadProject, ProjectError } = await import('../src/project.js');
 const { createProject } = await import('../src/scaffold.js');
 const { TEMPLATES, buildTemplate } = await import('../src/templates.js');
-const { OpenCloud, OpenCloudError, parsePlaceId, findUniverseForPlace, verifyCredentials } = await import('../src/opencloud.js');
+const { OpenCloud, OpenCloudError, parsePlaceId, findUniverseForPlace, verifyCredentials, describeNetworkFailure } = await import('../src/opencloud.js');
 const { extractJson, applyMapEdits, validateDesign } = await import('../src/ai.js');
 const { createApp } = await import('../src/server.js');
 
@@ -327,6 +327,63 @@ await test('the universe lookup returns null rather than throwing when it cannot
   assert.equal(await findUniverseForPlace('1818', { fetchImpl: async () => new Response('not json', { status: 200 }) }), null);
   assert.equal(await findUniverseForPlace('1818', { fetchImpl: async () => { throw new Error('offline'); } }), null);
   assert.equal(await findUniverseForPlace('not-an-id', { fetchImpl: async () => { throw new Error('never called'); } }), null);
+});
+
+await test('a network failure names its real cause, not "fetch failed"', () => {
+  // Node wraps everything as TypeError: fetch failed, with the real error one
+  // level down in .cause. Reporting only the wrapper tells the user nothing.
+  const wrap = (code, message) => {
+    const inner = new Error(message);
+    inner.code = code;
+    const outer = new TypeError('fetch failed');
+    outer.cause = inner;
+    return outer;
+  };
+
+  const reset = describeNetworkFailure(wrap('ECONNRESET', 'read ECONNRESET'));
+  assert.match(reset, /ECONNRESET/);
+  assert.match(reset, /antivirus, a VPN, or a flaky network/);
+
+  assert.match(describeNetworkFailure(wrap('ENOTFOUND', 'getaddrinfo ENOTFOUND')), /internet connection/);
+  assert.match(describeNetworkFailure(wrap('UND_ERR_CONNECT_TIMEOUT', 'Connect Timeout Error')), /timed out/);
+  assert.match(describeNetworkFailure(wrap('SELF_SIGNED_CERT_IN_CHAIN', 'self signed certificate')), /HTTPS scanning/);
+
+  // An unrecognized code still reports what it knows rather than swallowing it.
+  assert.match(describeNetworkFailure(wrap('EWEIRD', 'something odd')), /something odd \(EWEIRD\)/);
+});
+
+await test('a dropped connection is retried before giving up', async () => {
+  let calls = 0;
+  const flaky = async () => {
+    calls += 1;
+    if (calls < 3) {
+      const outer = new TypeError('fetch failed');
+      outer.cause = Object.assign(new Error('read ECONNRESET'), { code: 'ECONNRESET' });
+      throw outer;
+    }
+    return new Response(JSON.stringify({ versionNumber: 4 }), { status: 200 });
+  };
+
+  const client = new OpenCloud({ apiKey: 'k', universeId: '1', placeId: '2', fetchImpl: flaky });
+  const result = await client.publishPlace('<roblox/>');
+  assert.equal(result.versionNumber, 4);
+  assert.equal(calls, 3, 'should have retried twice before succeeding');
+
+  // And it does eventually give up, reporting the cause.
+  let always = 0;
+  const dead = new OpenCloud({
+    apiKey: 'k',
+    universeId: '1',
+    placeId: '2',
+    fetchImpl: async () => {
+      always += 1;
+      const outer = new TypeError('fetch failed');
+      outer.cause = Object.assign(new Error('read ECONNRESET'), { code: 'ECONNRESET' });
+      throw outer;
+    },
+  });
+  await assert.rejects(() => dead.request('/cloud/v2/universes/1', { attempts: 2 }), /after 2 tries.*ECONNRESET/s);
+  assert.equal(always, 2);
 });
 
 await test('a missing key is caught before any request', () => {

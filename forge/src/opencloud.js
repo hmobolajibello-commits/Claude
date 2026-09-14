@@ -19,6 +19,31 @@ export class OpenCloudError extends Error {
   }
 }
 
+/**
+ * Node's fetch reports every network problem as "fetch failed" and hides the
+ * real reason one level down in `cause`. Walk the chain and name it, so a
+ * blocked port, a DNS failure and a dropped connection are distinguishable.
+ */
+export function describeNetworkFailure(error) {
+  const chain = [];
+  for (let current = error, depth = 0; current && depth < 5; current = current.cause, depth += 1) {
+    const code = current.code ? ` (${current.code})` : '';
+    const text = `${current.message ?? current}${code}`;
+    if (text && !chain.includes(text)) chain.push(text);
+  }
+
+  const codes = chain.join(' <- ');
+  const hints = [
+    [/ENOTFOUND|EAI_AGAIN/, 'DNS could not resolve apis.roblox.com -- check your internet connection'],
+    [/ECONNREFUSED/, 'the connection was refused -- a firewall or proxy may be blocking it'],
+    [/ECONNRESET|EPIPE/, 'the connection dropped mid-request -- often antivirus, a VPN, or a flaky network'],
+    [/ETIMEDOUT|UND_ERR_CONNECT_TIMEOUT|timeout/i, 'the connection timed out -- check your internet, or try again'],
+    [/CERT|SELF_SIGNED|UNABLE_TO_VERIFY/i, 'the HTTPS certificate was rejected -- antivirus HTTPS scanning or a corporate proxy does this'],
+  ];
+  const hint = hints.find(([pattern]) => pattern.test(codes))?.[1];
+  return hint ? `${codes} -- ${hint}` : codes;
+}
+
 /** Turn Roblox's error shapes into one readable message. */
 function describeFailure(status, text, url) {
   let detail = text?.trim() ?? '';
@@ -54,16 +79,29 @@ export class OpenCloud {
     this.fetch = fetchImpl;
   }
 
-  async request(path, { method = 'GET', body, contentType, raw = false } = {}) {
+  async request(path, { method = 'GET', body, contentType, raw = false, attempts = 3 } = {}) {
     const url = path.startsWith('http') ? path : `${BASE}${path}`;
     const headers = { 'x-api-key': this.apiKey };
     if (contentType) headers['Content-Type'] = contentType;
 
     let response;
-    try {
-      response = await this.fetch(url, { method, headers, body });
-    } catch (cause) {
-      throw new OpenCloudError(`Could not reach Roblox (${cause.message}) [${url}]`, { url });
+    for (let attempt = 1; ; attempt += 1) {
+      try {
+        response = await this.fetch(url, { method, headers, body });
+        break;
+      } catch (cause) {
+        // A dropped connection mid-upload is common and usually transient, so
+        // retry before giving up. Only network failures land here -- an HTTP
+        // error is a response, and handled below.
+        if (attempt < attempts) {
+          await new Promise((resolve) => setTimeout(resolve, 1000 * 2 ** (attempt - 1)));
+          continue;
+        }
+        throw new OpenCloudError(
+          `Could not reach Roblox after ${attempts} tries: ${describeNetworkFailure(cause)} [${url}]`,
+          { url, cause },
+        );
+      }
     }
 
     const text = await response.text();
