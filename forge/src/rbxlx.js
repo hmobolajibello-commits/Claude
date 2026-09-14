@@ -191,6 +191,7 @@ export function instance(className, properties = {}, children = []) {
 export function serializePlace(roots) {
   let referent = 0;
   const lines = [
+    '<?xml version="1.0" encoding="utf-8"?>',
     '<roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.roblox.com/roblox.xsd" version="4">',
     '\t<External>null</External>',
     '\t<External>nil</External>',

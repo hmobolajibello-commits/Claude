@@ -207,8 +207,9 @@ export function buildPlace(project) {
     folders.get(part.folder).children.push(node);
   }
 
+  // No Terrain instance: Roblox creates one, and an empty Terrain (no
+  // SmoothGrid/MaterialColors blob) is not a shape its loader expects.
   const workspace = instance('Workspace', { Gravity: settings.gravity ?? 196.2 }, [
-    instance('Terrain', { Name: 'Terrain' }),
     instance('Folder', { Name: 'Map' }, mapChildren),
   ]);
 
