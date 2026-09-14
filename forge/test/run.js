@@ -74,13 +74,36 @@ await test('an unknown property fails loudly instead of silently vanishing', () 
   assert.throws(() => serializePlace([instance('Part', { Sparkliness: 3 })]), /unknown property "Sparkliness"/);
 });
 
-await test('every referent is unique', () => {
+await test('referents are unique and shaped the way Roblox writes them', () => {
   const xml = serializePlace([
     instance('Workspace', {}, [instance('Part', {}), instance('Part', {}, [instance('Part', {})])]),
   ]);
-  const referents = [...xml.matchAll(/referent="(RBX\d+)"/g)].map((m) => m[1]);
-  assert.equal(referents.length, 4);
-  assert.equal(new Set(referents).size, 4);
+  // RBX + a UUIDv4 with dashes stripped, uppercased.
+  const referents = [...xml.matchAll(/referent="(RBX[0-9A-F]{32})"/g)].map((m) => m[1]);
+  assert.equal(referents.length, 4, 'every Item needs a correctly shaped referent');
+  assert.equal(new Set(referents).size, 4, 'referents must be unique');
+
+  // Same input, same output -- a rebuild must not churn every referent.
+  assert.equal(xml, serializePlace([
+    instance('Workspace', {}, [instance('Part', {}), instance('Part', {}, [instance('Part', {})])]),
+  ]));
+});
+
+await test('the document matches the shape of a real Roblox place file', () => {
+  // Checked against Roblox/rbx-test-files places/baseplate-413/xml.rbxlx.
+  const xml = serializePlace([instance('Workspace', { ExplicitAutoJoints: true }, [])]);
+  const lines = xml.split('\n');
+
+  assert.match(lines[0], /^<roblox /, 'a place file opens with <roblox>, with no XML declaration');
+  assert.doesNotMatch(xml, /<\?xml/, 'Roblox place files carry no XML declaration');
+  assert.equal(lines[1], '\t<External>null</External>');
+  assert.equal(lines[2], '\t<External>nil</External>');
+
+  // <Meta> is model-files-only per the format spec, and sending one in a place
+  // file is what made Roblox reject uploads with 400 Invalid Content stream.
+  assert.doesNotMatch(xml, /<Meta/, '<Meta> belongs only in model files');
+  assert.match(xml, /<bool name="ExplicitAutoJoints">true<\/bool>/, 'a place carries it as a Workspace property');
+  assert.match(xml, /version="4"/);
 });
 
 //------------------------------------------------------------------------------

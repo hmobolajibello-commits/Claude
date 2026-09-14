@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto';
+
 // Serializes an instance tree into a Roblox XML place file (.rbxlx).
 //
 // Roblox's XML format is a tree of <Item class="..." referent="..."> nodes, each
@@ -70,6 +72,7 @@ const PROPERTY_TYPES = {
   EnvironmentDiffuseScale: ['float', 'EnvironmentDiffuseScale'],
   EnvironmentSpecularScale: ['float', 'EnvironmentSpecularScale'],
   Gravity: ['float', 'Gravity'],
+  ExplicitAutoJoints: ['bool', 'ExplicitAutoJoints'],
   RespawnTime: ['float', 'RespawnTime'],
   CharacterWalkSpeed: ['float', 'CharacterWalkSpeed'],
   CharacterJumpPower: ['float', 'CharacterJumpPower'],
@@ -179,6 +182,16 @@ function serializeProperty(name, value, indent) {
   }
 }
 
+/**
+ * Roblox writes every referent as "RBX" followed by a UUIDv4 with the dashes
+ * removed, uppercased. Deriving it from the item's index instead of a random
+ * UUID keeps the same project building byte-identical every time.
+ */
+function referentFor(index) {
+  const digest = createHash('md5').update(`forge-referent-${index}`).digest('hex');
+  return `RBX${digest.toUpperCase()}`;
+}
+
 /** A node in the place tree. */
 export function instance(className, properties = {}, children = []) {
   return { className, properties, children };
@@ -190,17 +203,20 @@ export function instance(className, properties = {}, children = []) {
  */
 export function serializePlace(roots) {
   let referent = 0;
+  // Matched against Roblox's own place file (Roblox/rbx-test-files,
+  // places/baseplate-413): no XML declaration, the two legacy <External>
+  // elements, and no <Meta> -- the format spec is explicit that <Meta> appears
+  // only in model files, and a place carries ExplicitAutoJoints as a Workspace
+  // property instead.
   const lines = [
-    '<?xml version="1.0" encoding="utf-8"?>',
     '<roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.roblox.com/roblox.xsd" version="4">',
     '\t<External>null</External>',
     '\t<External>nil</External>',
-    '\t<Meta name="ExplicitAutoJoints">true</Meta>',
   ];
 
   const walk = (node, depth) => {
     const pad = '\t'.repeat(depth);
-    lines.push(`${pad}<Item class="${node.className}" referent="RBX${referent++}">`);
+    lines.push(`${pad}<Item class="${node.className}" referent="${referentFor(referent++)}">`);
     const props = Object.entries(node.properties ?? {}).filter(([, v]) => v !== undefined && v !== null);
     if (props.length) {
       lines.push(`${pad}\t<Properties>`);
