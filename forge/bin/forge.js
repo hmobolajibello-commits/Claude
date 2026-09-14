@@ -64,7 +64,16 @@ function displayPath(target) {
   return relative.startsWith('..') ? target : relative;
 }
 
+// Reads --skeleton: a .rbxlx Studio wrote, to splice generated content into.
+function skeletonFrom(flags) {
+  if (!flags.skeleton) return undefined;
+  const file = path.resolve(String(flags.skeleton));
+  if (!fs.existsSync(file)) throw new UsageError(`No such skeleton file: ${file}`);
+  return fs.readFileSync(file, 'utf8');
+}
+
 function projectDir(positional, flags) {
+
   return path.resolve(flags.project ?? positional[0] ?? '.');
 }
 
@@ -114,6 +123,8 @@ ${bold('Dashboard')}
 ${bold('Common flags')}
   --template <name>  --name "Title"  --seed <n>  --out <dir>  --force
   --key <api-key>    --place <link|id>  --universe <id>   (override the stored link)
+  --skeleton <file.rbxlx>          Splice into a place Studio wrote instead of
+                                   synthesising one (Roblox refuses synthesised places)
 
 ${dim(`Config: ${CONFIG_PATH}`)}
 `;
@@ -277,7 +288,7 @@ commands.new = async ({ positional, flags }) => {
   });
 
   const project = loadProject(created.dir);
-  const { stats } = buildPlace(project);
+  const { stats } = buildPlace(project, { skeleton: skeletonFrom(flags) });
   ok(`created ${bold(created.manifest.name)} in ${created.dir}`);
   note(created.manifest.description);
   note(`${stats.parts} bricks, ${stats.tagged} interactive, ${stats.scripts} scripts`);
@@ -287,7 +298,7 @@ commands.new = async ({ positional, flags }) => {
 commands.build = async ({ positional, flags }) => {
   const dir = projectDir(positional, flags);
   const project = openProject(dir);
-  const { xml, stats } = buildPlace(project);
+  const { xml, stats } = buildPlace(project, { skeleton: skeletonFrom(flags) });
 
   const out = path.resolve(flags.out ?? path.join(dir, 'build', 'place.rbxlx'));
   fs.mkdirSync(path.dirname(out), { recursive: true });
@@ -335,7 +346,7 @@ commands.publish = async ({ positional, flags }) => {
 commands.deploy = async ({ positional, flags }) => {
   const dir = projectDir(positional, flags);
   const project = openProject(dir);
-  const { xml, stats } = buildPlace(project);
+  const { xml, stats } = buildPlace(project, { skeleton: skeletonFrom(flags) });
   const problems = lintProject(project);
 
   note(`${stats.parts} bricks (${stats.tagged} interactive), ${stats.scripts} scripts`);
@@ -366,7 +377,7 @@ commands.generate = async ({ positional, flags }) => {
   const created = designToProject(design, out, { writeRuntime });
 
   const project = loadProject(created.dir);
-  const { stats } = buildPlace(project);
+  const { stats } = buildPlace(project, { skeleton: skeletonFrom(flags) });
 
   say('');
   ok(`designed ${bold(design.name)}`);

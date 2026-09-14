@@ -202,18 +202,31 @@ export function instance(className, properties = {}, children = []) {
  * @param {Array} roots instance() nodes, normally services (Workspace, Lighting, ...)
  */
 export function serializePlace(roots) {
-  let referent = 0;
+  const lines = [
+    '<roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.roblox.com/roblox.xsd" version="4">',
+    '\t<External>null</External>',
+    '\t<External>nil</External>',
+    serializeItems(roots, 1),
+    '</roblox>',
+    '',
+  ];
+  return lines.join('\n');
+}
+
+/**
+ * Serialize instances as bare <Item> blocks, with no document wrapper, so they
+ * can be spliced into a place file Studio wrote.
+ * @param {Array} nodes instance() nodes
+ * @param {number} depth indentation depth to emit at
+ */
+export function serializeItems(nodes, depth = 1, startReferent = 0) {
+  const lines = [];
+  let referent = startReferent;
   // Matched against Roblox's own place file (Roblox/rbx-test-files,
   // places/baseplate-413): no XML declaration, the two legacy <External>
   // elements, and no <Meta> -- the format spec is explicit that <Meta> appears
   // only in model files, and a place carries ExplicitAutoJoints as a Workspace
   // property instead.
-  const lines = [
-    '<roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.roblox.com/roblox.xsd" version="4">',
-    '\t<External>null</External>',
-    '\t<External>nil</External>',
-  ];
-
   const walk = (node, depth) => {
     const pad = '\t'.repeat(depth);
     lines.push(`${pad}<Item class="${node.className}" referent="${referentFor(referent++)}">`);
@@ -232,7 +245,6 @@ export function serializePlace(roots) {
     lines.push(`${pad}</Item>`);
   };
 
-  for (const root of roots) walk(root, 1);
-  lines.push('</roblox>', '');
+  for (const node of nodes) walk(node, depth);
   return lines.join('\n');
 }

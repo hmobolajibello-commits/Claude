@@ -12,7 +12,8 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { instance, serializePlace, MATERIALS, SHAPES, SURFACES, LIGHTING_TECHNOLOGY } from './rbxlx.js';
+import { instance, serializePlace, serializeItems, MATERIALS, SHAPES, SURFACES, LIGHTING_TECHNOLOGY } from './rbxlx.js';
+import { injectIntoSkeleton, removeDefaultBaseplate } from './skeleton.js';
 import { luaModule } from './lua.js';
 
 export const MANIFEST_NAME = 'forge.project.json';
@@ -156,6 +157,11 @@ export function normalizeMap(map) {
   return { parts: normalized, mapData };
 }
 
+/** How many <Item> elements a subtree will produce. */
+function countInstances(nodes) {
+  return nodes.reduce((total, node) => total + 1 + countInstances(node.children ?? []), 0);
+}
+
 function partInstance(part) {
   return instance(part.className, {
     Name: part.name,
@@ -173,8 +179,15 @@ function partInstance(part) {
   });
 }
 
-/** Build the place tree and serialize it. Returns { xml, stats }. */
-export function buildPlace(project) {
+/**
+ * Build the place. Returns { xml, stats }.
+ *
+ * With a `skeleton` (the contents of a .rbxlx Studio wrote), the generated
+ * instances are spliced into it and its own service set and properties are left
+ * alone. Roblox refuses a place synthesised from scratch and accepts one Studio
+ * produced, without documenting the difference, so this is the reliable path.
+ */
+export function buildPlace(project, { skeleton } = {}) {
   const { manifest, map, sources } = project;
   const { parts, mapData } = normalizeMap(map);
 
@@ -266,7 +279,26 @@ export function buildPlace(project) {
     instance('Teams', {}, []),
   ];
 
-  const xml = serializePlace(roots);
+  let xml;
+  if (skeleton) {
+    // Referents must stay unique across the fragments and the skeleton, so
+    // keep one counter running through all of them.
+    let next = 0;
+    const fragment = (nodes) => {
+      const text = serializeItems(nodes, 0, next);
+      next += countInstances(nodes);
+      return text;
+    };
+    xml = injectIntoSkeleton(removeDefaultBaseplate(skeleton), [
+      { service: 'Workspace', depth: 2, xml: fragment(workspace.children) },
+      { service: 'ServerScriptService', depth: 2, xml: fragment(serverScriptService.children) },
+      { service: 'ReplicatedStorage', depth: 2, xml: fragment(replicatedStorage.children) },
+      { service: 'StarterPlayerScripts', depth: 3, xml: fragment(starterPlayer.children[0].children) },
+    ]);
+  } else {
+    xml = serializePlace(roots);
+  }
+
   return {
     xml,
     stats: {

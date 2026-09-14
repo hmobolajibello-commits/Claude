@@ -171,6 +171,86 @@ await test('lint catches the mistakes that make a place unplayable', () => {
   assert.ok(problems.some((p) => /ForgeCheckpoint/.test(p)));
 });
 
+await test('a place can be spliced into one Studio wrote', () => {
+  // Roblox refuses a place synthesised from scratch and accepts one Studio
+  // produced, so forge must be able to inject into a skeleton rather than
+  // build the document itself.
+  const skeleton = [
+    '<roblox version="4">',
+    '\t<External>null</External>',
+    '\t<Item class="Workspace" referent="RBXAAA">',
+    '\t\t<Properties>',
+    '\t\t\t<string name="Name">Workspace</string>',
+    '\t\t</Properties>',
+    '\t\t<Item class="Part" referent="RBXBBB">',
+    '\t\t\t<Properties>',
+    '\t\t\t\t<string name="Name">Baseplate</string>',
+    '\t\t\t</Properties>',
+    '\t\t</Item>',
+    '\t</Item>',
+    '\t<Item class="ServerScriptService" referent="RBXCCC">',
+    '\t\t<Properties>',
+    '\t\t\t<string name="Name">ServerScriptService</string>',
+    '\t\t</Properties>',
+    '\t</Item>',
+    '\t<Item class="ReplicatedStorage" referent="RBXDDD">',
+    '\t\t<Properties></Properties>',
+    '\t</Item>',
+    '\t<Item class="StarterPlayer" referent="RBXEEE">',
+    '\t\t<Properties></Properties>',
+    '\t\t<Item class="StarterPlayerScripts" referent="RBXFFF">',
+    '\t\t\t<Properties></Properties>',
+    '\t\t</Item>',
+    '\t</Item>',
+    '</roblox>',
+  ].join('\n');
+
+  const project = {
+    manifest: { name: 'Spliced', settings: {} },
+    map: { parts: [{ name: 'Floor', folder: 'Map' }, { name: 'Spawn', className: 'SpawnLocation' }] },
+    sources: {
+      serverScripts: [{ name: 'Main', source: 'print("hi")' }],
+      serverModules: [{ name: 'Save', source: 'return {}' }],
+      clientScripts: [{ name: 'Hud', source: 'print("client")' }],
+      sharedModules: [{ name: 'Net', source: 'return {}' }],
+    },
+  };
+
+  const { xml } = buildPlace(project, { skeleton });
+
+  // The skeleton's own service set survives untouched.
+  assert.equal((xml.match(/^\t<Item class="/gm) ?? []).length, 4, 'no services added or lost');
+  assert.match(xml, /<Item class="Workspace"/);
+
+  // Our content landed in the right services.
+  const workspace = xml.slice(xml.indexOf('class="Workspace"'), xml.indexOf('class="ServerScriptService"'));
+  assert.match(workspace, /<string name="Name">Map<\/string>/, 'the map goes in Workspace');
+  assert.match(workspace, /<Item class="SpawnLocation"/);
+  assert.match(xml.slice(xml.indexOf('class="ServerScriptService"')), /<string name="Name">Main<\/string>/);
+  assert.match(xml.slice(xml.indexOf('class="StarterPlayerScripts"')), /<Item class="LocalScript"/);
+
+  // Studio's grey baseplate is removed so it cannot sit under the map.
+  assert.doesNotMatch(xml, /name="Name">Baseplate</, 'the default baseplate is removed');
+
+  // Referents stay unique across the skeleton and every spliced fragment.
+  const referents = [...xml.matchAll(/referent="([^"]+)"/g)].map((m) => m[1]);
+  assert.equal(new Set(referents).size, referents.length, 'referents must not collide');
+
+  // And it is still one well-formed document.
+  assert.equal((xml.match(/<Item /g) ?? []).length, (xml.match(/<\/Item>/g) ?? []).length);
+});
+
+await test('a skeleton that is not a place is refused', async () => {
+  const { injectIntoSkeleton, findServiceClose } = await import('../src/skeleton.js');
+  assert.throws(() => injectIntoSkeleton('<html></html>', []), /does not look like a .rbxlx place/);
+  assert.throws(() => findServiceClose('<roblox></roblox>', 'Workspace'), /no Workspace service/);
+
+  // Nested items must not fool the closing-tag search.
+  const nested = '<Item class="Workspace" referent="A"><Item class="Part" referent="B"></Item></Item>';
+  const at = findServiceClose(nested, 'Workspace');
+  assert.equal(nested.slice(at), '</Item>', 'must find Workspace own close, not the Part one');
+});
+
 //------------------------------------------------------------------------------
 // Templates, end to end
 //------------------------------------------------------------------------------
